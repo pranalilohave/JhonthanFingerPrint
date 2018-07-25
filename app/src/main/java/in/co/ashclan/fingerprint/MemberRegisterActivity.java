@@ -657,6 +657,37 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
                             return;
                         }
                     }
+
+                    if(member.getFingerPrint1()!=null) {
+                        byte[] byt=Base64.decode(member.getFingerPrint1(),Base64.DEFAULT);
+                        if (FPMatch.getInstance().MatchTemplate(model,byt) > 60){
+                            fpStatusText.setText(getString(R.string.txt_fpduplicate));
+                            if(iFinger==1) {
+                                imageViewFingerPrint1.setColorFilter(getResources().getColor(R.color.red));
+                            }else{
+                                imageViewFingerPrint3.setColorFilter(getResources().getColor(R.color.red));
+                            }
+                            Toast.makeText(mContext,"Duplicate",Toast.LENGTH_LONG).show();
+                            fpDialog.cancel();
+                            return;
+                        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    }
                 }
                 if (iFinger == 1) {
                     imageViewFingerPrint1.setColorFilter(getResources().getColor(R.color.green));
@@ -776,7 +807,6 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
 
         return cancel;
     }
-
     private boolean isEmailValid(String email) {
         return email.contains("@")&&email.contains(".");
     }
