@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Overview"
+        android:layout_gravity="center"
+        android:textSize="24dp"
+        android:textColor="@color/black"
+        android:layout_marginTop="20dp"
+        />
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="20dp">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:background="@color/whitesmoke"
+            >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_column="1"
+                android:text="Name"
+                android:textColor="@color/black"/>
+
+            <TextView
+                android:id="@+id/overview_event_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_column="2"
+                android:text="Sunday Service"/>
+        </TableRow>
+
+        <TableRow
+            android:padding="15dp"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_column="1"
+                android:text="Date"
+                android:textColor="@color/black"/>
+
+            <TextView
+                android:id="@+id/overview_event_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_column="2"
+                android:text="2018-02-02"/>
+        </TableRow>
+
+        <TableRow
+            android:padding="15dp"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/whitesmoke">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="1"
+                android:textColor="@color/black"
+                android:text="Cost"/>
+
+            <TextView
+                android:id="@+id/overview_event_cost"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_column="2"
+                android:text="Free"/>
+        </TableRow>
+
+        <TableRow
+            android:padding="15dp"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="1"
+                android:textColor="@color/black"
+                android:text="Calender"/>
+
+            <TextView
+                android:id="@+id/overview_event_calender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_column="2"
+                android:text="Sunday Service"/>
+        </TableRow>
+
+
+        <TableRow
+            android:padding="15dp"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/whitesmoke">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="1"
+                android:textColor="@color/black"
+                android:text="Location"/>
+
+            <TextView
+                android:id="@+id/overview_event_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_column="2"
+                android:text="BWC-Gbawe, Topbase"/>
+        </TableRow>
+
+        <TableRow
+            android:padding="15dp"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="1"
+                android:textColor="@color/black"
+                android:text="Featured Image"/>
+
+            <TextView
+                android:id="@+id/overview_event_featured_image"
+                android:layout_width="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_height="wrap_content"
+                android:layout_column="2"
+                android:text=""/>
+        </TableRow>
+
+
+        <TableRow
+            android:padding="15dp"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/whitesmoke">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="1"
+                android:textColor="@color/black"
+                android:text="Notes"/>
+
+            <TextView
+                android:id="@+id/overview_event_notes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_column="2"
+                android:text="Free"/>
+        </TableRow>
+
+        <TableRow
+            android:padding="15dp"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="1"
+                android:textColor="@color/black"
+                android:text="Created at"/>
+
+            <TextView
+                android:id="@+id/overview_event_created_at"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_column="2"
+                android:text="2018-02-02 16:09:01"/>
+        </TableRow>
+
+    </TableLayout>
+</LinearLayout>

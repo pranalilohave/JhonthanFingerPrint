@@ -1,0 +1,1 @@
+include ':app', ':ashclancalendar', ':ashclanrecorder', ':ashclanbottomplayer'

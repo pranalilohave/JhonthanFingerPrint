@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="recorder_bg">#0120AB</color>
+
+    <color name="calender_tc">#0120AB</color>
+    <color name="calender_bc">#FFFFFF</color>
+
+
+    <color name="colorPrimary">#0120AB</color>
+    <color name="colorPrimaryDark">#1976D2</color>
+    <color name="colorAccent">#0091EA</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+
+    <!-- 384ba0 blue dark
+fdbe14 yellow
+384ba0 blue selected
+4a6ccf screen nine tool bar blue -->
+
+    <color name="black_87">#DE000000</color>
+    <color name="black_70">#B3000000</color>
+    <color name="black_60">#99000000</color>
+    <color name="black_54">#8A000000</color>
+    <color name="black_50">#80000000</color>
+    <color name="black_40">#64000000</color>
+    <color name="black_38">#61000000</color>
+    <color name="black_32">#52000000</color>
+    <color name="black_20">#33000000</color>
+    <color name="black_12">#1F000000</color>
+    <color name="white_90">#E6FFFFFF</color>
+    <color name="white_70">#B3FFFFFF</color>
+    <color name="white_50">#80FFFFFF</color>
+    <color name="white_40">#64FFFFFF</color>
+    <color name="white_30">#4DFFFFFF</color>
+    <color name="white_20">#33FFFFFF</color>
+    <color name="white_12">#1FFFFFFF</color>
+
+    <color name="ripple_dark">@color/white_20</color>
+    <color name="ripple_light">@color/black_12</color>
+
+    <color name="splash_top">#1E5649</color>
+    <color name="splash_bottom">#222222</color>
+
+
+
+
+
+<color name="GreyTransparent">#55A0A0A0</color>
+    <color name="mWhite">#FFFFFF</color>
+
+    <color name="whitesmoke">#f5f5f5</color>
+
+    <color name="red">#FF0000</color>
+    <color name="green">#00FF00</color>
+
+    <color name="yellow">#fdbe14</color>
+
+    <color name="redA100">#FF8A80</color>
+    <color name="redA200">#FF5252</color>
+    <color name="redA400">#FF1744</color>
+    <color name="redA700">#D50000</color>
+
+    <color name="blue0">#E1F5FE</color>
+    <color name="blue1">#80D8FF</color>
+    <color name="blue2">#40C4FF</color>
+    <color name="blue3">#00B0FF</color>
+    <color name="blue4">#0091EA</color>
+
+<!---
+
+    <color name="blue0">#E1F5FE</color>
+    <color name="blue1">#80D8FF</color>
+    <color name="blue2">#40C4FF</color>
+    <color name="blue3">#00B0FF</color>
+    <color name="blue4">#0091EA</color>
+-->
+    <color name="bluebar50">#E3F2FD</color>
+    <color name="bluebar100">#BBDEFB</color>
+    <color name="bluebar200">#BBDEFB</color>
+    <color name="bluebar300">#64B5F6</color>
+    <color name="bluebar400">#42A5F5</color>
+    <color name="bluebar500">#2196F3</color>
+    <color name="bluebar600">#1E88E5</color>
+    <color name="bluebar700">#1976D2</color>
+    <color name="bluebar800">#1565C0</color>
+    <color name="bluebar900">#0D47A1</color>
+    <color name="bluebarA100">#82B1FF</color>
+    <color name="bluebarA200">#448AFF</color>
+    <color name="bluebarA300">#2979FF</color>
+    <color name="bluebarA400">#2962FF</color>
+    <color name="bluedark">#010b2e</color>
+
+    <color name="yellow_1">#f1e501</color>
+
+
+
+
+</resources>

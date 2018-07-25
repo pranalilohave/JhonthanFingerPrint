@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:iconTint="@color/white"
+            android:id="@+id/nav_member"
+            android:icon="@drawable/ic_attender"
+            android:title="Members" />
+        <item
+            android:iconTint="@color/white"
+            android:id="@+id/nav_events"
+            android:icon="@drawable/ic_event_1"
+            android:title="Events" />
+        <item
+            android:iconTint="@color/white"
+            android:id="@+id/nav_upload"
+            android:icon="@drawable/ic_upload_1"
+            android:title="Upload"
+            />
+        <item
+            android:iconTint="@color/white"
+            android:id="@+id/nav_recording"
+            android:icon="@drawable/ic_recording"
+            android:title="Recording" />
+        <item
+            android:iconTint="@color/white"
+            android:id="@+id/nav_setting"
+            android:icon="@drawable/ic_setting"
+            android:title="Setting" />
+    </group>
+
+
+</menu>
