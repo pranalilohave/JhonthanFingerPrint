@@ -671,22 +671,6 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
                             fpDialog.cancel();
                             return;
                         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                     }
                 }
                 if (iFinger == 1) {
@@ -820,7 +804,6 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
         }
         return true;
     }
-
 
     public void cropImage(){
         Intent intent = new Intent(mContext,CropImageActivity.class);
