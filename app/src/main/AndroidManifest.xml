@@ -148,8 +148,7 @@
         <activity
             android:name=".AttendanceActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
-
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".EventDetailsActivity" />
 
         <provider
@@ -163,7 +162,8 @@
         </provider>
 
         <activity android:name=".TestingActivity" />
-        <activity android:name=".EventRegister"></activity>
+        <activity android:name=".EventRegister" />
+        <activity android:name=".AttenderActivity"></activity>
     </application>
 
 </manifest>

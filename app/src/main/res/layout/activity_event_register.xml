@@ -6,10 +6,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".EventRegister">
+
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="10dp"
+    android:layout_margin="15dp"
     android:orientation="vertical">
 
     <android.support.design.widget.TextInputLayout
@@ -31,13 +32,13 @@
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:weightSum="2"
             android:orientation="horizontal">
 
         <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1">
-
 
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/edt_start_date"
@@ -53,9 +54,8 @@
         </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
                 android:layout_weight="1">
 
                 <android.support.design.widget.TextInputEditText
@@ -73,9 +73,11 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:weightSum="2"
             android:orientation="horizontal">
+
             <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1">
 
@@ -93,9 +95,8 @@
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
                 android:layout_weight="1">
 
                 <android.support.design.widget.TextInputEditText
@@ -114,8 +115,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:gravity="center"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <CheckBox
             android:id="@+id/chk_allday_event"
@@ -130,7 +130,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Recurring"
-            android:layout_marginLeft="40dp"
             android:textSize="20dp"
             android:textStyle="normal"/>
     </LinearLayout>
@@ -149,7 +148,7 @@
             android:layout_weight="1">
 
             <android.support.design.widget.TextInputEditText
-                android:id="@+id/recur_frequency"
+                android:id="@+id/edt_recur_frequency"
                 android:inputType="number"
                 android:imeOptions="actionNext"
                 android:hint="Recur Frequency"
@@ -170,9 +169,9 @@
             app:ms_hintView="@layout/hint_item"
             app:ms_hint="Recur Type"
             app:ms_floatingLabelColor="#f8b4b6b4"
-            app:ms_floatingLabelText="Marital Status"
+            app:ms_floatingLabelText="Recurring Type"
             app:ms_hintColor="#efb4b6b4"
-            android:entries="@array/array_marital_status" />
+            android:entries="@array/reccurType" />
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
@@ -219,7 +218,7 @@
         android:weightSum="5">
 
         <fr.ganfra.materialspinner.MaterialSpinner
-            android:id="@+id/spn_calender"
+            android:id="@+id/spn_calendar"
             android:layout_weight="5"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -229,17 +228,17 @@
             app:ms_enableFloatingLabel="true"
             app:ms_dropDownHintView="@layout/dropdown_hint_item"
             app:ms_hintView="@layout/hint_item"
-            app:ms_hint="Calender"
+            app:ms_hint="Calendar"
             app:ms_floatingLabelColor="#f8b4b6b4"
-            app:ms_floatingLabelText="Marital Status"
+            app:ms_floatingLabelText="Calendar"
             app:ms_hintColor="#efb4b6b4"
-            android:entries="@array/array_marital_status" />
+            android:entries="@array/arry_temp" />
 
         <ImageView
+            android:id="@+id/img_btnCalendarAdd"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:src="@drawable/ic_add"
-            android:tint="@color/green"
             android:layout_gravity="center_horizontal|center_vertical"
             android:layout_weight="1"/>
     </LinearLayout>
@@ -263,15 +262,15 @@
         app:ms_hintView="@layout/hint_item"
         app:ms_hint="Location"
         app:ms_floatingLabelColor="#f8b4b6b4"
-        app:ms_floatingLabelText="Marital Status"
+        app:ms_floatingLabelText="Locations"
         app:ms_hintColor="#efb4b6b4"
-        android:entries="@array/array_marital_status" />
+        android:entries="@array/arry_temp" />
 
         <ImageView
+            android:id="@+id/img_btnLocationAdd"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:src="@drawable/ic_add"
-            android:tint="@color/green"
             android:layout_gravity="center_horizontal|center_vertical"
             android:layout_weight="1"/>
     </LinearLayout>
@@ -328,12 +327,12 @@
         android:layout_weight="1">
 
         <EditText
-            android:id="@+id/edt_address"
+            android:id="@+id/edt_note"
             android:inputType="textMultiLine"
             android:lines="8"
             android:minLines="4"
             android:gravity="top|left"
-            android:hint="Address"
+            android:hint="Notes"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:maxLines="10"
@@ -344,7 +343,7 @@
     </android.support.design.widget.TextInputLayout>
 
     <android.support.v7.widget.AppCompatButton
-        android:id="@+id/btn_submit"
+        android:id="@+id/btn_Event_submit"
         android:text="Submit"
         android:textAllCaps="false"
         android:layout_marginLeft="5dp"

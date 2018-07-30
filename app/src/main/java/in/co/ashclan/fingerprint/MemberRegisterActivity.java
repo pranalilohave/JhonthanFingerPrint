@@ -275,7 +275,6 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
             }
         }
     }
-
     public void inits(){
         editTextFirstName=(EditText)findViewById(R.id.first_name);
         editTextMiddleName=(EditText)findViewById(R.id.middle_name);
@@ -321,9 +320,6 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
             isUpEnroll2=false;
             FPDialog(2);
         }
-
-
-
         if (view==imageViewFingerPrint2){
             //selectImage();
             cropImage();
@@ -344,9 +340,7 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
                     offlineSubmitMemberRegistration();
                     break;
             }
-
         }
-
     }
     private void dateDialog(){
         // Get Current Date
@@ -368,7 +362,6 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
                 }, mYear, mMonth, mDay);
         datePickerDialog.show();
     }
-
     public void FPDialog(int i){
         iFinger = i;
         AlertDialog.Builder builder = new AlertDialog.Builder(MemberRegisterActivity.this);
@@ -701,7 +694,6 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
             }
         });
     }
-
     public boolean utilsCheck(){
 
         boolean cancel = false;
@@ -804,7 +796,6 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
         }
         return true;
     }
-
     public void cropImage(){
         Intent intent = new Intent(mContext,CropImageActivity.class);
         startActivityForResult(intent,CROP_IMAGE);
@@ -936,7 +927,7 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
                 fpStrByte2 = Base64.encodeToString(fpByte2, Base64.DEFAULT);
                 imageViewFingerPrint3.setColorFilter(getResources().getColor(R.color.green));
 
-                memberDetails.setFingerPrint2(fpStrByte2);
+                memberDetails.setFingerPrint1(fpStrByte2);
             }
 
             progressBar.setVisibility(View.VISIBLE);
@@ -995,8 +986,6 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
 
         }
     }
-
-
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
@@ -1012,7 +1001,6 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
                 break;
         }
     }
-
     private void selectImage() {
         final CharSequence[] items = { "Take Photo", "Choose from Library",
                 "Cancel" };
@@ -1051,7 +1039,6 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(intent, REQUEST_CAMERA);
     }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -1128,7 +1115,6 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
         setImagePath(destination.getAbsolutePath());
     }
 
-
     @SuppressWarnings("deprecation")
     private void onSelectFromGalleryResult(Intent data) {
 
@@ -1164,12 +1150,10 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
         //   memberDetails.setPhotoLocalPath(BitMapToString(bitmapImage));
         setImagePath(path);
     }
-
     public void setImagePath(String path){
         editImage=true;
         imagePath=path;
     }
-
     public String getImagePath(){
         memberDetails.setPhotoLocalPath(imagePath);
         return imagePath;
@@ -1180,7 +1164,6 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
     public String isNull(JSONObject object, String parma,String dafualtStr){
         return object.get(parma)!=null?object.get(parma).toString():dafualtStr;
     }
-
     public String BitMapToString(Bitmap bitmap) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
@@ -1199,9 +1182,6 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
             return null;
         }
     }
-
-
-
     public void getGender(String str) {
         List<String> l = Arrays.asList(getResources().getStringArray(R.array.array_gender));
         for (int i=0; i<l.size();i++){
@@ -1209,7 +1189,6 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
                 msGender.setSelection(i+1);
             }
         }
-
     }
     public void getStatus(String str){
         List<String> l = Arrays.asList(getResources().getStringArray(R.array.array_status));
@@ -1227,7 +1206,6 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
             }
         }
     }
-
     public void memberRegisterVolley(String URL, final MemberPOJO memberDetails){
         SimpleMultiPartRequest smr = new SimpleMultiPartRequest(Request.Method.POST, URL,
                 new Response.Listener<String>() {
@@ -1472,9 +1450,7 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
         } catch (Exception exc) {
             Toast.makeText(mContext, exc.getMessage(), Toast.LENGTH_SHORT).show();
         }
-
     }
-
     public class GetAccessTokenTask extends AsyncTask<String, String, String> {
 
         private Context mContext;
@@ -1573,7 +1549,7 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
                     .addParameter("work_phone", memberDetails.getWorkPhone())
                     .addParameter("email", memberDetails.getEmail())
                     .addParameter("notes", memberDetails.getNotes())
-                    .addParameter("fingerprint2", memberDetails.getFingerPrint())
+                    .addParameter("fingerprint2", memberDetails.getFingerPrint1())
                     .setNotificationConfig(new UploadNotificationConfig())
                     .setMaxRetries(2)
                     .setDelegate(new UploadStatusDelegate() {
@@ -1622,7 +1598,7 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
                                 memberRegister.setCreateAt(isNull(memberObject,"created_at"));
                                 memberRegister.setId(isNull(memberObject,"id"));
                                 memberRegister.setNotes(isNull(memberObject,"notes"));
-                                memberRegister.setFingerPrint2(isNull(memberObject,"fingerprint2"));
+                                memberRegister.setFingerPrint1(isNull(memberObject,"fingerprint2"));
                                 dataBaseHelper.insertMemberData(memberRegister);
 
                             }catch (Exception ex){
@@ -1640,9 +1616,6 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
                                 finish();
                                 progressBar.setVisibility(View.INVISIBLE);
                             }
-
-
-
                         }
 
                         @Override
@@ -1685,7 +1658,7 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
                         .addParameter("email", memberDetails.getEmail())
                         .addParameter("notes", memberDetails.getNotes())
                         .addParameter("id", memberDetails.getId())
-                        .addParameter("fingerprint2",memberDetails.getFingerPrint2())
+                        .addParameter("fingerprint2",memberDetails.getFingerPrint1())
                         .setNotificationConfig(new UploadNotificationConfig())
                         .setMaxRetries(2)
                         .setDelegate(new UploadStatusDelegate() {
@@ -1733,7 +1706,7 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
                                     memberRegister.setCreateAt(isNull(memberObject, "created_at"));
                                     memberRegister.setId(isNull(memberObject, "id"));
                                     memberRegister.setNotes(isNull(memberObject, "notes"));
-                                    memberRegister.setFingerPrint2(isNull(memberObject,"fingerprint2"));
+                                    memberRegister.setFingerPrint1(isNull(memberObject,"fingerprint2"));
                                     //    dataBaseHelper.insertMemberData(memberRegister);
                                     dataBaseHelper.updateMemberData(memberRegister);
                                 } catch (Exception ex) {
@@ -1782,7 +1755,7 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
                         .addParameter("email", memberDetails.getEmail())
                         .addParameter("notes", memberDetails.getNotes())
                         .addParameter("id", memberDetails.getId())
-                        .addParameter("fingerprint2",memberDetails.getFingerPrint2())
+                        .addParameter("fingerprint2",memberDetails.getFingerPrint1())
                         .setNotificationConfig(new UploadNotificationConfig())
                         .setMaxRetries(2)
                         .setDelegate(new UploadStatusDelegate() {
@@ -1830,7 +1803,7 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
                                     memberRegister.setCreateAt(isNull(memberObject, "created_at"));
                                     memberRegister.setId(isNull(memberObject, "id"));
                                     memberRegister.setNotes(isNull(memberObject, "notes"));
-                                    memberRegister.setFingerPrint2(isNull(memberObject,"fingerprint2"));
+                                    memberRegister.setFingerPrint1(isNull(memberObject,"fingerprint2"));
                                     //    dataBaseHelper.insertMemberData(memberRegister);
                                     dataBaseHelper.updateMemberData(memberRegister);
                                 } catch (Exception ex) {
@@ -1868,8 +1841,6 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
             Toast.makeText(this, exc.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
-
-
 }
 
 //*******************************************************

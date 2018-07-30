@@ -95,7 +95,6 @@ public class LoginActivity extends AppCompatActivity implements OnItemSelectedLi
         init();
         login();
     }
-
     public void init(){
         textViewVersions = (TextView)findViewById(R.id.text_login_versions);
         editTextAdmin = (EditText)findViewById(R.id.admin);
@@ -108,7 +107,6 @@ public class LoginActivity extends AppCompatActivity implements OnItemSelectedLi
         msServer.setSelection(PreferenceUtils.getSelectServer(this));
         msServer.setOnItemSelectedListener(this);
     }
-
     public void login(){
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -155,12 +153,10 @@ public class LoginActivity extends AppCompatActivity implements OnItemSelectedLi
             }
         });
     }
-
     @Override
     protected void onRestart() {
         super.onRestart();
     }
-
     //email=test@gmail.com
     //password=123456
     public void getAccessTokenVolley(String URL, final String mEmail, final String mPassword){
@@ -374,7 +370,6 @@ public class LoginActivity extends AppCompatActivity implements OnItemSelectedLi
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         requestQueue.add(smr);
     }
-
     public void getAccessTokenGovNet(String URL,final String mEmail,final String mPassword){
         Log.e("--->",URL);
         try {
@@ -635,7 +630,6 @@ public class LoginActivity extends AppCompatActivity implements OnItemSelectedLi
             Toast.makeText(this, exc.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
-
     //************************************************
     public class GetAccessTokenTask extends AsyncTask<String, String, String> {
 
@@ -730,7 +724,6 @@ public class LoginActivity extends AppCompatActivity implements OnItemSelectedLi
             buttonLogin.setEnabled(true);
         }
     }
-
     //CheckIn
     public class CheckInTask extends AsyncTask<String,String,String>{
 
@@ -815,8 +808,6 @@ public class LoginActivity extends AppCompatActivity implements OnItemSelectedLi
             }
         }
     }
-
-
 
     //GET ALL MEMBERS
     public class GetAllMemberTask extends AsyncTask<String, String, String> {
@@ -1458,6 +1449,7 @@ public class LoginActivity extends AppCompatActivity implements OnItemSelectedLi
                     dataBaseHelper.insertMemberData(member);
 
                 }
+
                 Log.i("--->Details-->",dataBaseHelper.getAllMembers().toString());
                 dataBaseHelper.deleteAllEvents();
                 JSONArray jsonEventArray = (JSONArray)jsonObject.get("eventDetails");
@@ -1585,8 +1577,6 @@ public class LoginActivity extends AppCompatActivity implements OnItemSelectedLi
                     //   eventList.add(event);
                     dataBaseHelper.insertEventAttendaceData(eventAttendancePOJO);
                 }
-
-
 
                 dataBaseHelper.deleteAllPledges();
                 JSONArray jsonPledgeArray = (JSONArray)jsonObject.get("pledges");

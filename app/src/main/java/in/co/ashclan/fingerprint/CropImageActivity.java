@@ -49,7 +49,6 @@ public class CropImageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_crop_image);
         mContext =this;
         cropView = findViewById(R.id.crop_view);
-
     }
 
     public void onClickSelectImage(View view) {

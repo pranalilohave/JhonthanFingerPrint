@@ -12,5 +12,4 @@
         android:background="#33FFFFFF"
         >
     </ListView>
-
 </RelativeLayout>

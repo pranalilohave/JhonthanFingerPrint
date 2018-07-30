@@ -4,6 +4,9 @@ import android.Manifest;
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.Fragment;
+/*import android.app.FragmentManager;
+import android.app.FragmentTransaction;*/
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,11 +14,16 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Parcelable;
+import android.support.design.internal.NavigationMenu;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.app.AppCompatActivity;
@@ -30,8 +38,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -65,11 +75,15 @@ import in.co.ashclan.ashclanrecorder.model.AudioChannel;
 import in.co.ashclan.ashclanrecorder.model.AudioSampleRate;
 import in.co.ashclan.ashclanrecorder.model.AudioSource;
 import in.co.ashclan.database.DataBaseHelper;
+import in.co.ashclan.database.test.Attendance;
+import in.co.ashclan.fragment.AttendersUploadFragment;
 import in.co.ashclan.model.EventAttendancePOJO;
 import in.co.ashclan.model.MemberPOJO;
 import in.co.ashclan.utils.ActivityList;
 import in.co.ashclan.utils.PreferenceUtils;
 import in.co.ashclan.utils.Util;
+import io.github.yavski.fabspeeddial.FabSpeedDial;
+import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 
 import static in.co.ashclan.utils.Utils.isNull;
 import static in.co.ashclan.utils.WebServiceCall.performPostCall;
@@ -79,13 +93,15 @@ public class AttendanceActivity extends AppCompatActivity{
     private static final int REQUEST_RECORD_AUDIO = 0;
     private static final String AUDIO_FILE_PATH = Environment.getExternalStorageDirectory().getPath() + "/recorded_audio.wav";
 
-
     private TextView fpTextView;
     private ListView fpListView;
     private  TextView txt_date,txt_service,txt_dialog;
     private TextClock txt_time;
+    RelativeLayout relativeLayout;
+    RelativeLayout relativeLayout1;
     ImageLoaderConfiguration loaderConfiguration;
     ImageLoader imageLoader = ImageLoader.getInstance();
+    public boolean isFragment = false;
 
     MemberPOJO memberPOJO;
 
@@ -121,7 +137,7 @@ public class AttendanceActivity extends AppCompatActivity{
     //************************************
     MemberAdapter memberAdapter;
     ArrayList<MemberPOJO> personList = new ArrayList<MemberPOJO>();
-//************************************************
+    //************************************************
     private AsyncFingerprint registerFingerprint;
     private AsyncFingerprintA5 registerFingerprintA5;
     public Dialog fpDialog=null;
@@ -144,22 +160,24 @@ public class AttendanceActivity extends AppCompatActivity{
     TextView txt_attender_Time;
     ImageView ImgAttendant;
     ImageView imgclose;
+    io.github.yavski.fabspeeddial.FabSpeedDial fabSpeedDial;
+    AttendersUploadFragment fragment;
+
+    FragmentManager fragmentManager;
+    FragmentTransaction fragmentTransaction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-       // getActionBar().setTitle("");
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-//        toolbar.setOverflowIcon(getResources().getDrawable(R.drawable.ic_menu_2));
-
-
-
-
         setContentView(R.layout.activity_attendance);
         initRecord();
+
+        // getActionBar().setTitle("");
+
+      /*  Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);*/
+
+//     toolbar.setOverflowIcon(getResources().getDrawable(R.drawable.ic_menu_2));
 
         Date c = Calendar.getInstance().getTime();
         System.out.println("Current time => " + c);
@@ -167,16 +185,14 @@ public class AttendanceActivity extends AppCompatActivity{
         SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
         String formattedDate = df.format(c);
 
-
-        fab = (FloatingActionButton) findViewById(R.id.fab_dialog) ;
-
         mContext = AttendanceActivity.this;
         dataBaseHelper = new DataBaseHelper(mContext);
         fpListView = (ListView) findViewById(R.id.listView);
         fpTextView = (TextView) findViewById(R.id.text_fing);
         fpMatchImage = (ImageView) findViewById(R.id.match_image);
         imagefinger = (ImageView) findViewById(R.id.img_finger);
-
+        relativeLayout = (RelativeLayout)findViewById(R.id.relativeLayout_main);
+        relativeLayout1 = (RelativeLayout)findViewById(R.id.fragment_upload);
 
       //  imageUpload=(ImageView)findViewById(R.id.image_upload);
        // imageRecorder=(ImageView)findViewById(R.id.image_recorder);
@@ -191,6 +207,57 @@ public class AttendanceActivity extends AppCompatActivity{
 
         txt_date.setText(formattedDate);
         txt_service.setText(eventname);
+
+        fab = (FloatingActionButton) findViewById(R.id.fab_dialog) ;
+        fabSpeedDial = (io.github.yavski.fabspeeddial.FabSpeedDial)findViewById(R.id.fabspeed);
+
+        fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
+            @Override
+            public boolean onMenuItemSelected(MenuItem menuItem) {
+                //TODO: Start some activity
+                switch (menuItem.getItemId())
+                {
+                    case R.id.action_attender :
+                        //                        startActivity(new Intent(mContext,QRCodeReaderActivity.class));
+                        //showAlertDialog();
+
+                        String eventId=getIntent().getStringExtra("eventId");
+                        AttenderFragment(personList,eventId);
+
+                         /* Intent i = new Intent(AttendanceActivity.this,AttenderActivity.class);
+                        i.putExtra("person",personList);
+                        i.putExtra("eventId",eventId);
+                        startActivity(i);*/
+
+                        break;
+                    case R.id.action_record:
+                        recordAudio();
+                        break;
+                    case R.id.action_member:
+                        Intent intent = new Intent(AttendanceActivity.this , MemberRegisterActivity.class);
+                        intent.putExtra("type", "register");
+                        startActivity(intent);
+                        workExit();
+                        break;
+                    case R.id.action_home:
+                        if(personList.size() != 0)
+                        {
+                            Toast.makeText(mContext, "Please Upload All Attendance Data", Toast.LENGTH_SHORT).show();
+                        }else {
+                            //Toast.makeText(mContext, "Cancel...", Toast.LENGTH_SHORT).show();
+                            if(SerialPortManager.getInstance().isOpen()){
+                                bIsCancel=true;
+                                SerialPortManager.getInstance().closeSerialPort();
+                            }
+                            finish();
+                            //workExit();
+                        }
+                        //startActivity(new Intent(mContext,HomeActivity.class));
+                        break;
+                }
+                return false;
+            }
+        });
 
         Configuration config = getResources().getConfiguration();
         if (config.smallestScreenWidthDp >= 600) {
@@ -256,24 +323,49 @@ public class AttendanceActivity extends AppCompatActivity{
         // dataBaseHelper=new DataBaseHelper(mContext);
         fpListView.setAdapter(memberAdapter);
 
-        fab.setOnClickListener(new View.OnClickListener() {
+       /* fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showAlertDialog();
             }
-        });
+        });*/
     }
+    private void AttenderFragment(ArrayList<MemberPOJO> personList, String eventId) {
 
+        isFragment = true;
+        fragmentManager = getSupportFragmentManager();
+        fragmentTransaction = fragmentManager.beginTransaction();
+        fragment = new AttendersUploadFragment(AttendanceActivity.this,eventId,personList);
+        fragmentTransaction.add(R.id.fragment_upload, fragment, "HELLO");
+        fragmentTransaction.attach(fragment);
+        relativeLayout1.setVisibility(View.VISIBLE);
+        //fragmentTransaction.attach(fragment);
+        fragmentTransaction.commit();
+    }
+    private void setHomeAction() {
+        String memberIds="";
+        String eventId=getIntent().getStringExtra("eventId");
+        for (MemberPOJO member:personList){
+            memberIds=memberIds+member.getId()+",";
+        }
+        memberIds = removeLastChar(memberIds);
+        GetAccessTokenTask aTask=new GetAccessTokenTask(mContext,PreferenceUtils.getUrlLogin(mContext),
+                PreferenceUtils.getAdminName(mContext),PreferenceUtils.getAdminPassword(mContext),memberIds,eventId);
+        aTask.execute();
+
+        //startActivity(new Intent(mContext,HomeActivity.class));
+        finish();
+    }
     private String removeLastChar(String str) {
         return str.substring(0, str.length() - 1);
     }
-
     private void workExit(){
         if(SerialPortManager.getInstance().isOpen()){
             bIsCancel=true;
             SerialPortManager.getInstance().closeSerialPort();
-            this.finish();
+            finish();
         }
+
     }
     public void FPDialog(int i){
         iFinger = i;
@@ -304,7 +396,7 @@ public class AttendanceActivity extends AppCompatActivity{
     }
     public void FPProcess(){
         count=1;
-       fpStatusText.setText("Please Press Finger");
+       fpStatusText.setText("Place your finger on the Sensor util your name appears");
         try {
             Thread.currentThread();
             Thread.sleep(200);
@@ -590,9 +682,7 @@ public class AttendanceActivity extends AppCompatActivity{
             }
         });
     }
-
     //**********************************
-
     private void FPProcess1(){
         if(!bfpWork){
             try {
@@ -602,7 +692,7 @@ public class AttendanceActivity extends AppCompatActivity{
             {
                 e.printStackTrace();
             }
-            fpTextView.setText("Please Press Finger");
+            fpTextView.setText("Place your finger on the Sensor util your name appears");
             imagefinger.setImageDrawable(getResources().getDrawable(R.drawable.ic_finger));
             //tvFpStatus.setText(getString(R.string.txt_fpplace));
             if(isPhone) {
@@ -839,7 +929,6 @@ public class AttendanceActivity extends AppCompatActivity{
         });
 
     }
-
     //***********************************************************************************************************************
     public void TimerStart(){
         if(bIsCancel)
@@ -917,8 +1006,7 @@ public class AttendanceActivity extends AppCompatActivity{
             }
         });
     }
-
-//**********************************************************************************
+    //**********************************************************************************
     public class GetAccessTokenTask extends AsyncTask<String, String, String> {
 
     private Context mContext;
@@ -995,7 +1083,6 @@ public class AttendanceActivity extends AppCompatActivity{
     }
 }
     public class CheckInTask extends AsyncTask<String,String,String> {
-
         private Context mContext;
         private String URL;
         private String member_id,event_id;
@@ -1077,7 +1164,6 @@ public class AttendanceActivity extends AppCompatActivity{
             progressBar.setVisibility(View.GONE);
         }
     }
-
     //**************************************************************
     private void initRecord() {
         if (getSupportActionBar() != null) {
@@ -1144,17 +1230,33 @@ public class AttendanceActivity extends AppCompatActivity{
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 
         if(keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN){
-            Toast.makeText(mContext, "Cancel...", Toast.LENGTH_SHORT).show();
-            workExit();
+
+            if(isFragment){
+                fragmentManager = getSupportFragmentManager();
+                fragmentTransaction = fragmentManager.beginTransaction();
+                fragment = new AttendersUploadFragment();
+                fragmentTransaction.detach(fragment);
+                relativeLayout1.setVisibility(View.GONE);
+                fragmentTransaction.commit();
+                isFragment = false;
+            }else
+            {
+                if(personList.size()!= 0)
+                {
+                    Toast.makeText(mContext, "Please Upload All Attendance Data", Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(mContext, "Cancel...", Toast.LENGTH_SHORT).show();
+                    //finish();
+                    workExit();
+                }
+            }
             return true;
         } else if(keyCode == KeyEvent.KEYCODE_HOME){
             return true;
         }
         return super.onKeyDown(keyCode, event);
     }
-
     private void showAlertDialog() {
-
         final android.support.v7.app.AlertDialog.Builder alertDialog = new android.support.v7.app.AlertDialog.Builder(this);
 //        alertDialog.setTitle("List of Enrolled Person's !...");
 //        alertDialog.setMessage("Please Upload All Data");
@@ -1199,7 +1301,6 @@ public class AttendanceActivity extends AppCompatActivity{
 ////            }
 ////        });
     }
-
     public void showMemberDialog(MemberPOJO memberPOJO) {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         final LayoutInflater inflater = LayoutInflater.from(mContext);
@@ -1276,13 +1377,11 @@ public class AttendanceActivity extends AppCompatActivity{
 
 
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.atendence_menu, menu);
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -1304,6 +1403,12 @@ public class AttendanceActivity extends AppCompatActivity{
 
         return super.onOptionsItemSelected(item);
     }
+    /*@Override
+    public void onBackPressed() {
+      //  startActivity(new Intent(mContext,TestingActivity.class));
+        finish();
+        super.onBackPressed();
+    }*/
 }
 
 

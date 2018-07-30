@@ -6,10 +6,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="bottom"
+    android:id="@+id/relativeLayout_main"
     android:orientation="vertical"
     tools:context=".AttendanceActivity"
     >
-    <android.support.design.widget.AppBarLayout
+    <!--<android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay"
@@ -24,7 +25,7 @@
             android:actionOverflowButtonStyle="@style/MyActionButtonOverflow"
             />
 
-    </android.support.design.widget.AppBarLayout>
+    </android.support.design.widget.AppBarLayout>-->
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_dialog"
@@ -34,8 +35,9 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
         app:backgroundTint="@color/white"
-        android:scaleType="center"
+        app:fabSize="mini"
         android:visibility="gone"
+        android:scaleType="center"
         app:srcCompat="@drawable/ic_menu_black_24dp" />
 
 
@@ -79,7 +81,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
-            android:format12Hour="hh:mm:ss"
+            android:format12Hour="hh:mm:ss a"
             android:gravity="center"
             android:textColor="@android:color/white"
             android:textSize="30sp" />
@@ -89,7 +91,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="40dp"
+            android:layout_marginBottom="30dp"
             android:background="@drawable/ic_datebackground"
             android:gravity="center"
             android:padding="10dp"
@@ -109,7 +111,7 @@
             android:gravity="center"
             android:text="Sunday Church Service"
             android:textColor="@android:color/white"
-            android:textSize="35sp" />
+            android:textSize="30sp" />
 
         <View
             android:layout_width="wrap_content"
@@ -180,4 +182,27 @@
 
         </RelativeLayout>
     </LinearLayout>
+
+    <io.github.yavski.fabspeeddial.FabSpeedDial
+        android:id="@+id/fabspeed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="bottom|end"
+        app:fabGravity="top_end"
+        app:fabMenu="@menu/menu_main"
+        app:fabBackgroundTint="@color/white"
+        app:fabDrawableTint="@color/black"
+        app:miniFabBackgroundTint="@android:color/white"
+        app:miniFabDrawableTint="?attr/colorPrimaryDark"
+        app:miniFabTitleTextColor="?attr/colorPrimaryDark"
+        app:fabDrawable="@drawable/ic_menu_black_24dp" />
+
+    <RelativeLayout
+        android:id="@+id/fragment_upload"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
 </RelativeLayout>

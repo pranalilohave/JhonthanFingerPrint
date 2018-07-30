@@ -327,13 +327,30 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                     + EVENT_ATTEN_COL_8 + " TEXT"
                     + ")";
 
+    //EVENT ATTENDANCE DETAILS
+    public static final String EVENT_CALENDAR_TABLE = "EVENT_CALENDAR_table";
+    public static final String EVENT_CALENDAR_COl_1 = "id";
+    public static final String EVENT_CALENDAR_COL_2 = "event_id";
+    public static final String EVENT_CALENDAR_COL_3 = "user_id";
+    public static final String EVENT_CALENDAR_COL_4 = "member_id";
+    public static final String EVENT_CALENDAR_COL_5 = "anonymous";
+
+
+    public static final String CREATE_TABLE_EVENTCALENDAR =
+            "CREATE TABLE " + EVENT_CALENDAR_TABLE + "("
+                    + EVENT_CALENDAR_COl_1 + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + EVENT_CALENDAR_COL_2 + " TEXT,"
+                    + EVENT_CALENDAR_COL_3 + " TEXT,"
+                    + EVENT_CALENDAR_COL_4 + " TEXT,"
+                    + EVENT_CALENDAR_COL_5 + " TEXT"
+                    + ")";
+
     public DataBaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-
         //Create tables
         db.execSQL(CREATE_TABLE_MEMBER);
         db.execSQL(CREATE_TABLE_EVENTS);
@@ -347,7 +364,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_GROUPS);
         //CREATE TABLE EVENT ATTENDANCE
         db.execSQL(CREATE_TABLE_EVENTATTEN);
-
+       //CREATE TABLE EVENT CALENDAR ATTENDANCE
+        db.execSQL(CREATE_TABLE_EVENTCALENDAR);
     }
 
     @Override
@@ -360,6 +378,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + FAMILY_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + PLEDGES_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + GROUPS_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + EVENT_CALENDAR_TABLE);
 
         // Create tables again
         onCreate(db);

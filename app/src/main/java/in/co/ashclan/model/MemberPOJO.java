@@ -2,7 +2,7 @@ package in.co.ashclan.model;
 
 import java.io.Serializable;
 
-public class MemberPOJO implements Serializable {
+public class MemberPOJO implements Serializable{
     String id,bytes;
     String userId, firstName, middleName, lastName, gender, status, maritalStatus, dob, homePhone, workPhone,
             mobilePhone, address, email, notes, rollNo, fingerPrint, fingerPrint1,fingerPrint2;
