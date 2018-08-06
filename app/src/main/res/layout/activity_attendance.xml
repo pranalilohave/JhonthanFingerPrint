@@ -41,17 +41,6 @@
         app:srcCompat="@drawable/ic_menu_black_24dp" />
 
 
-    <android.support.v4.widget.ContentLoadingProgressBar
-        android:id="@+id/progress_bar_attendence"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_gravity="center_horizontal|center_vertical"
-        android:layout_marginTop="188dp"
-        android:visibility="invisible" />
-
     <ListView
         android:id="@+id/listView"
         android:visibility="gone"
@@ -203,6 +192,19 @@
         android:id="@+id/fragment_upload"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:isScrollContainer="true"
         />
+
+    <android.support.v4.widget.ContentLoadingProgressBar
+        android:id="@+id/progress_bar_attendence"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal|center_vertical"
+        android:layout_marginTop="188dp"
+        android:visibility="invisible" />
+
 
 </RelativeLayout>

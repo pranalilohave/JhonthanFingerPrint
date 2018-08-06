@@ -47,11 +47,13 @@ import java.util.UUID;
 
 import fr.ganfra.materialspinner.MaterialSpinner;
 import in.co.ashclan.database.DataBaseHelper;
+import in.co.ashclan.model.CalendarPOJO;
 import in.co.ashclan.model.ContributionsPOJO;
 import in.co.ashclan.model.EventAttendancePOJO;
 import in.co.ashclan.model.EventPOJO;
 import in.co.ashclan.model.FamilyPOJO;
 import in.co.ashclan.model.GroupsPOJO;
+import in.co.ashclan.model.LocationPOJO;
 import in.co.ashclan.model.MemberPOJO;
 import in.co.ashclan.model.PledgesPOJO;
 import in.co.ashclan.utils.Constants;
@@ -658,16 +660,14 @@ public class LoginActivity extends AppCompatActivity implements OnItemSelectedLi
         @Override
         protected String doInBackground(String... params) {
             try {
+
                 HashMap<String, String> postData = new HashMap<>();
                 postData.put("email", email);
                 postData.put("password", password);
-                String url = "https://bwc.pentecostchurch.org/api/login";
-                String urls = "http://52.172.221.235:8983/api/login";
                 String json_output = performPostCall(URL, postData);
-
                 return json_output;
-            }catch (Exception e){
 
+            }catch (Exception e){
             }
             return "";
         }
@@ -676,7 +676,8 @@ public class LoginActivity extends AppCompatActivity implements OnItemSelectedLi
         protected void onPostExecute(String output) {
             String token=null;
             try {
-                Log.e("--->", output);
+
+                Log.e("--->1", output);
                 JSONParser parser = new JSONParser();
 
                 JSONObject object = (JSONObject) parser.parse(output.toString());
@@ -808,7 +809,6 @@ public class LoginActivity extends AppCompatActivity implements OnItemSelectedLi
             }
         }
     }
-
     //GET ALL MEMBERS
     public class GetAllMemberTask extends AsyncTask<String, String, String> {
         private Context mContext;
@@ -1451,6 +1451,7 @@ public class LoginActivity extends AppCompatActivity implements OnItemSelectedLi
                 }
 
                 Log.i("--->Details-->",dataBaseHelper.getAllMembers().toString());
+
                 dataBaseHelper.deleteAllEvents();
                 JSONArray jsonEventArray = (JSONArray)jsonObject.get("eventDetails");
 
@@ -1572,6 +1573,8 @@ public class LoginActivity extends AppCompatActivity implements OnItemSelectedLi
                     eventAttendancePOJO.setDate(isNull(object,"date"));
                     eventAttendancePOJO.setCreatedAt(isNull(object,"created_at"));
                     eventAttendancePOJO.setUpdatedAt(isNull(object,"updated_at"));
+                    eventAttendancePOJO.setAttenDate(isNull(object,"atten_date"));
+                    eventAttendancePOJO.setAttenTime(isNull(object,"atten_time"));
 
                     Log.e("D--->",eventAttendancePOJO.toString());
                     //   eventList.add(event);
@@ -1615,6 +1618,45 @@ public class LoginActivity extends AppCompatActivity implements OnItemSelectedLi
                     //   eventList.add(event);
                     dataBaseHelper.insertPledgeData(pledges);
                 }
+
+                dataBaseHelper.deleteAllEventCalendar();
+                JSONArray jsonCalendarArray = (JSONArray)jsonObject.get("calendars");
+                for(int i=0;i<jsonCalendarArray.size();i++){
+
+                    CalendarPOJO calendar = new CalendarPOJO();
+                    JSONObject object = (JSONObject)jsonCalendarArray.get(i);
+
+                    calendar.setCalendar_id(String.valueOf(object.get("id")));
+                    calendar.setBranch_id(isNull(object,"branch_id"));
+                    calendar.setUser_id(isNull(object,"user_id"));
+                    calendar.setName(isNull(object,"name"));
+                    calendar.setColor(isNull(object,"color"));
+
+                    Log.e("E--->",calendar.toString());
+                    //   eventList.add(event);
+                    dataBaseHelper.insertEventCalendarData(calendar);
+                }
+
+               //Locaitions
+                dataBaseHelper.deleteAllEventLocations();
+
+                JSONArray jsonsLocationArray = (JSONArray)jsonObject.get("locations");
+                for(int i=0;i<jsonsLocationArray.size();i++){
+
+                    LocationPOJO location = new LocationPOJO();
+                    JSONObject object = (JSONObject)jsonsLocationArray.get(i);
+
+                    location.setLocatio_id(String.valueOf(object.get("id")));
+                    location.setUser_id(isNull(object,"user_id"));
+                    location.setName(isNull(object,"name"));
+
+
+                    Log.e("E--->",location.toString());
+                    //   eventList.add(event);
+                    dataBaseHelper.insertEventLocationData(location);
+                }
+
+
                 //Groups
                 GetAllGroupsTask groupsTask = new GetAllGroupsTask(mContext,PreferenceUtils.getUrlGetGroup(mContext),token);
                 groupsTask.execute();

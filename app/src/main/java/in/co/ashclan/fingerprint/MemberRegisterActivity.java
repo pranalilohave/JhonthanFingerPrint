@@ -56,6 +56,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.squareup.picasso.Picasso;
 
 import net.gotev.uploadservice.MultipartUploadRequest;
 import net.gotev.uploadservice.ServerResponse;
@@ -101,7 +102,7 @@ import in.co.ashclan.utils.WebServiceCall;
 import static in.co.ashclan.utils.WebServiceCall.performPostCall;
 import static java.security.AccessController.getContext;
 
-public class MemberRegisterActivity extends AppCompatActivity implements View.OnClickListener{
+public class MemberRegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
     private EditText editTextFirstName,editTextMiddleName,editTextLastname,editTextEmail,editTextHomePhone,
             editTextMobilePhone,editTextWorkPhone,editTextDOB,editTextAddress,editTextDescription;
@@ -209,12 +210,11 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
                     isEnroll2=true;
                 }
 
-
                 //"http://52.172.221.235:8983/uploads/"
                 if (null!=memberDetails.getPhotoURL()&&!memberDetails.getPhotoURL().equals("")) {
                     //editImage=true;
                     String imgURL =  PreferenceUtils.getUrlUploadImage(MemberRegisterActivity.this)+ memberDetails.getPhotoURL();
-                    imageLoader.displayImage(imgURL, imageViewFingerPrint2, new ImageLoadingListener() {
+                   /* imageLoader.displayImage(imgURL, imageViewFingerPrint2, new ImageLoadingListener() {
                         @Override
                         public void onLoadingStarted(String imageUri, View view) {
                             //    imageLoader.displayImage("http://52.172.221.235:8983/uploads/" + defaultIcon, imageView);
@@ -236,8 +236,12 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
                         public void onLoadingCancelled(String imageUri, View view) {
 
                         }
-                    });
+                    });*/
 
+                  /* Glide.with(mContext)
+                            .load(memberDetails.getPhotoURL())
+                            .into(imageViewFingerPrint2);*/
+                    Picasso.get().load(imgURL).into(imageViewFingerPrint2);
                 }
 
                 buttonOffline.setVisibility(View.VISIBLE);
@@ -779,8 +783,6 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
                 break;
 
         }
-
-
         return cancel;
     }
     private boolean isEmailValid(String email) {
@@ -825,6 +827,7 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
 
                 memberDetails.setFingerPrint(fpStrByte1);
             }
+            
             if (isEnroll2) {
                 fpByte2 = new byte[model2.length];
                 System.arraycopy(model2, 0, fpByte2, 0, model2.length);
@@ -1056,6 +1059,7 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
         //****************************
         //Bitmap bmp;
         byte[] byteArray = data.getByteArrayExtra("bytesArray");
+        String imagePath = data.getStringExtra("ImagePath");
         //bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
         //imageView.setImageBitmap(bmp);
         ///String str = data.getStringExtra("ImagePath");
@@ -1086,8 +1090,12 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
 
         Toast.makeText(MemberRegisterActivity.this,destination.getAbsolutePath(),Toast.LENGTH_LONG).show();
         imageViewFingerPrint2.setImageBitmap(bitmapImage);
+       // Picasso.get().load(imgURL).fit().into(imageViewFingerPrint2);
         //     memberDetails.setPhotoLocalPath(BitMapToString(bitmapImage));
         setImagePath(destination.getAbsolutePath());
+        //Picasso.get().load(getImagePath()).into(imageViewFingerPrint2);
+
+        /**************************************************************************************/
     }
     private void onCaptureImageResult(Intent data) {
         bitmapImage = (Bitmap) data.getExtras().get("data");
@@ -1113,8 +1121,8 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
         imageViewFingerPrint2.setImageBitmap(bitmapImage);
         //     memberDetails.setPhotoLocalPath(BitMapToString(bitmapImage));
         setImagePath(destination.getAbsolutePath());
+        Picasso.get().load(getImagePath()).into(imageViewFingerPrint2);
     }
-
     @SuppressWarnings("deprecation")
     private void onSelectFromGalleryResult(Intent data) {
 
@@ -1149,6 +1157,7 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
         imageViewFingerPrint2.setImageBitmap(bitmapImage);
         //   memberDetails.setPhotoLocalPath(BitMapToString(bitmapImage));
         setImagePath(path);
+        Picasso.get().load(path).into(imageViewFingerPrint2);
     }
     public void setImagePath(String path){
         editImage=true;
@@ -1166,7 +1175,7 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
     }
     public String BitMapToString(Bitmap bitmap) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        bitmap.compress(Bitmap.CompressFormat.PNG, 90, baos);
         byte[] b = baos.toByteArray();
         String temp = Base64.encodeToString(b, Base64.DEFAULT);
         return temp;
@@ -1461,7 +1470,7 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
             this.mContext = mContext;
             this.email=email;
             this.password=password;
-            this.URL=URL;
+            this.URL = URL;
             this.memberPOJO = memberPOJO;
         }
 
@@ -1477,13 +1486,20 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
 
         @Override
         protected String doInBackground(String... params) {
+
             HashMap<String, String> postData = new HashMap<>();
+            postData.put("email", email);
+            postData.put("password", password);
+            String json_output = performPostCall(URL, postData);
+            return json_output;
+
+         /*   HashMap<String, String> postData = new HashMap<>();
             postData.put("email", email);
             postData.put("password", password);
             String url = "https://bwc.pentecostchurch.org/api/login";
             String urls = "http://52.172.221.235:8983/api/login";
             String json_output = performPostCall(url, postData);
-            return json_output;
+            return json_output;*/
         }
 
         @Override

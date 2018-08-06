@@ -1,23 +1,42 @@
 package in.co.ashclan.model;
 
 public class AttenderPOJO {
-    String id,name,phone,gender,age,address,f_name,l_name;
+    String id,name,phone,gender,age,address,f_name,l_name,atten_date,atten_time;
     String photoURL,photoLocalPath;
-
-
 
     public AttenderPOJO() {
     }
 
-    public AttenderPOJO(String id, String name, String phone, String gender, String age, String address) {
+
+    public AttenderPOJO(String id, String name, String phone, String gender, String age, String address, String f_name, String l_name, String atten_date, String atten_time, String photoURL) {
         this.id = id;
         this.name = name;
         this.phone = phone;
         this.gender = gender;
         this.age = age;
         this.address = address;
+        this.f_name = f_name;
+        this.l_name = l_name;
+        this.atten_date = atten_date;
+        this.atten_time = atten_time;
+        this.photoURL = photoURL;
     }
 
+    public String getAtten_date() {
+        return atten_date;
+    }
+
+    public void setAtten_date(String atten_date) {
+        this.atten_date = atten_date;
+    }
+
+    public String getAtten_time() {
+        return atten_time;
+    }
+
+    public void setAtten_time(String atten_time) {
+        this.atten_time = atten_time;
+    }
 
     public String getPhotoURL() {
         return photoURL;

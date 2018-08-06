@@ -10,6 +10,39 @@ public class MemberPOJO implements Serializable{
     String photoURL,photoLocalPath;
     String serverType;
     String createAt,updateAt;
+    String attenTime;
+
+    @Override
+    public String toString() {
+        return "MemberPOJO{" +
+                "id='" + id + '\'' +
+                ", bytes='" + bytes + '\'' +
+                ", userId='" + userId + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", middleName='" + middleName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", gender='" + gender + '\'' +
+                ", status='" + status + '\'' +
+                ", maritalStatus='" + maritalStatus + '\'' +
+                ", dob='" + dob + '\'' +
+                ", homePhone='" + homePhone + '\'' +
+                ", workPhone='" + workPhone + '\'' +
+                ", mobilePhone='" + mobilePhone + '\'' +
+                ", address='" + address + '\'' +
+                ", email='" + email + '\'' +
+                ", notes='" + notes + '\'' +
+                ", rollNo='" + rollNo + '\'' +
+                ", fingerPrint='" + fingerPrint + '\'' +
+                ", fingerPrint1='" + fingerPrint1 + '\'' +
+                ", fingerPrint2='" + fingerPrint2 + '\'' +
+                ", photoURL='" + photoURL + '\'' +
+                ", photoLocalPath='" + photoLocalPath + '\'' +
+                ", serverType='" + serverType + '\'' +
+                ", createAt='" + createAt + '\'' +
+                ", updateAt='" + updateAt + '\'' +
+                ", attenTime='" + attenTime + '\'' +
+                '}';
+    }
 
     public MemberPOJO() {
         this.id = "";
@@ -35,6 +68,25 @@ public class MemberPOJO implements Serializable{
         this.photoLocalPath = "";
         this.createAt = "";
         this.updateAt = "";
+        this.attenTime = "";
+    }
+
+    public MemberPOJO(String firstName, String lastName, String gender, String dob, String mobilePhone, String address, String rollNo) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.gender = gender;
+        this.dob = dob;
+        this.mobilePhone = mobilePhone;
+        this.address = address;
+        this.rollNo = rollNo;
+    }
+
+    public String getAttenTime() {
+        return attenTime;
+    }
+
+    public void setAttenTime(String attenTime) {
+        this.attenTime = attenTime;
     }
 
     public String getBytes() {
@@ -237,34 +289,4 @@ public class MemberPOJO implements Serializable{
         this.fingerPrint2 = fingerPrint2;
     }
 
-    @Override
-    public String toString() {
-        return "MemberPOJO{" +
-                "id='" + id + '\'' +
-                ", bytes='" + bytes + '\'' +
-                ", userId='" + userId + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", middleName='" + middleName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", gender='" + gender + '\'' +
-                ", status='" + status + '\'' +
-                ", maritalStatus='" + maritalStatus + '\'' +
-                ", dob='" + dob + '\'' +
-                ", homePhone='" + homePhone + '\'' +
-                ", workPhone='" + workPhone + '\'' +
-                ", mobilePhone='" + mobilePhone + '\'' +
-                ", address='" + address + '\'' +
-                ", email='" + email + '\'' +
-                ", notes='" + notes + '\'' +
-                ", rollNo='" + rollNo + '\'' +
-                ", fingerPrint='" + fingerPrint + '\'' +
-                ", fingerPrint1='" + fingerPrint1 + '\'' +
-                ", fingerPrint2='" + fingerPrint2 + '\'' +
-                ", photoURL='" + photoURL + '\'' +
-                ", photoLocalPath='" + photoLocalPath + '\'' +
-                ", serverType='" + serverType + '\'' +
-                ", createAt='" + createAt + '\'' +
-                ", updateAt='" + updateAt + '\'' +
-                '}';
-    }
 }

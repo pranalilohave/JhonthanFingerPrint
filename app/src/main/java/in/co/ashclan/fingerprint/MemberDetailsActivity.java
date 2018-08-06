@@ -156,7 +156,6 @@ public class MemberDetailsActivity extends AppCompatActivity
 
         bottomNavigationBar.setTabSelectedListener(this);
     }
-
     public void inits(){
 
         linearLayout = (LinearLayout)findViewById(R.id.layout_details);
@@ -1051,8 +1050,6 @@ public class MemberDetailsActivity extends AppCompatActivity
 
             String member_id = memberDetails.getId().toString();
             String event_id = event.getId().toString();
-
-
 
             DetailsList.addAll(dataBaseHelper.getAllAttendance(member_id));
             EventAttendanceAdapter eventAttendanceAdapter = new EventAttendanceAdapter(MemberDetailsActivity.this,DetailsList);

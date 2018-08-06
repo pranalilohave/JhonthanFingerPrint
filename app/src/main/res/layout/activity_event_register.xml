@@ -283,7 +283,7 @@
 
         <android.support.design.widget.TextInputEditText
             android:id="@+id/edt_cost"
-            android:inputType="textVisiblePassword"
+            android:inputType="number"
             android:imeOptions="actionNext"
             android:hint="Cost"
             android:layout_width="match_parent"
@@ -298,7 +298,7 @@
 
         <android.support.design.widget.TextInputEditText
             android:id="@+id/edt_latitude"
-            android:inputType="textVisiblePassword"
+            android:inputType="number"
             android:imeOptions="actionNext"
             android:hint="Latitude"
             android:layout_width="match_parent"
@@ -313,7 +313,7 @@
 
         <android.support.design.widget.TextInputEditText
             android:id="@+id/edt_longitude"
-            android:inputType="textVisiblePassword"
+            android:inputType="number"
             android:imeOptions="actionNext"
             android:hint="longitude"
             android:layout_width="match_parent"

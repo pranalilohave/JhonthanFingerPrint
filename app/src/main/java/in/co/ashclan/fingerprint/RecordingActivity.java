@@ -14,6 +14,8 @@ public class RecordingActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Recording");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+
+
     }
 
     @Override

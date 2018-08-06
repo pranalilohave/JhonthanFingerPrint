@@ -52,6 +52,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.UUID;
@@ -125,11 +126,11 @@ public class HomeActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*Intent intent = new Intent(HomeActivity.this, AttendanceActivity.class);
+               /* Intent intent = new Intent(HomeActivity.this, AttendanceActivity.class);
                 intent.putExtra("type", "register");
                 startActivity(intent);*/
                 Intent intent = new Intent(HomeActivity.this, EventRegister.class);
-               // intent.putExtra("type", "register");
+                intent.putExtra("type", "register");
                 startActivity(intent);
             }
         });
@@ -386,7 +387,6 @@ public class HomeActivity extends AppCompatActivity
     public void onTabSelected(int position) {
         lastSelectedPosition = position;
         //setMe
-
         setFragment(position);
 
     }
@@ -1014,8 +1014,6 @@ public class HomeActivity extends AppCompatActivity
             HashMap<String, String> postData = new HashMap<>();
             postData.put("email", email);
             postData.put("password", password);
-            String url = "https://bwc.pentecostchurch.org/api/login";
-            String urls = "http://52.172.221.235:8983/api/login";
             String json_output = performPostCall(URL, postData);
             return json_output;
         }

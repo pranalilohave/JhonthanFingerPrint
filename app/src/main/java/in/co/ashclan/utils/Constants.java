@@ -39,11 +39,12 @@ public class  Constants {
                 PreferenceUtils.setUrlGetGroup(context,"http://52.172.221.235:8983/api/get_all_member_groups");
                 PreferenceUtils.setUrlGetAllMemberDetails(context,"http://52.172.221.235:8983/api/get_all_member_data");
 
-
-
-
                 PreferenceUtils.setUrlUploadImage(context,"http://52.172.221.235:8983/uploads/");
                 PreferenceUtils.setUrlUpdateMember(context,"http://52.172.221.235:8983/api/update_member");
+
+                PreferenceUtils.setUrlAddCalendar(context,"http://52.172.221.235:8983/api/add_calendars");
+                PreferenceUtils.setUrlAddLocation(context,"http://52.172.221.235:8983/api/add_locations");
+                PreferenceUtils.setUrlEventRegistration(context,"http://52.172.221.235:8983/api/create_event");
 
                 break;
 
@@ -63,8 +64,14 @@ public class  Constants {
                 PreferenceUtils.setUrlGetAllMemberDetails(context,"https://bwc.pentecostchurch.org/api/get_all_member_data");
 
                 PreferenceUtils.setUrlGetFamily(context,"https://bwc.pentecostchurch.org/api/get_all_member_family");
-                PreferenceUtils.setUrlGetGroup(context,"https://bwc.pentecostchurch.org/api/get_all_member_groups");PreferenceUtils.setUrlUploadImage(context,"https://bwc.pentecostchurch.org/uploads/");
+                PreferenceUtils.setUrlGetGroup(context,"https://bwc.pentecostchurch.org/api/get_all_member_groups");
+                PreferenceUtils.setUrlUploadImage(context,"https://bwc.pentecostchurch.org/uploads/");
                 PreferenceUtils.setUrlUpdateMember(context,"https://bwc.pentecostchurch.org/api/update_member");
+                PreferenceUtils.setUrlUpdateMember(context,"https://bwc.pentecostchurch.org/api/update_member");
+
+                PreferenceUtils.setUrlAddCalendar(context,"https://bwc.pentecostchurch.org/api/add_calendars");
+                PreferenceUtils.setUrlAddLocation(context,"https://bwc.pentecostchurch.org/api/add_locations");
+                PreferenceUtils.setUrlEventRegistration(context,"https://bwc.pentecostchurch.org/api/create_event");
 
                 break;
 
@@ -84,6 +91,11 @@ public class  Constants {
                 PreferenceUtils.setUrlUploadImage(context,"http://52.172.221.235:8983/uploads/");
                 PreferenceUtils.setUrlUpdateMember(context,"http://52.172.221.235:8983/api/update_member");
                 PreferenceUtils.setUrlGetAllMemberDetails(context,"http://52.172.221.235:8983/api/get_all_member_data");
+
+                PreferenceUtils.setUrlAddCalendar(context,"http://52.172.221.235:8983/api/add_calendars");
+                PreferenceUtils.setUrlAddLocation(context,"http://52.172.221.235:8983/api/add_locations");
+                PreferenceUtils.setUrlEventRegistration(context,"http://52.172.221.235:8983/api/create_event");
+
 
                 break;
         }

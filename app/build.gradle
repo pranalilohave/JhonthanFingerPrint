@@ -71,6 +71,5 @@ dependencies {
     implementation 'com.github.takusemba:cropme:1.0.6'
     implementation 'com.github.PhilJay:MPAndroidChart:v2.2.4'
     implementation 'io.github.yavski:fab-speed-dial:1.0.6'
-
-
+    implementation 'com.squareup.picasso:picasso:2.71828'
 }

@@ -48,6 +48,7 @@ public class AttenderActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attender);
+
         mContext = AttenderActivity.this;
         dataBaseHelper = new DataBaseHelper(mContext);
         fpListView = (ListView) findViewById(R.id.attender_listView);
@@ -238,6 +239,8 @@ public class AttenderActivity extends AppCompatActivity {
                     eventAttendance.setDate(isNull(object,"date"));
                     eventAttendance.setCreatedAt(isNull(object,"created_at"));
                     eventAttendance.setUpdatedAt(isNull(object,"updated_at"));
+                    eventAttendance.setAttenDate(isNull(object,"atten_date"));
+                    eventAttendance.setAttenTime(isNull(object,"atten_time"));
                     dataBaseHelper.insertEventAttendaceData(eventAttendance);
                     progressBar.setVisibility(View.GONE);
                 }

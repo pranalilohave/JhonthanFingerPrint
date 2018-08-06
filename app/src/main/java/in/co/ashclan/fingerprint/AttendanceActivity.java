@@ -47,10 +47,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fgtit.fpcore.FPMatch;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+
+import net.gotev.uploadservice.MultipartUploadRequest;
+import net.gotev.uploadservice.ServerResponse;
+import net.gotev.uploadservice.UploadInfo;
+import net.gotev.uploadservice.UploadNotificationConfig;
+import net.gotev.uploadservice.UploadServiceBroadcastReceiver;
+import net.gotev.uploadservice.UploadStatusDelegate;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -64,6 +73,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.UUID;
 
 import android_serialport_api.AsyncFingerprint;
 import android_serialport_api.AsyncFingerprintA5;
@@ -77,6 +87,7 @@ import in.co.ashclan.ashclanrecorder.model.AudioSource;
 import in.co.ashclan.database.DataBaseHelper;
 import in.co.ashclan.database.test.Attendance;
 import in.co.ashclan.fragment.AttendersUploadFragment;
+import in.co.ashclan.model.AttenderPOJO;
 import in.co.ashclan.model.EventAttendancePOJO;
 import in.co.ashclan.model.MemberPOJO;
 import in.co.ashclan.utils.ActivityList;
@@ -91,7 +102,9 @@ import static in.co.ashclan.utils.WebServiceCall.performPostCall;
 public class AttendanceActivity extends AppCompatActivity{
 
     private static final int REQUEST_RECORD_AUDIO = 0;
-    private static final String AUDIO_FILE_PATH = Environment.getExternalStorageDirectory().getPath() + "/recorded_audio.wav";
+    String fileName ;
+  // private static final String  AUDIO_FILE_PATH = Environment.getExternalStorageDirectory().getPath() + "/recorded_audio.wav";
+   private String  AUDIO_FILE_PATH ;
 
     private TextView fpTextView;
     private ListView fpListView;
@@ -161,10 +174,12 @@ public class AttendanceActivity extends AppCompatActivity{
     ImageView ImgAttendant;
     ImageView imgclose;
     io.github.yavski.fabspeeddial.FabSpeedDial fabSpeedDial;
-    AttendersUploadFragment fragment;
+    AttendersUploadFragment attendersUploadFragment;
 
     FragmentManager fragmentManager;
     FragmentTransaction fragmentTransaction;
+    String formattedDate;
+    String eventId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -183,7 +198,7 @@ public class AttendanceActivity extends AppCompatActivity{
         System.out.println("Current time => " + c);
 
         SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
-        String formattedDate = df.format(c);
+        formattedDate = df.format(c);
 
         mContext = AttendanceActivity.this;
         dataBaseHelper = new DataBaseHelper(mContext);
@@ -208,6 +223,7 @@ public class AttendanceActivity extends AppCompatActivity{
         txt_date.setText(formattedDate);
         txt_service.setText(eventname);
 
+        eventId=getIntent().getStringExtra("eventId");
         fab = (FloatingActionButton) findViewById(R.id.fab_dialog) ;
         fabSpeedDial = (io.github.yavski.fabspeeddial.FabSpeedDial)findViewById(R.id.fabspeed);
 
@@ -220,9 +236,18 @@ public class AttendanceActivity extends AppCompatActivity{
                     case R.id.action_attender :
                         //                        startActivity(new Intent(mContext,QRCodeReaderActivity.class));
                         //showAlertDialog();
+                        // AttenderFragment(personList,eventId);
+                        isFragment = true;
 
-                        String eventId=getIntent().getStringExtra("eventId");
-                        AttenderFragment(personList,eventId);
+                        //attendersUploadFragment = new AttendersUploadFragment(AttendanceActivity.this,eventId,formattedDate.toString());
+                        fragmentManager = getSupportFragmentManager();
+                        fragmentTransaction = fragmentManager.beginTransaction();
+                        attendersUploadFragment = new AttendersUploadFragment(AttendanceActivity.this,eventId,formattedDate.toString());
+                        fragmentTransaction.add(R.id.fragment_upload, attendersUploadFragment);
+                       // fragmentTransaction.attach(fragment);
+                        fragmentTransaction.addToBackStack(null);
+                        relativeLayout1.setVisibility(View.VISIBLE);
+                        fragmentTransaction.commit();
 
                          /* Intent i = new Intent(AttendanceActivity.this,AttenderActivity.class);
                         i.putExtra("person",personList);
@@ -240,18 +265,13 @@ public class AttendanceActivity extends AppCompatActivity{
                         workExit();
                         break;
                     case R.id.action_home:
-                        if(personList.size() != 0)
-                        {
-                            Toast.makeText(mContext, "Please Upload All Attendance Data", Toast.LENGTH_SHORT).show();
-                        }else {
-                            //Toast.makeText(mContext, "Cancel...", Toast.LENGTH_SHORT).show();
+                          /*  //Toast.makeText(mContext, "Cancel...", Toast.LENGTH_SHORT).show();
                             if(SerialPortManager.getInstance().isOpen()){
                                 bIsCancel=true;
                                 SerialPortManager.getInstance().closeSerialPort();
                             }
-                            finish();
-                            //workExit();
-                        }
+                            finish();*/
+                            workExit();
                         //startActivity(new Intent(mContext,HomeActivity.class));
                         break;
                 }
@@ -318,10 +338,12 @@ public class AttendanceActivity extends AppCompatActivity{
                    // FPDialog(1);
             }
         });
-        memberAdapter = new MemberAdapter(mContext,personList,"ic_person.png");
+        /***********************now*************************/
+      /*  memberAdapter = new MemberAdapter(mContext,personList,"ic_person.png");
         memberAdapter.notifyDataSetChanged();
         // dataBaseHelper=new DataBaseHelper(mContext);
-        fpListView.setAdapter(memberAdapter);
+        fpListView.setAdapter(memberAdapter);*/
+        /****************************************************/
 
        /* fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -335,9 +357,9 @@ public class AttendanceActivity extends AppCompatActivity{
         isFragment = true;
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
-        fragment = new AttendersUploadFragment(AttendanceActivity.this,eventId,personList);
-        fragmentTransaction.add(R.id.fragment_upload, fragment, "HELLO");
-        fragmentTransaction.attach(fragment);
+        attendersUploadFragment = new AttendersUploadFragment(AttendanceActivity.this,eventId);
+        fragmentTransaction.add(R.id.fragment_upload, attendersUploadFragment, "HELLO");
+     //   fragmentTransaction.attach(attendersUploadFragment);
         relativeLayout1.setVisibility(View.VISIBLE);
         //fragmentTransaction.attach(fragment);
         fragmentTransaction.commit();
@@ -359,14 +381,15 @@ public class AttendanceActivity extends AppCompatActivity{
     private String removeLastChar(String str) {
         return str.substring(0, str.length() - 1);
     }
+
     private void workExit(){
         if(SerialPortManager.getInstance().isOpen()){
             bIsCancel=true;
             SerialPortManager.getInstance().closeSerialPort();
-            finish();
         }
-
+        finish();
     }
+
     public void FPDialog(int i){
         iFinger = i;
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
@@ -394,6 +417,7 @@ public class AttendanceActivity extends AppCompatActivity{
         fpDialog.show();
         FPProcess();
     }
+
     public void FPProcess(){
         count=1;
        fpStatusText.setText("Place your finger on the Sensor util your name appears");
@@ -409,6 +433,7 @@ public class AttendanceActivity extends AppCompatActivity{
             registerFingerprint.FP_GetImage();
         }
     }
+
     private void FPInitA5() {
 
         registerFingerprintA5.setOnGetImageListener(new AsyncFingerprintA5.OnGetImageListener() {
@@ -500,13 +525,13 @@ public class AttendanceActivity extends AppCompatActivity{
             @Override
             public void onUpCharSuccess(byte[] model) {
 
-
                 for (MemberPOJO member:membersList){
                     if(!member.getFingerPrint().equals("")) {
                         byte[] byt = Base64.decode(member.getFingerPrint(), Base64.DEFAULT);
                         Log.e("--->MATCH1B", String.valueOf(FPMatch.getInstance().MatchTemplate(model, byt)));
                         if (FPMatch.getInstance().MatchTemplate(model, byt) > 60) {
                             //fpTextView.setText(getString(R.string.txt_fpmatching) + " " + member.getFirstName());
+                            member.setAttenTime(txt_time.getText().toString());
                             AddPerson(member);
                             isMatch=true;
                             break;
@@ -515,8 +540,9 @@ public class AttendanceActivity extends AppCompatActivity{
                     if(!member.getFingerPrint1().equals("")){
                         byte[] byt2=Base64.decode(member.getFingerPrint1(),Base64.DEFAULT);
                         Log.e("--->MATCH1B", String.valueOf(FPMatch.getInstance().MatchTemplate(model,byt2)));
-                        if (FPMatch.getInstance().MatchTemplate(model,byt2)>60){
+                        if (FPMatch.getInstance().MatchTemplate(model,byt2)>40){
                             //fpTextView.setText(getString(R.string.txt_fpmatching)+" "+member.getFirstName());
+                            member.setAttenTime(txt_time.getText().toString());
                             AddPerson(member);
                             isMatch=true;
                             break;
@@ -543,6 +569,7 @@ public class AttendanceActivity extends AppCompatActivity{
             }
         });
     }
+
     private void FPInitFP07() {
         registerFingerprint.setOnGetImageListener(new AsyncFingerprint.OnGetImageListener() {
             @Override
@@ -650,8 +677,9 @@ public class AttendanceActivity extends AppCompatActivity{
                     if(!member.getFingerPrint1().equals("")){
                         byte[] byt2=Base64.decode(member.getFingerPrint1(),Base64.DEFAULT);
                         Log.e("--->MATCH1B", String.valueOf(FPMatch.getInstance().MatchTemplate(model,byt2)));
-                        if (FPMatch.getInstance().MatchTemplate(model,byt2)>60){
+                        if (FPMatch.getInstance().MatchTemplate(model,byt2)>40){
                    //         fpTextView.setText(getString(R.string.txt_fpmatching)+" "+member.getFirstName());
+                            member.setAttenTime(txt_time.getText().toString());
                             AddPerson(member);
                             m=member;
                             isMatch=true;
@@ -669,7 +697,6 @@ public class AttendanceActivity extends AppCompatActivity{
                 isMatch=false;
                 fpStatusText.setText(getString(R.string.txt_fpenrolok));
 
-
                 showMemberDialog(m);
             }
 
@@ -682,6 +709,7 @@ public class AttendanceActivity extends AppCompatActivity{
             }
         });
     }
+
     //**********************************
     private void FPProcess1(){
         if(!bfpWork){
@@ -704,6 +732,7 @@ public class AttendanceActivity extends AppCompatActivity{
             bfpWork=true;
         }
     }
+
     private void FPmInitFP07(){
         /*scan the finger and get finger print image*/
         registerFingerprint.setOnGetImageListener(new AsyncFingerprint.OnGetImageListener() {
@@ -767,10 +796,16 @@ public class AttendanceActivity extends AppCompatActivity{
                 MemberPOJO m = new MemberPOJO();
                 for (MemberPOJO member:membersList){
                     if(!member.getFingerPrint1().equals("")){
+
+
                         byte[] byt2=Base64.decode(member.getFingerPrint1(),Base64.DEFAULT);
+
+
+
                         Log.e("--->MATCH1B", String.valueOf(FPMatch.getInstance().MatchTemplate(model,byt2)));
-                        if (FPMatch.getInstance().MatchTemplate(model,byt2)>60){
+                        if (FPMatch.getInstance().MatchTemplate(model,byt2)>40){
                             //         fpTextView.setText(getString(R.string.txt_fpmatching)+" "+member.getFirstName());
+                            member.setAttenTime(txt_time.getText().toString());
                             AddPerson(member);
                             m=member;
                             isMatch=true;
@@ -782,8 +817,9 @@ public class AttendanceActivity extends AppCompatActivity{
                     if(!member.getFingerPrint().equals("")){
                         byte[] byt2=Base64.decode(member.getFingerPrint(),Base64.DEFAULT);
                         Log.e("--->MATCH1B", String.valueOf(FPMatch.getInstance().MatchTemplate(model,byt2)));
-                        if (FPMatch.getInstance().MatchTemplate(model,byt2)>60){
+                        if (FPMatch.getInstance().MatchTemplate(model,byt2)>40){
                             //         fpTextView.setText(getString(R.string.txt_fpmatching)+" "+member.getFirstName());
+                            member.setAttenTime(txt_time.getText().toString());
                             AddPerson(member);
                             m=member;
                             isMatch=true;
@@ -816,6 +852,7 @@ public class AttendanceActivity extends AppCompatActivity{
         });
 
     }
+
     private void FPmInitA5(){
         /*scan the finger and get finger print image*/
         registerFingerprintA5.setOnGetImageListener(new AsyncFingerprintA5.OnGetImageListener() {
@@ -882,8 +919,9 @@ public class AttendanceActivity extends AppCompatActivity{
                     if(!member.getFingerPrint1().equals("")){
                         byte[] byt2=Base64.decode(member.getFingerPrint1(),Base64.DEFAULT);
                         Log.e("--->MATCH1B", String.valueOf(FPMatch.getInstance().MatchTemplate(model,byt2)));
-                        if (FPMatch.getInstance().MatchTemplate(model,byt2)>60){
+                        if (FPMatch.getInstance().MatchTemplate(model,byt2)>40){
                             //         fpTextView.setText(getString(R.string.txt_fpmatching)+" "+member.getFirstName());
+                            member.setAttenTime(txt_time.getText().toString());
                             AddPerson(member);
                             m=member;
                             isMatch=true;
@@ -895,8 +933,9 @@ public class AttendanceActivity extends AppCompatActivity{
                     if(!member.getFingerPrint().equals("")){
                         byte[] byt2=Base64.decode(member.getFingerPrint(),Base64.DEFAULT);
                         Log.e("--->MATCH1B", String.valueOf(FPMatch.getInstance().MatchTemplate(model,byt2)));
-                        if (FPMatch.getInstance().MatchTemplate(model,byt2)>60){
+                        if (FPMatch.getInstance().MatchTemplate(model,byt2)>40){
                             //         fpTextView.setText(getString(R.string.txt_fpmatching)+" "+member.getFirstName());
+                            member.setAttenTime(txt_time.getText().toString());
                             AddPerson(member);
                             m=member;
                             isMatch=true;
@@ -929,6 +968,7 @@ public class AttendanceActivity extends AppCompatActivity{
         });
 
     }
+
     //***********************************************************************************************************************
     public void TimerStart(){
         if(bIsCancel)
@@ -956,6 +996,7 @@ public class AttendanceActivity extends AppCompatActivity{
             startTimer.schedule(startTask, 1000, 1000);
         }
     }
+
     public void TimeStop(){
         if (startTimer!=null)
         {
@@ -965,6 +1006,7 @@ public class AttendanceActivity extends AppCompatActivity{
             startTask=null;
         }
     }
+
     public String getTime(){
         Date dt = new Date();
         int yyyy = dt.getYear()+1900;
@@ -979,6 +1021,7 @@ public class AttendanceActivity extends AppCompatActivity{
         String curTime = yyyy+"-"+xformat(MM)+"-"+xformat(dd)+" "+xformat(hours) + ":" + xformat(minutes) + ":" + xformat(seconds);
         return curTime;
     }
+
     public String xformat(int x){
         if(x<10){
             return "0"+x;
@@ -986,17 +1029,61 @@ public class AttendanceActivity extends AppCompatActivity{
             return ""+x;
         }
     }
+
     //************************************************************************
     private void AddPerson(MemberPOJO member){
-
-        if (personList.contains(member)){
+        if (dataBaseHelper.isTEMPMemberAvailable(member.getId(),eventId)){
             Toast.makeText(mContext,"Already Attended",Toast.LENGTH_LONG).show();
         }else{
-            personList.add(member);
-            memberAdapter.notifyDataSetChanged();
+            //personList.add(member);
+            //addintoTempAttendenceList(personList);
+            String eventId=getIntent().getStringExtra("eventId");
+
+          /*  if(!dataBaseHelper.isTEMPMemberAvailable(member.getId(),eventId))
+            {*/
+                EventAttendancePOJO attender = new EventAttendancePOJO();
+
+                attender.setEventId(eventId);
+                attender.setUserId(member.getUserId().toString());
+                attender.setMemberId(member.getId());
+                attender.setAnonymous("0");
+                attender.setDate(txt_date.getText().toString());
+                attender.setCreatedAt(member.getCreateAt());
+                attender.setUpdatedAt(member.getUpdateAt());
+                attender.setAttenDate(txt_date.getText().toString());
+                attender.setAttenTime(member.getAttenTime());
+
+                dataBaseHelper.insertTempEventAttendaceData(attender);
+
+            //}
+
+           // memberAdapter.notifyDataSetChanged();
         }
-        ScrollListViewToBottom();
+       // ScrollListViewToBottom();
     }
+
+    private void addintoTempAttendenceList(ArrayList<MemberPOJO> personList) {
+
+        EventAttendancePOJO attender = new EventAttendancePOJO();
+
+        String eventId=getIntent().getStringExtra("eventId");
+
+        for(int i = 0;i<personList.size();i++){
+
+            attender.setEventId(eventId);
+            attender.setUserId(personList.get(i).getUserId());
+            attender.setMemberId(personList.get(i).getId());
+            attender.setAnonymous("0");
+            attender.setDate(personList.get(i).getDob());
+            attender.setCreatedAt(personList.get(i).getCreateAt());
+            attender.setUpdatedAt(personList.get(i).getUpdateAt());
+            attender.setAttenDate(txt_date.getText().toString());
+            attender.setAttenTime(personList.get(i).getAttenTime());
+
+            dataBaseHelper.insertTempEventAttendaceData(attender);
+        }
+    }
+
     private void ScrollListViewToBottom() {
         fpListView.post(new Runnable() {
             @Override
@@ -1005,7 +1092,7 @@ public class AttendanceActivity extends AppCompatActivity{
                 fpListView.setSelection(memberAdapter.getCount() - 1);
             }
         });
-    }
+    }//scrolling
     //**********************************************************************************
     public class GetAccessTokenTask extends AsyncTask<String, String, String> {
 
@@ -1082,6 +1169,7 @@ public class AttendanceActivity extends AppCompatActivity{
 
     }
 }
+
     public class CheckInTask extends AsyncTask<String,String,String> {
         private Context mContext;
         private String URL;
@@ -1140,6 +1228,7 @@ public class AttendanceActivity extends AppCompatActivity{
 
                 for(int i=0;i<jsonAttendanceArray.size();i++){
                     EventAttendancePOJO eventAttendance=new EventAttendancePOJO();
+
                     JSONObject object = (JSONObject)jsonAttendanceArray.get(i);
                     eventAttendance.setEventId(isNull(object,"event_id"));
                     eventAttendance.setUserId(isNull(object,"user_id"));
@@ -1148,6 +1237,9 @@ public class AttendanceActivity extends AppCompatActivity{
                     eventAttendance.setDate(isNull(object,"date"));
                     eventAttendance.setCreatedAt(isNull(object,"created_at"));
                     eventAttendance.setUpdatedAt(isNull(object,"updated_at"));
+                    eventAttendance.setAttenDate(isNull(object,"atten_date"));
+                    eventAttendance.setAttenTime(isNull(object,"atten_time"));
+
                     dataBaseHelper.insertEventAttendaceData(eventAttendance);
                     progressBar.setVisibility(View.GONE);
                 }
@@ -1164,6 +1256,7 @@ public class AttendanceActivity extends AppCompatActivity{
             progressBar.setVisibility(View.GONE);
         }
     }
+
     //**************************************************************
     private void initRecord() {
         if (getSupportActionBar() != null) {
@@ -1175,18 +1268,27 @@ public class AttendanceActivity extends AppCompatActivity{
         Util.requestPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_RECORD_AUDIO) {
             if (resultCode == RESULT_OK) {
+
+
+
                 Toast.makeText(this, "Audio recorded successfully!", Toast.LENGTH_SHORT).show();
+
             } else if (resultCode == RESULT_CANCELED) {
                 Toast.makeText(this, "Audio was not recorded", Toast.LENGTH_SHORT).show();
             }
         }
     }
+
     public void recordAudio() {
+        fileName = System.currentTimeMillis() + ".wav";
+        AUDIO_FILE_PATH = Environment.getExternalStorageDirectory().getPath() + fileName;
+
         AndroidAudioRecorder.with(this)
                 // Required
                 .setFilePath(AUDIO_FILE_PATH)
@@ -1231,24 +1333,26 @@ public class AttendanceActivity extends AppCompatActivity{
 
         if(keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN){
 
+            String eventId=getIntent().getStringExtra("eventId");
+
             if(isFragment){
                 fragmentManager = getSupportFragmentManager();
                 fragmentTransaction = fragmentManager.beginTransaction();
-                fragment = new AttendersUploadFragment();
-                fragmentTransaction.detach(fragment);
+                attendersUploadFragment = new AttendersUploadFragment(AttendanceActivity.this,eventId);
+                fragmentTransaction.remove(attendersUploadFragment);
                 relativeLayout1.setVisibility(View.GONE);
                 fragmentTransaction.commit();
                 isFragment = false;
             }else
             {
-                if(personList.size()!= 0)
+              /*  if(personList.size()!= 0)
                 {
                     Toast.makeText(mContext, "Please Upload All Attendance Data", Toast.LENGTH_SHORT).show();
-                }else {
+                }else {*/
                     Toast.makeText(mContext, "Cancel...", Toast.LENGTH_SHORT).show();
                     //finish();
                     workExit();
-                }
+                //}
             }
             return true;
         } else if(keyCode == KeyEvent.KEYCODE_HOME){
@@ -1256,6 +1360,7 @@ public class AttendanceActivity extends AppCompatActivity{
         }
         return super.onKeyDown(keyCode, event);
     }
+
     private void showAlertDialog() {
         final android.support.v7.app.AlertDialog.Builder alertDialog = new android.support.v7.app.AlertDialog.Builder(this);
 //        alertDialog.setTitle("List of Enrolled Person's !...");
@@ -1301,6 +1406,7 @@ public class AttendanceActivity extends AppCompatActivity{
 ////            }
 ////        });
     }
+
     public void showMemberDialog(MemberPOJO memberPOJO) {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         final LayoutInflater inflater = LayoutInflater.from(mContext);
@@ -1310,6 +1416,21 @@ public class AttendanceActivity extends AppCompatActivity{
         txt_attender_Time = dialogView.findViewById(R.id.txt_attendant_clock);
         ImgAttendant = dialogView.findViewById(R.id.img_attendant_name);
         imgclose = dialogView.findViewById(R.id.imageView_custom_close);
+
+
+        DisplayImageOptions imageOptions = new DisplayImageOptions.Builder()
+                .cacheInMemory(true)
+                .cacheOnDisk(true)
+                .imageScaleType(ImageScaleType.EXACTLY)
+                .bitmapConfig(Bitmap.Config.ARGB_8888)
+                .showImageOnLoading(R.drawable.ic_person)
+                .showImageForEmptyUri(R.drawable.ic_person)
+                .showImageOnFail(R.drawable.ic_person)
+                .build();
+
+        loaderConfiguration = new ImageLoaderConfiguration.Builder(AttendanceActivity.this)
+                .defaultDisplayImageOptions(imageOptions).build();
+        imageLoader.init(loaderConfiguration);
 
 
         builder.setView(dialogView);
@@ -1373,15 +1494,17 @@ public class AttendanceActivity extends AppCompatActivity{
             public void run() {
                 detailDialog.dismiss();
             }
-        },3000);
+        },1000);
 
 
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.atendence_menu, menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -1403,12 +1526,113 @@ public class AttendanceActivity extends AppCompatActivity{
 
         return super.onOptionsItemSelected(item);
     }
-    /*@Override
-    public void onBackPressed() {
-      //  startActivity(new Intent(mContext,TestingActivity.class));
-        finish();
-        super.onBackPressed();
+
+   /* public void memberRegisterGovNet(String URL, final MemberPOJO memberDetails){
+        try {
+            Log.e("---->",URL);
+            Log.e("---->REG",memberDetails.toString());
+
+            final String uploadId = UUID.randomUUID().toString();
+            MultipartUploadRequest multipartUploadRequest = new MultipartUploadRequest(mContext, uploadId, URL);
+            UploadServiceBroadcastReceiver uploadServiceBroadcastReceiver;
+            multipartUploadRequest.addFileToUpload(getImagePath(),"photo" )
+                    .addParameter("token", PreferenceUtils.getToken(MemberRegisterActivity.this))
+                    .addParameter("first_name", memberDetails.getFirstName())
+                    .addParameter("middle_name", memberDetails.getMiddleName())
+                    .addParameter("last_name", memberDetails.getLastName())
+                    .addParameter("gender", memberDetails.getGender())
+                    .addParameter("marital_status", memberDetails.getMaritalStatus())
+                    .addParameter("status", memberDetails.getStatus())
+                    .addParameter("mobile_phone", memberDetails.getMobilePhone())
+                    .addParameter("dob", memberDetails.getDob())
+                    .addParameter("address", memberDetails.getAddress())
+                    .addParameter("fingerprint", memberDetails.getFingerPrint())
+                    .addParameter("home_phone", memberDetails.getHomePhone())
+                    .addParameter("work_phone", memberDetails.getWorkPhone())
+                    .addParameter("email", memberDetails.getEmail())
+                    .addParameter("notes", memberDetails.getNotes())
+                    .addParameter("fingerprint2", memberDetails.getFingerPrint1())
+                    .setNotificationConfig(new UploadNotificationConfig())
+                    .setMaxRetries(2)
+                    .setDelegate(new UploadStatusDelegate() {
+                        @Override
+                        public void onProgress(Context context, UploadInfo uploadInfo) {
+                        }
+
+                        @Override
+                        public void onError(Context context, UploadInfo uploadInfo, ServerResponse serverResponse, Exception exception) {
+                            Log.e("---->",serverResponse.getBodyAsString().toString());
+                            buttonSubmit.setEnabled(true);
+                            progressBar.setVisibility(View.GONE);
+                            Toast.makeText(MemberRegisterActivity.this,"error",Toast.LENGTH_LONG).show();
+                        }
+
+                        @Override
+                        public void onCompleted(Context context, UploadInfo uploadInfo, ServerResponse serverResponse) {
+                            Log.e("--->",serverResponse.getBodyAsString().toString());
+
+                            JSONParser parser = new JSONParser();
+                            MemberPOJO memberRegister = new MemberPOJO();
+                            JSONObject jsonObject=null;
+                            try{
+                                jsonObject = (JSONObject)parser.parse(serverResponse.getBodyAsString().toString());
+                                String result = (String) jsonObject.get("result");
+                                Toast.makeText(MemberRegisterActivity.this,result,Toast.LENGTH_SHORT).show();
+
+                                JSONObject memberObject = (JSONObject) jsonObject.get("member");
+                                memberRegister.setFirstName(isNull(memberObject,"first_name"));
+                                memberRegister.setMiddleName(isNull(memberObject,"middle_name"));
+                                memberRegister.setLastName(isNull(memberObject,"last_name"));
+                                memberRegister.setEmail(isNull(memberObject,"email"));
+                                memberRegister.setUserId(isNull(memberObject,"user_id"));
+                                memberRegister.setRollNo(isNull(memberObject,"No"));
+                                memberRegister.setGender(isNull(memberObject,"gender"));
+                                memberRegister.setMaritalStatus(isNull(memberObject,"marital_status"));
+                                memberRegister.setStatus(isNull(memberObject,"status"));
+                                memberRegister.setHomePhone(isNull(memberObject,"home_phone"));
+                                memberRegister.setMobilePhone(isNull(memberObject,"mobile_phone"));
+                                memberRegister.setWorkPhone(isNull(memberObject,"work_phone"));
+                                memberRegister.setFingerPrint(isNull(memberObject,"fingerprint"));
+                                memberRegister.setDob(isNull(memberObject,"dob"));
+                                memberRegister.setPhotoURL(isNull(memberObject,"photo"));
+                                memberRegister.setAddress(isNull(memberObject,"address"));
+                                memberRegister.setUpdateAt(isNull(memberObject,"updated_at"));
+                                memberRegister.setCreateAt(isNull(memberObject,"created_at"));
+                                memberRegister.setId(isNull(memberObject,"id"));
+                                memberRegister.setNotes(isNull(memberObject,"notes"));
+                                memberRegister.setFingerPrint1(isNull(memberObject,"fingerprint2"));
+                                dataBaseHelper.insertMemberData(memberRegister);
+
+                            }catch (Exception ex){
+                                ex.printStackTrace();
+                            }
+
+                            if (isPhone){
+                                SerialPortManagerA5.getInstance().closeSerialPort();
+                                finish();
+                                progressBar.setVisibility(View.INVISIBLE);
+
+                            }
+                            if (isTablet) {
+                                SerialPortManager.getInstance().closeSerialPort();
+                                finish();
+                                progressBar.setVisibility(View.INVISIBLE);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(Context context, UploadInfo uploadInfo) {
+
+                            Log.e("--->","caln");
+                        }
+                    })
+                    .startUpload(); //Starting the upload
+
+        } catch (Exception exc) {
+            Toast.makeText(this, exc.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }*/
+
 }
 
 

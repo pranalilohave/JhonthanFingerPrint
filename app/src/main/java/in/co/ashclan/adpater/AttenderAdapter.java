@@ -40,7 +40,6 @@ public class AttenderAdapter extends BaseAdapter {
         this.mContext = mContext;
         this.list = list;
 
-
         DisplayImageOptions imageOptions = new DisplayImageOptions.Builder()
                 .cacheInMemory(true)
                 .cacheOnDisk(true)
@@ -83,6 +82,7 @@ public class AttenderAdapter extends BaseAdapter {
         }else {
             vList = (View)view;
         }
+
         txt_id=(TextView)vList.findViewById(R.id.attender_id);
         txt_name=(TextView)vList.findViewById(R.id.attender_name);
         txt_address=(TextView)vList.findViewById(R.id.attender_address);

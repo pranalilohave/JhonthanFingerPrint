@@ -32,13 +32,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import android_serialport_api.SerialPortManager;
+import in.co.ashclan.adpater.AttenderAdapter;
 import in.co.ashclan.adpater.MemberAdapter;
 import in.co.ashclan.database.DataBaseHelper;
 import in.co.ashclan.fingerprint.AttendanceActivity;
 import in.co.ashclan.fingerprint.AttenderActivity;
+import in.co.ashclan.fingerprint.EventDetailsActivity;
 import in.co.ashclan.fingerprint.HomeActivity;
 import in.co.ashclan.fingerprint.R;
 import in.co.ashclan.fingerprint.TestingActivity;
+import in.co.ashclan.model.AttenderPOJO;
 import in.co.ashclan.model.EventAttendancePOJO;
 import in.co.ashclan.model.MemberPOJO;
 import in.co.ashclan.utils.PreferenceUtils;
@@ -48,35 +51,53 @@ import static in.co.ashclan.utils.WebServiceCall.performPostCall;
 
 @SuppressLint("ValidFragment")
 public class AttendersUploadFragment extends Fragment implements View.OnClickListener {
-   // private OnFragmentInteractionListener mListener;
+   //   // private OnFragmentInteractionListener mListener;
     Activity activity;
     Context mContext;
     MemberAdapter memberAdapter;
-    ArrayList<MemberPOJO> personList = new ArrayList<MemberPOJO>();
+    AttenderAdapter attenderAdapter;
+    ArrayList<AttenderPOJO> personList = new ArrayList<AttenderPOJO>();
+    ArrayList<EventAttendancePOJO> attendersList = new ArrayList<EventAttendancePOJO>();
     String eventId;
     private ListView fpListView;
-    TextView txtNote;
+    TextView txtNote,txtTotalAttendance,txtTotalMale,txtTotalFemale;
     DataBaseHelper dataBaseHelper;
     ContentLoadingProgressBar progressBar;
     FloatingActionButton floatingActionButton;
     private boolean bIsCancel = false;
+    private ProgressDialog nDialog;
+    String txtdate;
     private static final String TAG = "-->frag";
 
     @SuppressLint("ValidFragment")
-    public AttendersUploadFragment(Activity activity, String eventId, ArrayList<MemberPOJO> personList) {
+    public AttendersUploadFragment(Activity activity, String eventId) {
         // Required empty public constructor
         this.activity = activity;
         this.eventId = eventId;
-        this.personList = personList;
     }
-    public AttendersUploadFragment() {
+
+    @SuppressLint("ValidFragment")
+    public AttendersUploadFragment(Activity activity, String eventId,String txtdate) {
+        // Required empty public constructor
+        this.activity = activity;
+        this.eventId = eventId;
+        this.txtdate = txtdate;
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //mContext = activity;
         mContext = getActivity().getApplicationContext();
         dataBaseHelper = new DataBaseHelper(mContext);
+        personList = (ArrayList<AttenderPOJO>) dataBaseHelper.getAllTempAttender(eventId);
+      /*  AttenderPOJO attenderPOJO1 = new AttenderPOJO("BWC1","demo","123456789","male","2","jungle","demo","khan","12/12/12","12/12/12","");
+        personList.add(attenderPOJO1);
+        personList.add(attenderPOJO1);
+        personList.add(attenderPOJO1);
+        personList.add(attenderPOJO1);
+        personList.add(attenderPOJO1);
+        personList.add(attenderPOJO1);*/
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -86,61 +107,31 @@ public class AttendersUploadFragment extends Fragment implements View.OnClickLis
 
         fpListView = (ListView) view.findViewById(R.id.attender_listView);
         txtNote = (TextView)view.findViewById(R.id.txt_message);
+        txtTotalAttendance = (TextView)view.findViewById(R.id.total_attendance);
+        txtTotalMale = (TextView)view.findViewById(R.id.total_male);
+        txtTotalFemale = (TextView)view.findViewById(R.id.total_female);
         floatingActionButton = (FloatingActionButton)view.findViewById(R.id.fab_upload_attendance);
         progressBar = (ContentLoadingProgressBar)view.findViewById(R.id.fragment_progress_bar_attender);
-
+        floatingActionButton.setEnabled(true);
 
         if(personList.size()!= 0){
-            memberAdapter = new MemberAdapter(mContext,personList,"ic_person.png");
+
+            //personList.addAll(dataBaseHelper.getAllTempAttender(eventId));
+            attenderAdapter = new AttenderAdapter(mContext,personList);
+            attenderAdapter.notifyDataSetChanged();
+            fpListView.setAdapter(attenderAdapter);
+
+            txtTotalAttendance.setText("Total Attendance = " + personList.size());
+            txtTotalMale.setText("Total Male's :- " + dataBaseHelper.getmaleCount(eventId));
+            txtTotalFemale.setText("Total Female's :- " + dataBaseHelper.getfemaleCount(eventId));
+
+           /* memberAdapter = new MemberAdapter(mContext,personList,"ic_person.png");
             memberAdapter.notifyDataSetChanged();
             // dataBaseHelper=new DataBaseHelper(mContext);
-            fpListView.setAdapter(memberAdapter);
+            fpListView.setAdapter(memberAdapter);*/
         }
         floatingActionButton.setOnClickListener(this);
-       /* floatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                *//*Toast.makeText(mContext, "This is Clicked", Toast.LENGTH_SHORT).show();
-                Log.e(TAG, "Floating action button clicked" );
-                Intent intent = new Intent(mContext,HomeActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                getActivity().finish();*//*
-
-                if(personList.size()!=0){
-                    try{
-                        progressBar.setVisibility(View.VISIBLE);
-                        String memberIds="";
-                        //String eventId=getIntent().getStringExtra("eventId");
-                        for (MemberPOJO member:personList){
-                            memberIds=memberIds+member.getId()+",";
-                        }
-                        memberIds = removeLastChar(memberIds);
-                        GetAccessTokenTask aTask=new GetAccessTokenTask(mContext,PreferenceUtils.getUrlLogin(mContext),
-                                PreferenceUtils.getAdminName(mContext),PreferenceUtils.getAdminPassword(mContext),memberIds,eventId);
-                        aTask.execute();
-                    }catch (Exception e)
-                    {
-                        Log.e("-->",e.toString());
-                    }
-
-                }else{
-                    //Make SmackBar
-               *//*     Snackbar snackbar = Snackbar.make(view,"Nothing to Upload",Snackbar.LENGTH_LONG);
-                   *//**//* snackbar.setAction("Cancel", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            favoritesAdapter.restoreItem(deletefav,deleteIndex);
-                            new Database(getBaseContext()).addToFavourites(deletefav);
-                            loadListFavorites();
-                        }
-                    });*//**//*
-                    snackbar.setActionTextColor(Color.YELLOW);
-                    snackbar.show();*//*
-                    Toast.makeText(activity, "Nothing to Upload", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });*/
+        ScrollListViewToBottom();
         return view;
     }
 
@@ -175,15 +166,22 @@ public class AttendersUploadFragment extends Fragment implements View.OnClickLis
     @Override
     public void onClick(View view) {
         if(view==floatingActionButton){
-        if(personList.size()!=0){
+
+            attendersList = (ArrayList<EventAttendancePOJO>) dataBaseHelper.getAllTempAttendance(eventId);
+
+        if(attendersList.size()!=0){
             try{
-                progressBar.setVisibility(View.VISIBLE);
+               // progressBar.setVisibility(View.VISIBLE);
                 String memberIds="";
                 //String eventId=getIntent().getStringExtra("eventId");
-                for (MemberPOJO member:personList){
-                    memberIds=memberIds+member.getId()+",";
+                for (EventAttendancePOJO member : attendersList){
+                    //condition for check the id is existed into the database or not
+                    if(!dataBaseHelper.isMemberAvailable(member.getMemberId(),eventId)) {
+                        memberIds = memberIds + member.getMemberId() + "*" + member.getAttenTime() + ",";
+                    }
                 }
                 memberIds = removeLastChar(memberIds);
+
                 GetAccessTokenTask aTask=new GetAccessTokenTask(mContext,PreferenceUtils.getUrlLogin(mContext),
                         PreferenceUtils.getAdminName(mContext),PreferenceUtils.getAdminPassword(mContext),memberIds,eventId);
                 aTask.execute();
@@ -233,7 +231,14 @@ public class AttendersUploadFragment extends Fragment implements View.OnClickLis
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            //progressBar.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.VISIBLE);
+
+            nDialog = new ProgressDialog(getActivity());
+            nDialog.setMessage("Loading..");
+            nDialog.setTitle("Uploading Data");
+            nDialog.setIndeterminate(false);
+            nDialog.setCancelable(false);
+            nDialog.show();
         }
 
         @Override
@@ -268,7 +273,7 @@ public class AttendersUploadFragment extends Fragment implements View.OnClickLis
                     //"https://bwc.pentecostchurch.org/api/get_all_members"
                     //HomeActivity.GetAllMemberTask mTask = new HomeActivity.GetAllMemberTask(mContext,PreferenceUtils.getUrlGetAllMembers(mContext),token);
                     // mTask.execute();
-                    progressBar.setVisibility(View.GONE);
+                   // progressBar.setVisibility(View.GONE);
                     CheckInTask checkInTask  = new CheckInTask(mContext, PreferenceUtils.getUrlAddCheckin(mContext),memberIds,eventId,token);
                     checkInTask.execute();
                 }
@@ -276,13 +281,15 @@ public class AttendersUploadFragment extends Fragment implements View.OnClickLis
                 Log.e("--->", e.toString());
                 Toast.makeText(mContext,"No Internet Access",Toast.LENGTH_LONG).show();
                 e.printStackTrace();
-                progressBar.setVisibility(View.GONE);
+                //progressBar.setVisibility(View.GONE);
+                nDialog.dismiss();
             }
         }
 
         @Override
         protected void onCancelled() {
-            progressBar.setVisibility(View.GONE);
+            //progressBar.setVisibility(View.GONE);
+           // nDialog.dismiss();
         }
     }
     public class CheckInTask extends AsyncTask<String,String,String> {
@@ -291,6 +298,7 @@ public class AttendersUploadFragment extends Fragment implements View.OnClickLis
         private String URL;
         private String member_id,event_id;
         private String token;
+
         CheckInTask(Context mContext,String URL,String member_id,String event_id,String token){
             this.mContext=mContext;
             this.member_id=member_id;
@@ -302,8 +310,8 @@ public class AttendersUploadFragment extends Fragment implements View.OnClickLis
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressBar.setVisibility(View.VISIBLE);
-            Log.e("--->","URL = "+URL+"member_id = "+member_id+" event_id = "+event_id+" token = "+token);
+           // progressBar.setVisibility(View.VISIBLE);
+            Log.e("--->","URL = "+URL+ "  member_id = "+member_id+" event_id = "+event_id+" token = "+token);
         }
 
         @Override
@@ -317,10 +325,13 @@ public class AttendersUploadFragment extends Fragment implements View.OnClickLis
                 postData.put("token",token);
                 postData.put("member_id",member_id);
                 postData.put("event_id",event_id);
+                postData.put("atten_date",txtdate);
+                //postData.put("event_id",attentime);
                 String json_output = performPostCall(URL,postData);
                 return json_output;
             }catch (Exception ex){
                 Log.e("--->",ex.toString());
+                Toast.makeText(mContext, "Please Try Again", Toast.LENGTH_SHORT).show();
             }
 
             return "";
@@ -340,7 +351,9 @@ public class AttendersUploadFragment extends Fragment implements View.OnClickLis
                 JSONArray jsonAttendanceArray=(JSONArray)jsonObject.get("attendance");
 
                 for(int i=0;i<jsonAttendanceArray.size();i++){
+
                     EventAttendancePOJO eventAttendance=new EventAttendancePOJO();
+
                     JSONObject object = (JSONObject)jsonAttendanceArray.get(i);
                     eventAttendance.setEventId(isNull(object,"event_id"));
                     eventAttendance.setUserId(isNull(object,"user_id"));
@@ -349,12 +362,20 @@ public class AttendersUploadFragment extends Fragment implements View.OnClickLis
                     eventAttendance.setDate(isNull(object,"date"));
                     eventAttendance.setCreatedAt(isNull(object,"created_at"));
                     eventAttendance.setUpdatedAt(isNull(object,"updated_at"));
+                    eventAttendance.setAttenDate(isNull(object,"atten_date"));
+                    eventAttendance.setAttenTime(isNull(object,"atten_time"));
+
                     dataBaseHelper.insertEventAttendaceData(eventAttendance);
+
+                    dataBaseHelper.deleteAllTempEventAttendance(eventId);
+
                     progressBar.setVisibility(View.GONE);
+                    nDialog.dismiss();
                 }
             }catch (Exception ex){
                 Log.e("--->",ex.toString());
                 progressBar.setVisibility(View.GONE);
+                nDialog.dismiss();
             }
             workExit();
         }
@@ -362,20 +383,38 @@ public class AttendersUploadFragment extends Fragment implements View.OnClickLis
         protected void onCancelled() {
             super.onCancelled();
             progressBar.setVisibility(View.GONE);
+            nDialog.dismiss();
         }
     }
     public void workExit(){
         if(SerialPortManager.getInstance().isOpen()){
             bIsCancel=true;
             SerialPortManager.getInstance().closeSerialPort();
-            Toast.makeText(mContext, "Data Uploaded Successfully", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(mContext, "Data Uploaded Successfully", Toast.LENGTH_SHORT).show();
          /* Intent intent = new Intent(mContext,HomeActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);*/
-            getActivity().finish();
         }
+        getActivity().finish();
     }
     public String removeLastChar(String str) {
         return str.substring(0, str.length() - 1);
     }
+
+    private void ScrollListViewToBottom() {
+        fpListView.post(new Runnable() {
+            @Override
+            public void run() {
+                // Select the last row so it will scroll into view...
+                try {
+                    fpListView.setSelection(attenderAdapter.getCount() - 1);
+                }catch (Exception e)
+                {
+                    Log.e(TAG, e.toString() );
+                    e.printStackTrace();
+                }
+
+            }
+        });
+    }//scrolling
 }

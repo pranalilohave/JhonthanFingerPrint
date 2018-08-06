@@ -62,9 +62,8 @@ public class CropImageActivity extends AppCompatActivity {
                 public void onSuccess(Bitmap bitmap) {
 
                     ByteArrayOutputStream bStream = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, bStream);
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 90, bStream);
                     byte[] byteArray = bStream.toByteArray();
-
 
                     Intent intent = new Intent();
                     intent.putExtra("bytesArray", byteArray);
@@ -139,7 +138,6 @@ public class CropImageActivity extends AppCompatActivity {
 Bitmap bitmap = null;
     private File createImageFile() throws IOException {
         {
-
             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
             String imageFileName = "IMG_" + timeStamp + "_";
             File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
@@ -149,8 +147,6 @@ Bitmap bitmap = null;
             return image;
         }
     }
-
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

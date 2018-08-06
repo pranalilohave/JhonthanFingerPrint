@@ -6,8 +6,11 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.view.menu.MenuBuilder;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -40,6 +43,9 @@ public class EventDetailsActivity extends AppCompatActivity implements BottomNav
     private int[] layouts;
     DataBaseHelper dataBaseHelper;
     EventPOJO eventDetails;
+    Menu menu;
+    MenuItem totalAttender;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,13 +63,12 @@ public class EventDetailsActivity extends AppCompatActivity implements BottomNav
         viewPager = (ViewPager)findViewById(R.id.events_view_pager);
         bottomNavigationBar = (BottomNavigationBar)findViewById(R.id.bottom_navigation_bar);
         bottomNavigationBar.setTabSelectedListener(this);
+        //menu = new MenuBuilder(R.menu.total_attenders);
+        totalAttender = (MenuItem)findViewById(R.id.action_total);
 
         dataBaseHelper = new DataBaseHelper(EventDetailsActivity.this);
 
     }
-
-
-
     private void refresh(){
         bottomNavigationBar.clearAll();
 
@@ -83,7 +88,6 @@ public class EventDetailsActivity extends AppCompatActivity implements BottomNav
                 .initialise();
 
     }
-
     private void setViewPager(int index){
 
         switch (index){
@@ -113,14 +117,11 @@ public class EventDetailsActivity extends AppCompatActivity implements BottomNav
 
     }
     private void viewPagerOverView(){
-
     }
-
     @Override
     public void onClick(View view) {
 
     }
-
     @Override
     public void onTabSelected(int position) {
         Toast.makeText(mContext,position+"",Toast.LENGTH_LONG).show();
@@ -129,18 +130,14 @@ public class EventDetailsActivity extends AppCompatActivity implements BottomNav
         setViewPager(position);
         Log.e("--->",String.valueOf(position));
     }
-
     @Override
     public void onTabUnselected(int position) {
         Log.e("--->",String.valueOf(position));
     }
-
     @Override
     public void onTabReselected(int position) {
         Log.e("--->",String.valueOf(position));
     }
-
-
     public int getPosition(){
         return viewPager.getCurrentItem();
     }
@@ -228,7 +225,6 @@ public class EventDetailsActivity extends AppCompatActivity implements BottomNav
             container.removeView(view);
         }
     }
-
     //**********************************ATTENDER ViewPagerAdapter ******************************//
     public class MyAttenderViewPagerAdapter extends PagerAdapter{
         private LayoutInflater inflater;
@@ -276,7 +272,6 @@ public class EventDetailsActivity extends AppCompatActivity implements BottomNav
             container.removeView(view);
         }
     }
-
     //**********************************REPORTS ViewPagerAdapter ******************************//
     public class MyReportViewPagerAdapter extends PagerAdapter{
 
@@ -562,4 +557,21 @@ public class EventDetailsActivity extends AppCompatActivity implements BottomNav
             return false;
         }
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.total_attenders, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_total:
+                item.setTitle("Hello");
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
 }

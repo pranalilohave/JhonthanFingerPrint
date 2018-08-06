@@ -6,6 +6,7 @@ public class EventAttendancePOJO  implements Serializable {
     String id, eventId, userId, memberId, familyId, anonymous;
     String date,eventName;
     String createdAt, updatedAt;
+    String attenDate,attenTime;
 
     @Override
     public String toString() {
@@ -14,18 +15,38 @@ public class EventAttendancePOJO  implements Serializable {
                 ", eventId='" + eventId + '\'' +
                 ", userId='" + userId + '\'' +
                 ", memberId='" + memberId + '\'' +
+                ", familyId='" + familyId + '\'' +
                 ", anonymous='" + anonymous + '\'' +
                 ", date='" + date + '\'' +
+                ", eventName='" + eventName + '\'' +
                 ", createdAt='" + createdAt + '\'' +
                 ", updatedAt='" + updatedAt + '\'' +
-                ", eventName='" + eventName + '\'' +
+                ", attenDate='" + attenDate + '\'' +
+                ", attenTime='" + attenTime + '\'' +
                 '}';
+    }
+
+    public EventAttendancePOJO(String id, String eventId, String userId, String memberId, String familyId, String anonymous, String date, String eventName, String createdAt, String updatedAt, String attenDate, String attenTime) {
+        this.id = id;
+        this.eventId = eventId;
+        this.userId = userId;
+        this.memberId = memberId;
+        this.familyId = familyId;
+        this.anonymous = anonymous;
+        this.date = date;
+        this.eventName = eventName;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.attenDate = attenDate;
+        this.attenTime = attenTime;
     }
 
     public EventAttendancePOJO(String date, String eventName) {
         this.date = date;
         this.eventName = eventName;
     }
+
+
 
     public EventAttendancePOJO() {
         this.id = "";
@@ -38,6 +59,24 @@ public class EventAttendancePOJO  implements Serializable {
         this.createdAt = "";
         this.updatedAt = "";
         this.eventName = "";
+        this.attenDate = "";
+        this.attenTime = "";
+    }
+
+    public String getAttenDate() {
+        return attenDate;
+    }
+
+    public void setAttenDate(String attenDate) {
+        this.attenDate = attenDate;
+    }
+
+    public String getAttenTime() {
+        return attenTime;
+    }
+
+    public void setAttenTime(String attenTime) {
+        this.attenTime = attenTime;
     }
 
     public String getEventName() {

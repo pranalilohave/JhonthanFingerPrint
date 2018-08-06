@@ -732,8 +732,6 @@ public class MemberListActivity extends AppCompatActivity
             HashMap<String, String> postData = new HashMap<>();
             postData.put("email", email);
             postData.put("password", password);
-            String url = "https://bwc.pentecostchurch.org/api/login";
-            String urls = "http://52.172.221.235:8983/api/login";
             String json_output = performPostCall(URL, postData);
             return json_output;
         }
