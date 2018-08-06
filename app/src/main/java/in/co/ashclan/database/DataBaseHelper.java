@@ -416,12 +416,12 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public static final String CREATE_TABLE_RECORDING =
             "CREATE TABLE " + RECORDING_TABLE + "("
                     + RECORDING_COl_1 + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                    + RECORDING_COl_2 + " TEXT,"
-                    + RECORDING_COl_3 + " TEXT,"
-                    + RECORDING_COl_4 + " TEXT,"
-                    + RECORDING_COl_5 + " TEXT,"
-                    + RECORDING_COl_6 + " TEXT,"
-                    + RECORDING_COl_7 + " TEXT"
+                    + RECORDING_COL_2 + " TEXT,"
+                    + RECORDING_COL_3 + " TEXT,"
+                    + RECORDING_COL_4 + " TEXT,"
+                    + RECORDING_COL_5 + " TEXT,"
+                    + RECORDING_COL_6 + " TEXT,"
+                    + RECORDING_COL_7 + " TEXT"
                     + ")";
 
     public DataBaseHelper(Context context) {
@@ -451,7 +451,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         //CREATE TEMP TABLE EVENT ATTENDANCE
         db.execSQL(TEMP_CREATE_TABLE_EVENTATTEN);
         //CREATE TABLE RECORDING
-        db.execSQL(RECORDING_TABLE);
+        db.execSQL(CREATE_TABLE_RECORDING);
     }
 
     @Override
@@ -466,6 +466,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + GROUPS_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + EVENT_CALENDAR_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + EVENT_lOCATION_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + RECORDING_TABLE);
 
         // Create tables again
         onCreate(db);
@@ -1988,11 +1989,14 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        values.put(EVENT_lOCATION_COL_2, event.getLocatio_id());
-        values.put(EVENT_lOCATION_COL_3, event.getUser_id());
-        values.put(EVENT_lOCATION_COL_4, event.getName());
+        values.put(RECORDING_COL_2, recording.getEventid());
+        values.put(RECORDING_COL_3, recording.getUserid());
+        values.put(RECORDING_COL_4, recording.getFilename());
+        values.put(RECORDING_COL_5, recording.getCreatedat());
+        values.put(RECORDING_COL_6, recording.getUpdatedat());
+        values.put(RECORDING_COL_7, recording.getEventDate());
 
-        long result = db.insert(EVENT_lOCATION_TABLE, null, values);
+        long result = db.insert(RECORDING_TABLE, null, values);
 
         db.close();
         if (result == -1) {
@@ -2001,10 +2005,10 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             return true;
         }
     }
-    public List<LocationPOJO> getAllLocations() {
+    public List<RecordingPOJO> getAllRecordings() {
 
-        List<LocationPOJO> locationList = new ArrayList<LocationPOJO>();
-        String selectQuery = "SELECT  * FROM " + EVENT_lOCATION_TABLE;
+        List<RecordingPOJO> recordingList = new ArrayList<RecordingPOJO>();
+        String selectQuery = "SELECT  * FROM " + RECORDING_TABLE;
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
@@ -2012,39 +2016,25 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
 
-                LocationPOJO location = new LocationPOJO();
-                location.setId(cursor.getString(cursor.getColumnIndex(EVENT_lOCATION_COl_1)));
-                location.setLocatio_id(cursor.getString(cursor.getColumnIndex(EVENT_lOCATION_COL_2)));
-                location.setUser_id(cursor.getString(cursor.getColumnIndex(EVENT_lOCATION_COL_3)));
-                location.setName(cursor.getString(cursor.getColumnIndex(EVENT_lOCATION_COL_4)));
+                RecordingPOJO recording = new RecordingPOJO();
+                recording.setEventid(cursor.getString(cursor.getColumnIndex(RECORDING_COL_2)));
+                recording.setUserid(cursor.getString(cursor.getColumnIndex(RECORDING_COL_3)));
+                recording.setFilename(cursor.getString(cursor.getColumnIndex(RECORDING_COL_4)));
+                recording.setCreatedat(cursor.getString(cursor.getColumnIndex(RECORDING_COL_5)));
+                recording.setUpdatedat(cursor.getString(cursor.getColumnIndex(RECORDING_COL_6)));
+                recording.setEventDate(cursor.getString(cursor.getColumnIndex(RECORDING_COL_7)));
 
-
-                locationList.add(location);
+                recordingList.add(recording);
             } while (cursor.moveToNext());
         }
         db.close();
-        return locationList;
+        return recordingList;
     }
-    public String getLocationId(String name){
-        String locationId = null;
+    public void deleteAllRecordings() {
         try {
+            String selectQuery = "DELETE FROM " + RECORDING_TABLE;
             SQLiteDatabase db = this.getWritableDatabase();
-
-            String selectQuery = ("SELECT location_id FROM  EVENT_LOCATION_table  WHERE name = '"+name+"'");
-            Cursor cursor = db.rawQuery(selectQuery, null);
-            if (cursor.moveToLast()) {
-                locationId = cursor.getString(cursor.getColumnIndex("location_id"));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return locationId;
-    }
-    public void deleteAllEventLocations() {
-        try {
-            String selectQuery = "DELETE FROM " + EVENT_lOCATION_TABLE;
-            SQLiteDatabase db = this.getWritableDatabase();
-            db.delete(EVENT_lOCATION_TABLE, null, null);
+            db.delete(RECORDING_TABLE, null, null);
             db.close();
         } catch (Exception ex) {
             ex.printStackTrace();
