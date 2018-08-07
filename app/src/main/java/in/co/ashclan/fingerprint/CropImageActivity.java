@@ -135,7 +135,7 @@ public class CropImageActivity extends AppCompatActivity {
             startActivityForResult(pictureIntent, REQUEST_IMAGE);
         }
     }
-Bitmap bitmap = null;
+        Bitmap bitmap = null;
     private File createImageFile() throws IOException {
         {
             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());

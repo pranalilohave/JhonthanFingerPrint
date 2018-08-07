@@ -16,6 +16,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadata;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
@@ -57,6 +58,8 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.squareup.picasso.Picasso;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import net.gotev.uploadservice.MultipartUploadRequest;
 import net.gotev.uploadservice.ServerResponse;
@@ -150,7 +153,7 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
 
     private int REQUEST_CAMERA = 0, SELECT_FILE = 1, CROP_IMAGE = 2;
     private String userChoosenTask;
-    private Bitmap bitmapImage;
+    public Bitmap bitmapImage;
     private File destination;
     private String imagePath;
     String type;
@@ -211,10 +214,11 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
                 }
 
                 //"http://52.172.221.235:8983/uploads/"
-                if (null!=memberDetails.getPhotoURL()&&!memberDetails.getPhotoURL().equals("")) {
+                if (null!=memberDetails.getPhotoURL() && !memberDetails.getPhotoURL().equals("")) {
                     //editImage=true;
                     String imgURL =  PreferenceUtils.getUrlUploadImage(MemberRegisterActivity.this)+ memberDetails.getPhotoURL();
-                   /* imageLoader.displayImage(imgURL, imageViewFingerPrint2, new ImageLoadingListener() {
+
+                    imageLoader.displayImage(imgURL, imageViewFingerPrint2, new ImageLoadingListener() {
                         @Override
                         public void onLoadingStarted(String imageUri, View view) {
                             //    imageLoader.displayImage("http://52.172.221.235:8983/uploads/" + defaultIcon, imageView);
@@ -236,12 +240,13 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
                         public void onLoadingCancelled(String imageUri, View view) {
 
                         }
-                    });*/
+                    });
 
                   /* Glide.with(mContext)
                             .load(memberDetails.getPhotoURL())
                             .into(imageViewFingerPrint2);*/
-                    Picasso.get().load(imgURL).into(imageViewFingerPrint2);
+                    //Picasso.get().load(imgURL).into(imageViewFingerPrint2);
+                    //imageViewFingerPrint2.setImageURI(Uri.parse(imgURL));
                 }
 
                 buttonOffline.setVisibility(View.VISIBLE);
@@ -333,7 +338,6 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
         }
         if (view==buttonSubmit){
             submitMemberRegistration();
-
         }
         if (view==buttonOffline){
             switch (type){
@@ -799,8 +803,14 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
         return true;
     }
     public void cropImage(){
-        Intent intent = new Intent(mContext,CropImageActivity.class);
-        startActivityForResult(intent,CROP_IMAGE);
+      /*  Intent intent = new Intent(mContext,CropImageActivity.class);
+        startActivityForResult(intent,CROP_IMAGE);*/
+
+        CropImage.activity()
+                .setGuidelines(CropImageView.Guidelines.ON)//enable image guidlines
+                .setAspectRatio(1,1)  //image will be suqare//
+                .start(this);
+
     }
     public void offlineSubmitMemberRegistration(){
         if(!utilsCheck()) {
@@ -894,11 +904,13 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
         }
     }
     public void submitMemberRegistration(){
+
         boolean isDuplicated=false;
 
         if (utilsCheck()){
             Toast.makeText(mContext,"something is missing",Toast.LENGTH_LONG).show();
         }else {
+
             memberDetails.setFirstName(editTextFirstName.getText().toString());
             memberDetails.setLastName(editTextLastname.getText().toString());
             memberDetails.setMiddleName(editTextMiddleName.getText().toString());
@@ -915,6 +927,7 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
             memberDetails.setDob(editTextDOB.getText().toString());
 
             if (isEnroll1&&!isUpEnroll1) {
+
                 fpByte1 = new byte[model1.length];
                 System.arraycopy(model1, 0, fpByte1, 0, model1.length);
 
@@ -937,11 +950,13 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
             //"http://52.172.221.235:8983/api/create_member"
 
             for (MemberPOJO member:list){
-                byte[] tmp1=new byte[256];
+
+                byte[] tmp1 = new byte[256];
                 if(!member.getFingerPrint().equals("")){
                     byte[] tmp2 = Base64.decode(member.getFingerPrint(),Base64.DEFAULT);
                     if(tmp2!=null){
                         System.arraycopy(tmp2, 0, tmp1, 0, 256);
+
                         Log.e("---->",member.getId()+"  -->"+member.getFingerPrint()+" ><><><><><>< "+(FPMatch.getInstance().MatchTemplate(fpByte1,tmp1)>60));
 
                         if(FPMatch.getInstance().MatchTemplate(fpByte1,tmp1)>60){
@@ -1054,6 +1069,53 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
             else if (requestCode == CROP_IMAGE)
                 onCropImageResult(data);
         }
+
+        if(requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE)
+        {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if(resultCode == RESULT_OK)
+            {
+                Uri resultUri = result.getUri();
+                //set image choosed from gallery to image view
+                imageViewFingerPrint2.setImageURI(resultUri);
+
+                /*********************************************************/
+              /*  bitmapImage = (Bitmap) result.getBitmap();
+                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                bitmapImage.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
+                String fileName=System.currentTimeMillis() + ".JPEG";
+                destination = new File(Environment.getExternalStorageDirectory(),
+                        fileName);
+                //    setImagePath(fileName);
+                FileOutputStream fo;
+                try {
+                    destination.createNewFile();
+                    fo = new FileOutputStream(destination);
+                    //fo.write(resultUri.getPath().getBytes());
+                    fo.write(bytes.toByteArray());
+                    fo.close();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }*/
+
+                Toast.makeText(MemberRegisterActivity.this,resultUri.toString(),Toast.LENGTH_LONG).show();
+                //imageViewFingerPrint2.setImageBitmap(bitmapImage);
+                //     memberDetails.setPhotoLocalPath(BitMapToString(bitmapImage));
+                setImagePath(resultUri.getPath());
+                //Picasso.get().load(getImagePath()).into(imageViewFingerPrint2);
+
+                /********************************************************/
+            }
+            else if(resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE)
+            {
+                Exception error = result.getError();
+            }
+        }
+
+
+
     }
     private void onCropImageResult(Intent data) {
         //****************************
@@ -1097,6 +1159,7 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
 
         /**************************************************************************************/
     }
+
     private void onCaptureImageResult(Intent data) {
         bitmapImage = (Bitmap) data.getExtras().get("data");
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -1466,6 +1529,7 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
         private String URL;
         private String email,password;
         private MemberPOJO memberPOJO;
+
         GetAccessTokenTask(Context mContext,String URL,String email,String password,MemberPOJO memberPOJO) {
             this.mContext = mContext;
             this.email=email;

@@ -90,6 +90,7 @@ import in.co.ashclan.fragment.AttendersUploadFragment;
 import in.co.ashclan.model.AttenderPOJO;
 import in.co.ashclan.model.EventAttendancePOJO;
 import in.co.ashclan.model.MemberPOJO;
+import in.co.ashclan.model.RecordingPOJO;
 import in.co.ashclan.utils.ActivityList;
 import in.co.ashclan.utils.PreferenceUtils;
 import in.co.ashclan.utils.Util;
@@ -234,7 +235,7 @@ public class AttendanceActivity extends AppCompatActivity{
                 switch (menuItem.getItemId())
                 {
                     case R.id.action_attender :
-                        //                        startActivity(new Intent(mContext,QRCodeReaderActivity.class));
+                        //startActivity(new Intent(mContext,QRCodeReaderActivity.class));
                         //showAlertDialog();
                         // AttenderFragment(personList,eventId);
                         isFragment = true;
@@ -1274,9 +1275,6 @@ public class AttendanceActivity extends AppCompatActivity{
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_RECORD_AUDIO) {
             if (resultCode == RESULT_OK) {
-
-
-
                 Toast.makeText(this, "Audio recorded successfully!", Toast.LENGTH_SHORT).show();
 
             } else if (resultCode == RESULT_CANCELED) {
@@ -1286,8 +1284,8 @@ public class AttendanceActivity extends AppCompatActivity{
     }
 
     public void recordAudio() {
-        fileName = System.currentTimeMillis() + ".wav";
-        AUDIO_FILE_PATH = Environment.getExternalStorageDirectory().getPath() + fileName;
+        fileName = System.currentTimeMillis() + "audio.wav";
+        AUDIO_FILE_PATH = Environment.getExternalStorageDirectory().getPath() + "/"+fileName;
 
         AndroidAudioRecorder.with(this)
                 // Required
@@ -1305,6 +1303,13 @@ public class AttendanceActivity extends AppCompatActivity{
                 // Start recording
                 //7507609658
                 .record();
+        RecordingPOJO recordingPOJO = new RecordingPOJO();
+        recordingPOJO.setEventid(eventId);
+        recordingPOJO.setEventDate(txt_date.getText().toString());
+        recordingPOJO.setFilename(AUDIO_FILE_PATH);
+
+        dataBaseHelper.insertRecordingData(recordingPOJO);
+
     }
 
 /*
