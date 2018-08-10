@@ -208,7 +208,7 @@ public class AttendanceActivity extends AppCompatActivity implements AttendersUp
         fpTextView = (TextView) findViewById(R.id.text_fing);
         fpMatchImage = (ImageView) findViewById(R.id.match_image);
         imagefinger = (ImageView) findViewById(R.id.img_finger);
-        relativeLayout = (RelativeLayout)findViewById(R.id.relativeLayout_main);
+        //relativeLayout = (RelativeLayout)findViewById(R.id.relativeLayout_main);
         //relativeLayout1 = (FrameLayout)findViewById(R.id.fragment_upload);
 
       //  imageUpload=(ImageView)findViewById(R.id.image_upload);
@@ -246,7 +246,6 @@ public class AttendanceActivity extends AppCompatActivity implements AttendersUp
                         fragmentManager = getSupportFragmentManager();
                         fragmentTransaction = fragmentManager.beginTransaction();
                         attendersUploadFragment = new AttendersUploadFragment();
-
                         Bundle bundle = new Bundle();
                         bundle.putString("event_id", eventId);
                         // set Fragmentclass Arguments

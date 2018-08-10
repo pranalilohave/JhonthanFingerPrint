@@ -48,6 +48,8 @@ public class  Constants {
 
                 PreferenceUtils.setUrlRecordingRegistration(context,"http://52.172.221.235:8983/api/add_recording");
 
+                PreferenceUtils.setUrlEventUpdate(context,"http://52.172.221.235:8983/api/update_event");
+
                 break;
 
             case 1:
@@ -78,6 +80,10 @@ public class  Constants {
 
                 PreferenceUtils.setUrlRecordingRegistration(context,"https://bwc.pentecostchurch.org/api/add_recording");
 
+
+                PreferenceUtils.setUrlEventUpdate(context,"https://bwc.pentecostchurch.org/api/update_event");
+
+
                 break;
 
             default:
@@ -102,6 +108,9 @@ public class  Constants {
                 PreferenceUtils.setUrlEventRegistration(context,"http://52.172.221.235:8983/api/create_event");
 
                 PreferenceUtils.setUrlRecordingRegistration(context,"http://52.172.221.235:8983/api/add_recording");
+
+
+                PreferenceUtils.setUrlEventUpdate(context,"http://52.172.221.235:8983/api/update_event");
 
 
                 break;

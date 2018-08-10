@@ -41,6 +41,7 @@ public class PreferenceUtils {
     public static final String URL_ADD_CALENDAR="addCalender";
     public static final String URL_EVENT_REGISTRATION="eventRegistrations";
     public static final String URL_RECORDING_REGISTRATION="recording";
+    public static final String URL_EVENTUPDATE_REGISTRATION="updateEvent";
 
 
     //prevent instantiation
@@ -253,6 +254,14 @@ public class PreferenceUtils {
     }
     public static String getUrlRecordingRegistration(Context context){
         return getSharedPreferences(context).getString(URL_RECORDING_REGISTRATION,"");
+    }
+
+    public static void setUrlEventUpdate(Context context,String eventRegistration){
+        SharedPreferences.Editor editor = getSharedPreferences(context).edit();
+        editor.putString(URL_EVENTUPDATE_REGISTRATION,eventRegistration).apply();
+    }
+    public static String getUrlEventUpdate(Context context){
+        return getSharedPreferences(context).getString(URL_EVENTUPDATE_REGISTRATION,"");
     }
 
 

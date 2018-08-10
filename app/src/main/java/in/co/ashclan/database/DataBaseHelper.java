@@ -720,6 +720,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         }
     }
     public void UpdateEventData(EventPOJO event) {
+
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 

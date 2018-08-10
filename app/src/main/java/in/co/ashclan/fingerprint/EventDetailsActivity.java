@@ -140,8 +140,6 @@ public class EventDetailsActivity extends AppCompatActivity implements BottomNav
                 viewPager.setAdapter(myReportViewPagerAdapter);
                 viewPager.getAdapter().notifyDataSetChanged();
                 break;
-
-
             case 4:
                 myEditViewPagerAdapter = new MyEditViewPagerAdapter(mContext);
                 viewPager.setAdapter(myEditViewPagerAdapter);
@@ -609,7 +607,7 @@ public class EventDetailsActivity extends AppCompatActivity implements BottomNav
         CalendarPOJO calendarPOJO = new CalendarPOJO();
         LocationPOJO locationPOJO = new LocationPOJO();
         LayoutInflater layoutInflater;
-
+        String event_id;
 
         public MyEditViewPagerAdapter(Context vContext){
             this.vContext = vContext;
@@ -623,7 +621,7 @@ public class EventDetailsActivity extends AppCompatActivity implements BottomNav
             view = inflater.inflate(R.layout.activity_event_register,container,false);
             container.addView(view);
 
-            String event_id = eventDetails.getId().toString();
+            event_id = eventDetails.getId().toString();
             mInit(view);
 
             dataBaseHelper = new DataBaseHelper(mContext);
@@ -1166,8 +1164,8 @@ public class EventDetailsActivity extends AppCompatActivity implements BottomNav
                         switch (type) {
                             case "eventregister":
                                 // Event registration asyntask
-                                EventRegistrationTask eventRegistrationTask = new EventRegistrationTask(mContext,PreferenceUtils.getUrlEventRegistration(mContext),token,eventPOJO);
-                                eventRegistrationTask.execute();
+                                EventUpdateTask eventUpdateTask = new EventUpdateTask(mContext,PreferenceUtils.getUrlEventUpdate(mContext),token,eventPOJO);
+                                eventUpdateTask.execute();
                                 break;
                             case "location":
                                 // Event Location asyntask
@@ -1195,14 +1193,14 @@ public class EventDetailsActivity extends AppCompatActivity implements BottomNav
             protected void onCancelled() {
             }
         }
-        public class EventRegistrationTask extends AsyncTask<String, String, String> {
+        public class EventUpdateTask extends AsyncTask<String, String, String> {
 
             private Context mContext;
             private String URL;
-            private String token,password;
+            private String token;
             private EventPOJO eventPOJO;
 
-            EventRegistrationTask(Context mContext,String URL,String token,EventPOJO eventPOJO) {
+            EventUpdateTask(Context mContext,String URL,String token,EventPOJO eventPOJO) {
                 this.mContext = mContext;
                 this.URL=URL;
                 this.eventPOJO = eventPOJO;
@@ -1231,6 +1229,7 @@ public class EventDetailsActivity extends AppCompatActivity implements BottomNav
                 HashMap<String, String> postData = new HashMap<>();
 
                 postData.put("token", token);
+                postData.put("id", event_id);
                 postData.put("event_location_id", eventPOJO.getEventLocationId());
                 postData.put("event_calendar_id", eventPOJO.getEventCalenderId());
                 postData.put("cost", eventPOJO.getCost());
@@ -1258,6 +1257,8 @@ public class EventDetailsActivity extends AppCompatActivity implements BottomNav
                 try {
                     JSONParser parser = new JSONParser();
                     JSONObject jsonObject = (JSONObject)parser.parse(output);
+
+                    Log.e("--->",output.toString());
                     //JSONArray jsonCalendarArray = (JSONArray)jsonObject.get("calendars");
                     JSONObject object = (JSONObject)jsonObject.get("event");
 

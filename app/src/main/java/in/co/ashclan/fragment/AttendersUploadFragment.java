@@ -116,7 +116,7 @@ public class AttendersUploadFragment extends Fragment implements View.OnClickLis
         personList.add(attenderPOJO1);
 
         eventId = getArguments().getString("event_id");
-        fpListView = (ListView) view.findViewById(R.id.attender_listView1);
+        fpListView = (ListView) view.findViewById(R.id.attender_listView);
     /*    txtNote = (TextView)view.findViewById(R.id.txt_message);
         txtTotalAttendance = (TextView)view.findViewById(R.id.total_attendance);
         txtTotalMale = (TextView)view.findViewById(R.id.total_male);

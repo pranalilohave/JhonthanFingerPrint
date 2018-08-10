@@ -6,10 +6,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="bottom"
-    android:id="@+id/relativeLayout_main"
+    android:id="@+id/fragment_upload"
     android:orientation="vertical"
     tools:context=".AttendanceActivity"
     >
+    <!--  android:id="@+id/relativeLayout_main"-->
     <!--<android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -188,22 +189,16 @@
         app:miniFabTitleTextColor="?attr/colorPrimaryDark"
         app:fabDrawable="@drawable/ic_menu_black_24dp" />
 
- <!--   <FrameLayout
+    <!--<FrameLayout
         android:id="@+id/fragment_upload"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:isScrollContainer="true"
         />-->
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/fragment_upload_pager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
-
-    <include
+ <!--   <include
         android:id="@+id/fragment_upload"
-        layout="@layout/custom_framgent_upload_template"/>
+        layout="@layout/custom_framgent_upload_template"/>-->
 
     <android.support.v4.widget.ContentLoadingProgressBar
         android:id="@+id/progress_bar_attendence"
