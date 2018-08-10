@@ -347,6 +347,7 @@
         android:text="Submit"
         android:textAllCaps="false"
         android:layout_marginLeft="5dp"
+        android:layout_marginBottom="50dp"
         style="@style/Widget.AppCompat.Button.Colored"
         app:theme="@style/AppTheme.ButtonStyle"
         android:layout_width="match_parent"

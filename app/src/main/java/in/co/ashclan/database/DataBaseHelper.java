@@ -411,6 +411,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public static final String RECORDING_COL_5 = "created_at";
     public static final String RECORDING_COL_6 = "updated_at";
     public static final String RECORDING_COL_7 = "event_date";
+    public static final String RECORDING_COL_8 = "filePath";
 
 
     public static final String CREATE_TABLE_RECORDING =
@@ -421,7 +422,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                     + RECORDING_COL_4 + " TEXT,"
                     + RECORDING_COL_5 + " TEXT,"
                     + RECORDING_COL_6 + " TEXT,"
-                    + RECORDING_COL_7 + " TEXT"
+                    + RECORDING_COL_7 + " TEXT,"
+                    + RECORDING_COL_8 + " TEXT"
                     + ")";
 
     public DataBaseHelper(Context context) {
@@ -640,6 +642,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         }
     }
     public void updateMemberData(MemberPOJO member) {
+
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
@@ -709,11 +712,51 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         long result = db.insert(EVENTS_TABLE, null, values);
 
         db.close();
+
         if (result == -1) {
             return false;
         } else {
             return true;
         }
+    }
+    public void UpdateEventData(EventPOJO event) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(EVENT_COL_2, event.getId());
+        values.put(EVENT_COL_3, event.getUserId());
+        values.put(EVENT_COL_4, event.getParentId());
+        values.put(EVENT_COL_5, event.getEventLocationId());
+        values.put(EVENT_COL_6, event.getEventCalenderId());
+        values.put(EVENT_COL_7, event.getName());
+        values.put(EVENT_COL_8, event.getCost());
+        values.put(EVENT_COL_9, event.getAllDay());
+        values.put(EVENT_COL_10, event.getStartDate());
+        values.put(EVENT_COL_11, event.getStart_time());
+        values.put(EVENT_COL_12, event.getEnd_time());
+        values.put(EVENT_COL_13, event.getRecurring());
+        values.put(EVENT_COL_14, event.getRecurFrequency());
+        values.put(EVENT_COL_15, event.getRecurStartDate());
+        values.put(EVENT_COL_16, event.getRecurEndDate());
+        values.put(EVENT_COL_17, event.getRecurNextDate());
+        values.put(EVENT_COL_18, event.getRecurType());
+        values.put(EVENT_COL_19, event.getCheckInType());
+        values.put(EVENT_COL_20, event.getTags());
+        values.put(EVENT_COL_21, event.getIncludeCheckOut());
+        values.put(EVENT_COL_22, event.getFamilyCheckIn());
+        values.put(EVENT_COL_23, event.getFeatured_image());
+        values.put(EVENT_COL_24, event.getGallery());
+        values.put(EVENT_COL_25, event.getFiles());
+        values.put(EVENT_COL_26, event.getYear());
+        values.put(EVENT_COL_27, event.getNotes());
+        values.put(EVENT_COL_28, event.getCreatedAt());
+        values.put(EVENT_COL_29, event.getUpdatedAt());
+        values.put(EVENT_COL_30, event.getBranchId());
+        values.put(EVENT_COL_31, event.getEnd_date());
+        values.put(EVENT_COL_32, event.getMonth());
+
+        db.update(EVENTS_TABLE, values, EVENT_COL_2 + " = ? ",
+                new String[]{event.getId()});
     }
     public List<EventPOJO> getAllEvent() {
 
@@ -766,6 +809,58 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.close();
         return events;
     }
+    public EventPOJO getAllEvent(String eventid) {
+
+        EventPOJO event = new EventPOJO();
+
+
+        String selectQuery = "SELECT  * FROM " + EVENTS_TABLE + " WHERE "+EVENT_COL_2+" = '" +eventid+ "'";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        //looping through all row and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+
+                event.setId(cursor.getString(cursor.getColumnIndex(EVENT_COL_2)));
+                event.setUserId(cursor.getString(cursor.getColumnIndex(EVENT_COL_3)));
+                event.setParentId(cursor.getString(cursor.getColumnIndex(EVENT_COL_4)));
+                event.setEventLocationId(cursor.getString(cursor.getColumnIndex(EVENT_COL_5)));
+                event.setEventCalenderId(cursor.getString(cursor.getColumnIndex(EVENT_COL_6)));
+                event.setName(cursor.getString(cursor.getColumnIndex(EVENT_COL_7)));
+                event.setCost(cursor.getString(cursor.getColumnIndex(EVENT_COL_8)));
+                event.setAllDay(cursor.getString(cursor.getColumnIndex(EVENT_COL_9)));
+                event.setStartDate(cursor.getString(cursor.getColumnIndex(EVENT_COL_10)));
+                event.setStart_time(cursor.getString(cursor.getColumnIndex(EVENT_COL_11)));
+                event.setEnd_time(cursor.getString(cursor.getColumnIndex(EVENT_COL_12)));
+                event.setRecurring(cursor.getString(cursor.getColumnIndex(EVENT_COL_13)));
+                event.setRecurFrequency(cursor.getString(cursor.getColumnIndex(EVENT_COL_14)));
+                event.setRecurStartDate(cursor.getString(cursor.getColumnIndex(EVENT_COL_15)));
+                event.setRecurEndDate(cursor.getString(cursor.getColumnIndex(EVENT_COL_16)));
+                event.setRecurNextDate(cursor.getString(cursor.getColumnIndex(EVENT_COL_17)));
+                event.setRecurType(cursor.getString(cursor.getColumnIndex(EVENT_COL_18)));
+                event.setCheckInType(cursor.getString(cursor.getColumnIndex(EVENT_COL_19)));
+                event.setTags(cursor.getString(cursor.getColumnIndex(EVENT_COL_20)));
+                event.setIncludeCheckOut(cursor.getString(cursor.getColumnIndex(EVENT_COL_21)));
+                event.setFamilyCheckIn(cursor.getString(cursor.getColumnIndex(EVENT_COL_22)));
+                event.setFeatured_image(cursor.getString(cursor.getColumnIndex(EVENT_COL_23)));
+                event.setGallery(cursor.getString(cursor.getColumnIndex(EVENT_COL_24)));
+                event.setFiles(cursor.getString(cursor.getColumnIndex(EVENT_COL_25)));
+                event.setYear(cursor.getString(cursor.getColumnIndex(EVENT_COL_26)));
+                event.setNotes(cursor.getString(cursor.getColumnIndex(EVENT_COL_27)));
+                event.setCreatedAt(cursor.getString(cursor.getColumnIndex(EVENT_COL_28)));
+                event.setUpdatedAt(cursor.getString(cursor.getColumnIndex(EVENT_COL_29)));
+                event.setBranchId(cursor.getString(cursor.getColumnIndex(EVENT_COL_30)));
+                event.setEnd_date(cursor.getString(cursor.getColumnIndex(EVENT_COL_31)));
+                event.setMonth(cursor.getString(cursor.getColumnIndex(EVENT_COL_32)));
+
+            } while (cursor.moveToNext());
+        }
+        db.close();
+        return event;
+    }
+
+
     public void deleteAllEvents() {
         try {
             String selectQuery = "DELETE FROM " + EVENTS_TABLE;
@@ -1778,7 +1873,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return yearDifference;
     }
 
-
     //EVENT CALENDAR
     public boolean insertEventCalendarData(CalendarPOJO event) {
 
@@ -1955,8 +2049,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         int male = 0;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
-
-            String selectQuery = ("SELECT count(member_table.gender) as male FROM member_table INNER JOIN TEMP_EVENT_ATTEN ON member_table.id = TEMP_EVENT_ATTEN.member_id WHERE event_id = '" + eventId + "'" + " AND gender = 'male'");
+            String selectQuery = ("SELECT count(member_table.gender) as male FROM member_table INNER JOIN TEMP_EVENT_ATTEN ON member_table.id = TEMP_EVENT_ATTEN.member_id WHERE event_id = '" + eventId + "'" + " AND gender = 'male' OR gender = 'Male' ");
             Cursor cursor = db.rawQuery(selectQuery, null);
             if (cursor.moveToLast()) {
                 male = cursor.getInt(cursor.getColumnIndex("male"));
@@ -1971,17 +2064,16 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         try {
             SQLiteDatabase db = this.getWritableDatabase();
 
-            String selectQuery = ("SELECT count(member_table.gender) as male FROM member_table INNER JOIN TEMP_EVENT_ATTEN ON member_table.id = TEMP_EVENT_ATTEN.member_id WHERE event_id = '" + eventId + "'" + " AND gender = 'female'");
+            String selectQuery = ("SELECT count(member_table.gender) as female FROM member_table INNER JOIN TEMP_EVENT_ATTEN ON member_table.id = TEMP_EVENT_ATTEN.member_id WHERE event_id = '" + eventId + "'" + " AND gender = 'female' OR gender = 'Female'");
             Cursor cursor = db.rawQuery(selectQuery, null);
             if (cursor.moveToLast()) {
-                female = cursor.getInt(cursor.getColumnIndex("male"));
+                female = cursor.getInt(cursor.getColumnIndex("female"));
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return female;
     }
-
 
     //RECORDING TABLE
     public boolean insertRecordingData(RecordingPOJO recording) {
@@ -1995,6 +2087,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         values.put(RECORDING_COL_5, recording.getCreatedat());
         values.put(RECORDING_COL_6, recording.getUpdatedat());
         values.put(RECORDING_COL_7, recording.getEventDate());
+        values.put(RECORDING_COL_8, recording.getFilePath());
 
         long result = db.insert(RECORDING_TABLE, null, values);
 
@@ -2023,8 +2116,10 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 recording.setCreatedat(cursor.getString(cursor.getColumnIndex(RECORDING_COL_5)));
                 recording.setUpdatedat(cursor.getString(cursor.getColumnIndex(RECORDING_COL_6)));
                 recording.setEventDate(cursor.getString(cursor.getColumnIndex(RECORDING_COL_7)));
+                recording.setFilePath(cursor.getString(cursor.getColumnIndex(RECORDING_COL_8)));
 
                 recordingList.add(recording);
+
             } while (cursor.moveToNext());
         }
         db.close();
@@ -2041,5 +2136,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             Log.e("Locations Error-->", ex.toString());
         }
     }
+
+
 }
 

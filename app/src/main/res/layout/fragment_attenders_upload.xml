@@ -1,4 +1,5 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -6,7 +7,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="in.co.ashclan.fragment.AttendersUploadFragment">
 
-    <LinearLayout
+    <ListView
+        android:id="@+id/attender_listView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
+
+ <!--   <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -52,16 +59,16 @@
     <ListView
         android:id="@+id/attender_listView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:isScrollContainer="true"/>
 
-    </LinearLayout>
+    </LinearLayout>-->
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_upload_attendance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
+        android:layout_gravity="bottom|right"
         android:layout_marginBottom="35dp"
         android:layout_marginEnd="38dp"
         android:scaleType="fitXY"
@@ -75,10 +82,7 @@
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
         android:layout_gravity="center_horizontal|center_vertical"
-        android:layout_marginTop="188dp"
         android:visibility="invisible" />
 
-</RelativeLayout>
+</FrameLayout>

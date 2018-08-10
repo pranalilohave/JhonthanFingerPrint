@@ -836,7 +836,7 @@ public class MemberListActivity extends AppCompatActivity
                     member.setCreateAt(Utils.isNull(object,"created_at"));
                     member.setUpdateAt(Utils.isNull(object,"updated_at"));
                     member.setFingerPrint(Utils.isNull(object,"fingerprint"));
-                    member.setFingerPrint2(Utils.isNull(object,"fingerprint2"));
+                    member.setFingerPrint1(Utils.isNull(object,"fingerprint2"));
 
                     //remainber to do changes...
                     member.setPhotoURL(Utils.isNull(object,"photo",""));

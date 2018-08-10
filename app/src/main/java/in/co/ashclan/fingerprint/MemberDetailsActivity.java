@@ -126,7 +126,7 @@ public class MemberDetailsActivity extends AppCompatActivity
         list.addAll(dataBaseHelper.getAllMembers());
 
         inits();
-        MemberPOJO m=(MemberPOJO) getIntent().getSerializableExtra("member_details");
+        MemberPOJO m = (MemberPOJO) getIntent().getSerializableExtra("member_details");
         memberDetails=dataBaseHelper.getMemberDetails(m.getId());
         Log.e("----jj>",memberDetails.toString());
         navigationBar();
@@ -973,6 +973,7 @@ public class MemberDetailsActivity extends AppCompatActivity
 
     /****************************** Group Pager Adapter Class *************************/
     public class MyViewPagerAdapter extends PagerAdapter {
+
         private LayoutInflater inflater;
         Context vContext;
         GroupsPOJO groupsPOJO;
@@ -985,6 +986,7 @@ public class MemberDetailsActivity extends AppCompatActivity
             this.vContext = vContext;
         }
         @NonNull
+
         @Override
         public Object instantiateItem(@NonNull ViewGroup container, int position) {
             inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);

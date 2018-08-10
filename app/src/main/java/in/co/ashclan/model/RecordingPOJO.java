@@ -3,7 +3,7 @@ package in.co.ashclan.model;
 import java.io.Serializable;
 
 public class RecordingPOJO implements Serializable {
-    String eventid,userid,filename,updatedat,createdat,eventDate;
+    String eventid,userid,filename,updatedat,createdat,eventDate,filePath;
 
     public RecordingPOJO(String eventid, String userid, String filename, String updatedat, String createdat, String eventDate) {
         this.eventid = eventid;
@@ -26,7 +26,16 @@ public class RecordingPOJO implements Serializable {
                 ", updatedat='" + updatedat + '\'' +
                 ", createdat='" + createdat + '\'' +
                 ", eventDate='" + eventDate + '\'' +
+                ", filepath='" + filePath + '\'' +
                 '}';
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 
     public String getEventid() {

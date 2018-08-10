@@ -46,6 +46,8 @@ public class  Constants {
                 PreferenceUtils.setUrlAddLocation(context,"http://52.172.221.235:8983/api/add_locations");
                 PreferenceUtils.setUrlEventRegistration(context,"http://52.172.221.235:8983/api/create_event");
 
+                PreferenceUtils.setUrlRecordingRegistration(context,"http://52.172.221.235:8983/api/add_recording");
+
                 break;
 
             case 1:
@@ -73,6 +75,9 @@ public class  Constants {
                 PreferenceUtils.setUrlAddLocation(context,"https://bwc.pentecostchurch.org/api/add_locations");
                 PreferenceUtils.setUrlEventRegistration(context,"https://bwc.pentecostchurch.org/api/create_event");
 
+
+                PreferenceUtils.setUrlRecordingRegistration(context,"https://bwc.pentecostchurch.org/api/add_recording");
+
                 break;
 
             default:
@@ -95,6 +100,8 @@ public class  Constants {
                 PreferenceUtils.setUrlAddCalendar(context,"http://52.172.221.235:8983/api/add_calendars");
                 PreferenceUtils.setUrlAddLocation(context,"http://52.172.221.235:8983/api/add_locations");
                 PreferenceUtils.setUrlEventRegistration(context,"http://52.172.221.235:8983/api/create_event");
+
+                PreferenceUtils.setUrlRecordingRegistration(context,"http://52.172.221.235:8983/api/add_recording");
 
 
                 break;

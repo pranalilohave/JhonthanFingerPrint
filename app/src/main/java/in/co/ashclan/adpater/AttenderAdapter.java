@@ -50,6 +50,8 @@ public class AttenderAdapter extends BaseAdapter {
                 .showImageOnFail(R.drawable.ic_person)
                 .build();
 
+        // imageLoader.destroy();
+
         loaderConfiguration = new ImageLoaderConfiguration.Builder(mContext)
                 .defaultDisplayImageOptions(imageOptions).build();
         imageLoader.init(loaderConfiguration);

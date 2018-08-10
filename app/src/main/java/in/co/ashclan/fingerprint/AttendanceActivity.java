@@ -25,6 +25,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -100,7 +101,7 @@ import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 import static in.co.ashclan.utils.Utils.isNull;
 import static in.co.ashclan.utils.WebServiceCall.performPostCall;
 
-public class AttendanceActivity extends AppCompatActivity{
+public class AttendanceActivity extends AppCompatActivity implements AttendersUploadFragment.OnFragmentInteractionListener{
 
     private static final int REQUEST_RECORD_AUDIO = 0;
     String fileName ;
@@ -108,11 +109,11 @@ public class AttendanceActivity extends AppCompatActivity{
    private String  AUDIO_FILE_PATH ;
 
     private TextView fpTextView;
-    private ListView fpListView;
+    //private ListView fpListView;
     private  TextView txt_date,txt_service,txt_dialog;
     private TextClock txt_time;
     RelativeLayout relativeLayout;
-    RelativeLayout relativeLayout1;
+    //FrameLayout relativeLayout1;
     ImageLoaderConfiguration loaderConfiguration;
     ImageLoader imageLoader = ImageLoader.getInstance();
     public boolean isFragment = false;
@@ -203,12 +204,12 @@ public class AttendanceActivity extends AppCompatActivity{
 
         mContext = AttendanceActivity.this;
         dataBaseHelper = new DataBaseHelper(mContext);
-        fpListView = (ListView) findViewById(R.id.listView);
+        //fpListView = (ListView) findViewById(R.id.listView);
         fpTextView = (TextView) findViewById(R.id.text_fing);
         fpMatchImage = (ImageView) findViewById(R.id.match_image);
         imagefinger = (ImageView) findViewById(R.id.img_finger);
         relativeLayout = (RelativeLayout)findViewById(R.id.relativeLayout_main);
-        relativeLayout1 = (RelativeLayout)findViewById(R.id.fragment_upload);
+        //relativeLayout1 = (FrameLayout)findViewById(R.id.fragment_upload);
 
       //  imageUpload=(ImageView)findViewById(R.id.image_upload);
        // imageRecorder=(ImageView)findViewById(R.id.image_recorder);
@@ -238,16 +239,23 @@ public class AttendanceActivity extends AppCompatActivity{
                         //startActivity(new Intent(mContext,QRCodeReaderActivity.class));
                         //showAlertDialog();
                         // AttenderFragment(personList,eventId);
+
                         isFragment = true;
 
                         //attendersUploadFragment = new AttendersUploadFragment(AttendanceActivity.this,eventId,formattedDate.toString());
                         fragmentManager = getSupportFragmentManager();
                         fragmentTransaction = fragmentManager.beginTransaction();
-                        attendersUploadFragment = new AttendersUploadFragment(AttendanceActivity.this,eventId,formattedDate.toString());
+                        attendersUploadFragment = new AttendersUploadFragment();
+
+                        Bundle bundle = new Bundle();
+                        bundle.putString("event_id", eventId);
+                        // set Fragmentclass Arguments
+                        attendersUploadFragment.setArguments(bundle);
                         fragmentTransaction.add(R.id.fragment_upload, attendersUploadFragment);
-                       // fragmentTransaction.attach(fragment);
+                        //fragmentTransaction.attach(attendersUploadFragment);
+                        //relativeLayout1.setVisibility(View.VISIBLE);
                         fragmentTransaction.addToBackStack(null);
-                        relativeLayout1.setVisibility(View.VISIBLE);
+                        fragmentTransaction.show(attendersUploadFragment);
                         fragmentTransaction.commit();
 
                          /* Intent i = new Intent(AttendanceActivity.this,AttenderActivity.class);
@@ -353,18 +361,6 @@ public class AttendanceActivity extends AppCompatActivity{
             }
         });*/
     }
-    private void AttenderFragment(ArrayList<MemberPOJO> personList, String eventId) {
-
-        isFragment = true;
-        fragmentManager = getSupportFragmentManager();
-        fragmentTransaction = fragmentManager.beginTransaction();
-        attendersUploadFragment = new AttendersUploadFragment(AttendanceActivity.this,eventId);
-        fragmentTransaction.add(R.id.fragment_upload, attendersUploadFragment, "HELLO");
-     //   fragmentTransaction.attach(attendersUploadFragment);
-        relativeLayout1.setVisibility(View.VISIBLE);
-        //fragmentTransaction.attach(fragment);
-        fragmentTransaction.commit();
-    }
     private void setHomeAction() {
         String memberIds="";
         String eventId=getIntent().getStringExtra("eventId");
@@ -421,7 +417,7 @@ public class AttendanceActivity extends AppCompatActivity{
 
     public void FPProcess(){
         count=1;
-       fpStatusText.setText("Place your finger on the Sensor util your name appears");
+       fpStatusText.setText("Place your finger on the Sensor until your name appears");
         try {
             Thread.currentThread();
             Thread.sleep(200);
@@ -721,7 +717,7 @@ public class AttendanceActivity extends AppCompatActivity{
             {
                 e.printStackTrace();
             }
-            fpTextView.setText("Place your finger on the Sensor util your name appears");
+            fpTextView.setText("Place your finger on the Sensor until your name appears");
             imagefinger.setImageDrawable(getResources().getDrawable(R.drawable.ic_finger));
             //tvFpStatus.setText(getString(R.string.txt_fpplace));
             if(isPhone) {
@@ -1085,7 +1081,7 @@ public class AttendanceActivity extends AppCompatActivity{
         }
     }
 
-    private void ScrollListViewToBottom() {
+   /* private void ScrollListViewToBottom() {
         fpListView.post(new Runnable() {
             @Override
             public void run() {
@@ -1093,7 +1089,12 @@ public class AttendanceActivity extends AppCompatActivity{
                 fpListView.setSelection(memberAdapter.getCount() - 1);
             }
         });
-    }//scrolling
+    }//scrolling*/
+
+    @Override
+    public void onFragmentInteraction(View uri) {
+    }
+
     //**********************************************************************************
     public class GetAccessTokenTask extends AsyncTask<String, String, String> {
 
@@ -1284,9 +1285,10 @@ public class AttendanceActivity extends AppCompatActivity{
     }
 
     public void recordAudio() {
-        fileName = System.currentTimeMillis() + "audio.wav";
-        AUDIO_FILE_PATH = Environment.getExternalStorageDirectory().getPath() + "/"+fileName;
 
+        fileName = System.currentTimeMillis() + ".wav";
+        AUDIO_FILE_PATH = Environment.getExternalStorageDirectory().getPath() + "/"+fileName;
+        Uri uri = Uri.parse(AUDIO_FILE_PATH);
         AndroidAudioRecorder.with(this)
                 // Required
                 .setFilePath(AUDIO_FILE_PATH)
@@ -1304,12 +1306,14 @@ public class AttendanceActivity extends AppCompatActivity{
                 //7507609658
                 .record();
         RecordingPOJO recordingPOJO = new RecordingPOJO();
-        recordingPOJO.setEventid(eventId);
+        //recordingPOJO.setEventid(eventId);
+        recordingPOJO.setEventid("25");
         recordingPOJO.setEventDate(txt_date.getText().toString());
-        recordingPOJO.setFilename(AUDIO_FILE_PATH);
+        //recordingPOJO.setFilename(uri.getPath().toString());
+        recordingPOJO.setFilename(fileName);
+        recordingPOJO.setFilePath(uri.toString());
 
         dataBaseHelper.insertRecordingData(recordingPOJO);
-
     }
 
 /*
@@ -1338,15 +1342,21 @@ public class AttendanceActivity extends AppCompatActivity{
 
         if(keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN){
 
-            String eventId=getIntent().getStringExtra("eventId");
+            String eventId = getIntent().getStringExtra("eventId");
 
             if(isFragment){
+
+                //Toast.makeText(mcontext, "this is clicked", Toast.LENGTH_SHORT).show();
+
                 fragmentManager = getSupportFragmentManager();
                 fragmentTransaction = fragmentManager.beginTransaction();
-                attendersUploadFragment = new AttendersUploadFragment(AttendanceActivity.this,eventId);
-                fragmentTransaction.remove(attendersUploadFragment);
-                relativeLayout1.setVisibility(View.GONE);
-                fragmentTransaction.commit();
+               // attendersUploadFragment = new AttendersUploadFragment(AttendanceActivity.this,eventId);
+                //attendersUploadFragment = new AttendersUploadFragment();
+                //fragmentTransaction.detach(attendersUploadFragment);
+                fragmentManager.popBackStack();
+
+                //relativeLayout1.setVisibility(View.GONE);
+               //fragmentTransaction.commit();
                 isFragment = false;
             }else
             {
@@ -1532,111 +1542,8 @@ public class AttendanceActivity extends AppCompatActivity{
         return super.onOptionsItemSelected(item);
     }
 
-   /* public void memberRegisterGovNet(String URL, final MemberPOJO memberDetails){
-        try {
-            Log.e("---->",URL);
-            Log.e("---->REG",memberDetails.toString());
 
-            final String uploadId = UUID.randomUUID().toString();
-            MultipartUploadRequest multipartUploadRequest = new MultipartUploadRequest(mContext, uploadId, URL);
-            UploadServiceBroadcastReceiver uploadServiceBroadcastReceiver;
-            multipartUploadRequest.addFileToUpload(getImagePath(),"photo" )
-                    .addParameter("token", PreferenceUtils.getToken(MemberRegisterActivity.this))
-                    .addParameter("first_name", memberDetails.getFirstName())
-                    .addParameter("middle_name", memberDetails.getMiddleName())
-                    .addParameter("last_name", memberDetails.getLastName())
-                    .addParameter("gender", memberDetails.getGender())
-                    .addParameter("marital_status", memberDetails.getMaritalStatus())
-                    .addParameter("status", memberDetails.getStatus())
-                    .addParameter("mobile_phone", memberDetails.getMobilePhone())
-                    .addParameter("dob", memberDetails.getDob())
-                    .addParameter("address", memberDetails.getAddress())
-                    .addParameter("fingerprint", memberDetails.getFingerPrint())
-                    .addParameter("home_phone", memberDetails.getHomePhone())
-                    .addParameter("work_phone", memberDetails.getWorkPhone())
-                    .addParameter("email", memberDetails.getEmail())
-                    .addParameter("notes", memberDetails.getNotes())
-                    .addParameter("fingerprint2", memberDetails.getFingerPrint1())
-                    .setNotificationConfig(new UploadNotificationConfig())
-                    .setMaxRetries(2)
-                    .setDelegate(new UploadStatusDelegate() {
-                        @Override
-                        public void onProgress(Context context, UploadInfo uploadInfo) {
-                        }
 
-                        @Override
-                        public void onError(Context context, UploadInfo uploadInfo, ServerResponse serverResponse, Exception exception) {
-                            Log.e("---->",serverResponse.getBodyAsString().toString());
-                            buttonSubmit.setEnabled(true);
-                            progressBar.setVisibility(View.GONE);
-                            Toast.makeText(MemberRegisterActivity.this,"error",Toast.LENGTH_LONG).show();
-                        }
-
-                        @Override
-                        public void onCompleted(Context context, UploadInfo uploadInfo, ServerResponse serverResponse) {
-                            Log.e("--->",serverResponse.getBodyAsString().toString());
-
-                            JSONParser parser = new JSONParser();
-                            MemberPOJO memberRegister = new MemberPOJO();
-                            JSONObject jsonObject=null;
-                            try{
-                                jsonObject = (JSONObject)parser.parse(serverResponse.getBodyAsString().toString());
-                                String result = (String) jsonObject.get("result");
-                                Toast.makeText(MemberRegisterActivity.this,result,Toast.LENGTH_SHORT).show();
-
-                                JSONObject memberObject = (JSONObject) jsonObject.get("member");
-                                memberRegister.setFirstName(isNull(memberObject,"first_name"));
-                                memberRegister.setMiddleName(isNull(memberObject,"middle_name"));
-                                memberRegister.setLastName(isNull(memberObject,"last_name"));
-                                memberRegister.setEmail(isNull(memberObject,"email"));
-                                memberRegister.setUserId(isNull(memberObject,"user_id"));
-                                memberRegister.setRollNo(isNull(memberObject,"No"));
-                                memberRegister.setGender(isNull(memberObject,"gender"));
-                                memberRegister.setMaritalStatus(isNull(memberObject,"marital_status"));
-                                memberRegister.setStatus(isNull(memberObject,"status"));
-                                memberRegister.setHomePhone(isNull(memberObject,"home_phone"));
-                                memberRegister.setMobilePhone(isNull(memberObject,"mobile_phone"));
-                                memberRegister.setWorkPhone(isNull(memberObject,"work_phone"));
-                                memberRegister.setFingerPrint(isNull(memberObject,"fingerprint"));
-                                memberRegister.setDob(isNull(memberObject,"dob"));
-                                memberRegister.setPhotoURL(isNull(memberObject,"photo"));
-                                memberRegister.setAddress(isNull(memberObject,"address"));
-                                memberRegister.setUpdateAt(isNull(memberObject,"updated_at"));
-                                memberRegister.setCreateAt(isNull(memberObject,"created_at"));
-                                memberRegister.setId(isNull(memberObject,"id"));
-                                memberRegister.setNotes(isNull(memberObject,"notes"));
-                                memberRegister.setFingerPrint1(isNull(memberObject,"fingerprint2"));
-                                dataBaseHelper.insertMemberData(memberRegister);
-
-                            }catch (Exception ex){
-                                ex.printStackTrace();
-                            }
-
-                            if (isPhone){
-                                SerialPortManagerA5.getInstance().closeSerialPort();
-                                finish();
-                                progressBar.setVisibility(View.INVISIBLE);
-
-                            }
-                            if (isTablet) {
-                                SerialPortManager.getInstance().closeSerialPort();
-                                finish();
-                                progressBar.setVisibility(View.INVISIBLE);
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(Context context, UploadInfo uploadInfo) {
-
-                            Log.e("--->","caln");
-                        }
-                    })
-                    .startUpload(); //Starting the upload
-
-        } catch (Exception exc) {
-            Toast.makeText(this, exc.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-    }*/
 
 }
 

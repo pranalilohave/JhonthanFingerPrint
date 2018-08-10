@@ -949,58 +949,16 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
             progressBar.setVisibility(View.VISIBLE);
             //"http://52.172.221.235:8983/api/create_member"
 
-            for (MemberPOJO member:list){
-
-                byte[] tmp1 = new byte[256];
-                if(!member.getFingerPrint().equals("")){
-                    byte[] tmp2 = Base64.decode(member.getFingerPrint(),Base64.DEFAULT);
-                    if(tmp2!=null){
-                        System.arraycopy(tmp2, 0, tmp1, 0, 256);
-
-                        Log.e("---->",member.getId()+"  -->"+member.getFingerPrint()+" ><><><><><>< "+(FPMatch.getInstance().MatchTemplate(fpByte1,tmp1)>60));
-
-                        if(FPMatch.getInstance().MatchTemplate(fpByte1,tmp1)>60){
-                            Toast.makeText(MemberRegisterActivity.this,"inside",Toast.LENGTH_LONG).show();
-                            Log.e("----> inside",member.getFingerPrint());
-                            Log.e("----> inside",member.getId());
-
-                            isDuplicated = true;
-                            break;
-                        }
-                        if(FPMatch.getInstance().MatchTemplate(fpByte2,tmp1)>60){
-                            Toast.makeText(MemberRegisterActivity.this,"inside",Toast.LENGTH_LONG).show();
-                            Log.e("----> inside",member.getFingerPrint());
-                            Log.e("----> inside",member.getId());
-
-                            isDuplicated = true;
-                            break;
-                        }
-
-                        System.arraycopy(tmp2, 256, tmp1, 0, 256);
-
-                        if(FPMatch.getInstance().MatchTemplate(fpByte1,tmp1)>60){
-                            isDuplicated=true;
-                            break;
-                        }
-
-                        if(FPMatch.getInstance().MatchTemplate(fpByte2,tmp1)>60){
-                            isDuplicated=true;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            if(!isDuplicated) {
+        //    if(!isDuplicated) {
                 // getAccessTokenGovNet(PreferenceUtils.getUrlLogin(mContext),PreferenceUtils.getAdminName(mContext),PreferenceUtils.getAdminPassword(mContext));
 
                 GetAccessTokenTask aTask = new GetAccessTokenTask(mContext,PreferenceUtils.getUrlLogin(mContext),
                         PreferenceUtils.getAdminName(mContext),PreferenceUtils.getAdminPassword(mContext),memberDetails);
                 aTask.execute();
-            }else {
-                imageViewFingerPrint1.setColorFilter(getResources().getColor(R.color.red));
-                Toast.makeText(MemberRegisterActivity.this,"Duplicated FingerPrint",Toast.LENGTH_LONG).show();
-            }
+//            }else {
+//                imageViewFingerPrint1.setColorFilter(getResources().getColor(R.color.red));
+//                Toast.makeText(MemberRegisterActivity.this,"Duplicated FingerPrint",Toast.LENGTH_LONG).show();
+//            }
 
         }
     }
@@ -1696,6 +1654,8 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
                                 finish();
                                 progressBar.setVisibility(View.INVISIBLE);
                             }
+
+                            finish();
                         }
 
                         @Override

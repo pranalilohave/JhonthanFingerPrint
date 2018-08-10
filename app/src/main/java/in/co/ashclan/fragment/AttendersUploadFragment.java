@@ -49,10 +49,10 @@ import in.co.ashclan.utils.PreferenceUtils;
 import static in.co.ashclan.utils.Utils.isNull;
 import static in.co.ashclan.utils.WebServiceCall.performPostCall;
 
-@SuppressLint("ValidFragment")
 public class AttendersUploadFragment extends Fragment implements View.OnClickListener {
-   //   // private OnFragmentInteractionListener mListener;
-    Activity activity;
+
+    private OnFragmentInteractionListener mListener;
+
     Context mContext;
     MemberAdapter memberAdapter;
     AttenderAdapter attenderAdapter;
@@ -60,7 +60,7 @@ public class AttendersUploadFragment extends Fragment implements View.OnClickLis
     ArrayList<EventAttendancePOJO> attendersList = new ArrayList<EventAttendancePOJO>();
     String eventId;
     private ListView fpListView;
-    TextView txtNote,txtTotalAttendance,txtTotalMale,txtTotalFemale;
+   // TextView txtNote,txtTotalAttendance,txtTotalMale,txtTotalFemale;
     DataBaseHelper dataBaseHelper;
     ContentLoadingProgressBar progressBar;
     FloatingActionButton floatingActionButton;
@@ -69,7 +69,13 @@ public class AttendersUploadFragment extends Fragment implements View.OnClickLis
     String txtdate;
     private static final String TAG = "-->frag";
 
-    @SuppressLint("ValidFragment")
+
+    public AttendersUploadFragment() {
+        // Required empty public constructor
+       }
+
+
+   /* @SuppressLint("ValidFragment")
     public AttendersUploadFragment(Activity activity, String eventId) {
         // Required empty public constructor
         this.activity = activity;
@@ -82,34 +88,39 @@ public class AttendersUploadFragment extends Fragment implements View.OnClickLis
         this.activity = activity;
         this.eventId = eventId;
         this.txtdate = txtdate;
-    }
+    }*/
 
-    @Override
+ /*   @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //mContext = activity;
-        mContext = getActivity().getApplicationContext();
-        dataBaseHelper = new DataBaseHelper(mContext);
-        personList = (ArrayList<AttenderPOJO>) dataBaseHelper.getAllTempAttender(eventId);
-      /*  AttenderPOJO attenderPOJO1 = new AttenderPOJO("BWC1","demo","123456789","male","2","jungle","demo","khan","12/12/12","12/12/12","");
-        personList.add(attenderPOJO1);
-        personList.add(attenderPOJO1);
-        personList.add(attenderPOJO1);
-        personList.add(attenderPOJO1);
-        personList.add(attenderPOJO1);
-        personList.add(attenderPOJO1);*/
-    }
+    }*/
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_attenders_upload, container, false);
 
-        fpListView = (ListView) view.findViewById(R.id.attender_listView);
-        txtNote = (TextView)view.findViewById(R.id.txt_message);
+        mContext = getActivity().getApplicationContext();
+        dataBaseHelper = new DataBaseHelper(mContext);
+        personList = (ArrayList<AttenderPOJO>) dataBaseHelper.getAllTempAttender(eventId);
+        AttenderPOJO attenderPOJO1 = new AttenderPOJO("BWC1","demo","123456789","male","2012-12-12","jungle","demo","khan","12/12/12","12/12/12","");
+        personList.add(attenderPOJO1);
+        personList.add(attenderPOJO1);
+        personList.add(attenderPOJO1);
+        personList.add(attenderPOJO1);
+        personList.add(attenderPOJO1);
+        personList.add(attenderPOJO1);
+        personList.add(attenderPOJO1);
+        personList.add(attenderPOJO1);
+
+        eventId = getArguments().getString("event_id");
+        fpListView = (ListView) view.findViewById(R.id.attender_listView1);
+    /*    txtNote = (TextView)view.findViewById(R.id.txt_message);
         txtTotalAttendance = (TextView)view.findViewById(R.id.total_attendance);
         txtTotalMale = (TextView)view.findViewById(R.id.total_male);
-        txtTotalFemale = (TextView)view.findViewById(R.id.total_female);
+        txtTotalFemale = (TextView)view.findViewById(R.id.total_female);*/
         floatingActionButton = (FloatingActionButton)view.findViewById(R.id.fab_upload_attendance);
         progressBar = (ContentLoadingProgressBar)view.findViewById(R.id.fragment_progress_bar_attender);
         floatingActionButton.setEnabled(true);
@@ -120,10 +131,14 @@ public class AttendersUploadFragment extends Fragment implements View.OnClickLis
             attenderAdapter = new AttenderAdapter(mContext,personList);
             attenderAdapter.notifyDataSetChanged();
             fpListView.setAdapter(attenderAdapter);
+            fpListView.setScrollContainer(true);
+            fpListView.setNestedScrollingEnabled(true);
+/*
 
             txtTotalAttendance.setText("Total Attendance = " + personList.size());
             txtTotalMale.setText("Total Male's :- " + dataBaseHelper.getmaleCount(eventId));
             txtTotalFemale.setText("Total Female's :- " + dataBaseHelper.getfemaleCount(eventId));
+*/
 
            /* memberAdapter = new MemberAdapter(mContext,personList,"ic_person.png");
             memberAdapter.notifyDataSetChanged();
@@ -131,24 +146,24 @@ public class AttendersUploadFragment extends Fragment implements View.OnClickLis
             fpListView.setAdapter(memberAdapter);*/
         }
         floatingActionButton.setOnClickListener(this);
-        ScrollListViewToBottom();
+        //ScrollListViewToBottom();
         return view;
     }
 
-    /*public void onButtonPressed(View view) {
+    public void onButtonPressed(View view) {
             if (mListener != null) {
                 mListener.onFragmentInteraction(view);
             }
-        }*/
+        }
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        /*if (context instanceof OnFragmentInteractionListener) {
+        if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
-        }*/
+        }
        // ((AttendanceActivity) activity).onAttachedToWindow();
     }
 
@@ -160,7 +175,7 @@ public class AttendersUploadFragment extends Fragment implements View.OnClickLis
     @Override
     public void onDetach() {
         super.onDetach();
-        //mListener = null;
+        mListener = null;
     }
 
     @Override
@@ -203,7 +218,7 @@ public class AttendersUploadFragment extends Fragment implements View.OnClickLis
                     });*//*
                     snackbar.setActionTextColor(Color.YELLOW);
                     snackbar.show();*/
-            Toast.makeText(activity, "Nothing to Upload", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "Nothing to Upload", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -401,7 +416,7 @@ public class AttendersUploadFragment extends Fragment implements View.OnClickLis
         return str.substring(0, str.length() - 1);
     }
 
-    private void ScrollListViewToBottom() {
+ /*   private void ScrollListViewToBottom() {
         fpListView.post(new Runnable() {
             @Override
             public void run() {
@@ -416,5 +431,10 @@ public class AttendersUploadFragment extends Fragment implements View.OnClickLis
 
             }
         });
-    }//scrolling
+    }//scrolling*/
+
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onFragmentInteraction(View uri);
+    }
 }

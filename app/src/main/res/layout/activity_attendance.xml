@@ -41,12 +41,12 @@
         app:srcCompat="@drawable/ic_menu_black_24dp" />
 
 
-    <ListView
+   <!-- <ListView
         android:id="@+id/listView"
         android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" >
-    </ListView>
+    </ListView>-->
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -130,7 +130,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical|center_horizontal"
-            android:text="Click Here"
+            android:text="Place your finger until your name appears"
             android:textColor="@android:color/black"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -188,12 +188,22 @@
         app:miniFabTitleTextColor="?attr/colorPrimaryDark"
         app:fabDrawable="@drawable/ic_menu_black_24dp" />
 
-    <RelativeLayout
+ <!--   <FrameLayout
         android:id="@+id/fragment_upload"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:isScrollContainer="true"
+        />-->
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/fragment_upload_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         />
+
+    <include
+        android:id="@+id/fragment_upload"
+        layout="@layout/custom_framgent_upload_template"/>
 
     <android.support.v4.widget.ContentLoadingProgressBar
         android:id="@+id/progress_bar_attendence"
