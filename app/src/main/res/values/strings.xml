@@ -24,6 +24,12 @@
         <item>UnKnown</item>
     </string-array>
 
+    <string-array name="array_role">
+        <item>Admin</item>
+        <item>Editor</item>
+        <item>View</item>
+    </string-array>
+
 
     <string-array name="array_marital_status">
         <item>Single</item>

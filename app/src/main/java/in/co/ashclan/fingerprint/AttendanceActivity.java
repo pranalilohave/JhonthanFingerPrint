@@ -248,6 +248,7 @@ public class AttendanceActivity extends AppCompatActivity implements AttendersUp
                         attendersUploadFragment = new AttendersUploadFragment();
                         Bundle bundle = new Bundle();
                         bundle.putString("event_id", eventId);
+                        bundle.putString("date", formattedDate);
                         // set Fragmentclass Arguments
                         attendersUploadFragment.setArguments(bundle);
                         fragmentTransaction.add(R.id.fragment_upload, attendersUploadFragment);
@@ -1033,7 +1034,7 @@ public class AttendanceActivity extends AppCompatActivity implements AttendersUp
         }else{
             //personList.add(member);
             //addintoTempAttendenceList(personList);
-            String eventId=getIntent().getStringExtra("eventId");
+            String eventId = getIntent().getStringExtra("eventId");
 
           /*  if(!dataBaseHelper.isTEMPMemberAvailable(member.getId(),eventId))
             {*/
@@ -1050,6 +1051,8 @@ public class AttendanceActivity extends AppCompatActivity implements AttendersUp
                 attender.setAttenTime(member.getAttenTime());
 
                 dataBaseHelper.insertTempEventAttendaceData(attender);
+
+                Log.e("temp-->", attender.toString() );
 
             //}
 

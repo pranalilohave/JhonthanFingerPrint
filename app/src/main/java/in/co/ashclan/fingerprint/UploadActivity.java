@@ -290,7 +290,7 @@ public class UploadActivity extends AppCompatActivity
                     .addParameter("work_phone", memberDetails.getWorkPhone())
                     .addParameter("email", memberDetails.getEmail())
                     .addParameter("notes", memberDetails.getNotes())
-                    .addParameter("fingerprint2",memberDetails.getFingerPrint2())
+                    .addParameter("fingerprint2",memberDetails.getFingerPrint1())
                     .setNotificationConfig(new UploadNotificationConfig())
                     .setMaxRetries(2)
                     .setDelegate(new UploadStatusDelegate() {
@@ -339,7 +339,7 @@ public class UploadActivity extends AppCompatActivity
                                 memberRegister.setCreateAt(isNull(memberObject,"created_at"));
                                 memberRegister.setId(isNull(memberObject,"id"));
                                 memberRegister.setNotes(isNull(memberObject,"notes"));
-                                memberRegister.setFingerPrint2(isNull(memberObject,"fingerprint2"));
+                                memberRegister.setFingerPrint1(isNull(memberObject,"fingerprint2"));
 
                                 dataBaseHelper.insertMemberData(memberRegister);
 /*
@@ -402,7 +402,7 @@ public class UploadActivity extends AppCompatActivity
                         .addParameter("email", memberDetails.getEmail())
                         .addParameter("notes", memberDetails.getNotes())
                         .addParameter("id", memberDetails.getUserId())
-                        .addParameter("fingerprint2",memberDetails.getFingerPrint2())
+                        .addParameter("fingerprint2",memberDetails.getFingerPrint1())
                         .setNotificationConfig(new UploadNotificationConfig())
                         .setMaxRetries(2)
                         .setDelegate(new UploadStatusDelegate() {
@@ -450,7 +450,7 @@ public class UploadActivity extends AppCompatActivity
                                     memberRegister.setCreateAt(isNull(memberObject, "created_at"));
                                     memberRegister.setId(isNull(memberObject, "id"));
                                     memberRegister.setNotes(isNull(memberObject, "notes"));
-                                    memberRegister.setFingerPrint2(isNull(memberObject,"fingerprint2"));
+                                    memberRegister.setFingerPrint1(isNull(memberObject,"fingerprint2"));
                                     //    dataBaseHelper.insertMemberData(memberRegister);
                                     dataBaseHelper.updateMemberData(memberRegister);
                                 } catch (Exception ex) {
@@ -490,7 +490,7 @@ public class UploadActivity extends AppCompatActivity
                         .addParameter("email", memberDetails.getEmail())
                         .addParameter("notes", memberDetails.getNotes())
                         .addParameter("id", memberDetails.getUserId())
-                        .addParameter("fingerprint2", memberDetails.getFingerPrint2())
+                        .addParameter("fingerprint2", memberDetails.getFingerPrint1())
                         .setNotificationConfig(new UploadNotificationConfig())
                         .setMaxRetries(2)
                         .setDelegate(new UploadStatusDelegate() {
@@ -537,7 +537,7 @@ public class UploadActivity extends AppCompatActivity
                                     memberRegister.setCreateAt(isNull(memberObject, "created_at"));
                                     memberRegister.setId(isNull(memberObject, "id"));
                                     memberRegister.setNotes(isNull(memberObject, "notes"));
-                                    memberRegister.setFingerPrint2(isNull(memberObject,"fingerprint2"));
+                                    memberRegister.setFingerPrint1(isNull(memberObject,"fingerprint2"));
                                     dataBaseHelper.updateMemberData(memberRegister);
                                 } catch (Exception ex) {
                                     ex.printStackTrace();

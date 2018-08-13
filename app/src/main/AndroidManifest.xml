@@ -163,12 +163,12 @@
 
         <activity android:name=".TestingActivity" />
         <activity android:name=".EventRegister" />
-        <activity android:name=".AttenderActivity"></activity>
-
+        <activity android:name=".AttenderActivity" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
-
+        <activity android:name=".SettingsActivity" />
+        <activity android:name=".AddNewUserActivity"></activity>
     </application>
 
 </manifest>

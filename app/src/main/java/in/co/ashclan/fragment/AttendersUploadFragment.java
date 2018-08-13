@@ -60,7 +60,7 @@ public class AttendersUploadFragment extends Fragment implements View.OnClickLis
     ArrayList<EventAttendancePOJO> attendersList = new ArrayList<EventAttendancePOJO>();
     String eventId;
     private ListView fpListView;
-   // TextView txtNote,txtTotalAttendance,txtTotalMale,txtTotalFemale;
+    TextView txtNote,txtTotalAttendance,txtTotalMale,txtTotalFemale;
     DataBaseHelper dataBaseHelper;
     ContentLoadingProgressBar progressBar;
     FloatingActionButton floatingActionButton;
@@ -102,25 +102,31 @@ public class AttendersUploadFragment extends Fragment implements View.OnClickLis
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_attenders_upload, container, false);
 
+        eventId = getArguments().getString("event_id");
+        txtdate = getArguments().getString("date");
+
         mContext = getActivity().getApplicationContext();
         dataBaseHelper = new DataBaseHelper(mContext);
-        personList = (ArrayList<AttenderPOJO>) dataBaseHelper.getAllTempAttender(eventId);
-        AttenderPOJO attenderPOJO1 = new AttenderPOJO("BWC1","demo","123456789","male","2012-12-12","jungle","demo","khan","12/12/12","12/12/12","");
-        personList.add(attenderPOJO1);
-        personList.add(attenderPOJO1);
-        personList.add(attenderPOJO1);
-        personList.add(attenderPOJO1);
-        personList.add(attenderPOJO1);
-        personList.add(attenderPOJO1);
-        personList.add(attenderPOJO1);
-        personList.add(attenderPOJO1);
 
-        eventId = getArguments().getString("event_id");
-        fpListView = (ListView) view.findViewById(R.id.attender_listView);
-    /*    txtNote = (TextView)view.findViewById(R.id.txt_message);
+        personList = (ArrayList<AttenderPOJO>) dataBaseHelper.getAllTempAttender(eventId);
+
+        /*AttenderPOJO attenderPOJO1 = new AttenderPOJO("BWC1","demo","123456789","male","2012-12-12","jungle","demo","khan","12/12/12","12/12/12","");
+        personList.add(attenderPOJO1);
+        personList.add(attenderPOJO1);
+        personList.add(attenderPOJO1);
+        personList.add(attenderPOJO1);
+        personList.add(attenderPOJO1);
+        personList.add(attenderPOJO1);
+        personList.add(attenderPOJO1);
+        personList.add(attenderPOJO1);*/
+
+
+
+        fpListView = (ListView) view.findViewById(R.id.attender_listView_fragment);
+        txtNote = (TextView)view.findViewById(R.id.txt_message);
         txtTotalAttendance = (TextView)view.findViewById(R.id.total_attendance);
         txtTotalMale = (TextView)view.findViewById(R.id.total_male);
-        txtTotalFemale = (TextView)view.findViewById(R.id.total_female);*/
+        txtTotalFemale = (TextView)view.findViewById(R.id.total_female);
         floatingActionButton = (FloatingActionButton)view.findViewById(R.id.fab_upload_attendance);
         progressBar = (ContentLoadingProgressBar)view.findViewById(R.id.fragment_progress_bar_attender);
         floatingActionButton.setEnabled(true);
@@ -128,17 +134,16 @@ public class AttendersUploadFragment extends Fragment implements View.OnClickLis
         if(personList.size()!= 0){
 
             //personList.addAll(dataBaseHelper.getAllTempAttender(eventId));
+
             attenderAdapter = new AttenderAdapter(mContext,personList);
             attenderAdapter.notifyDataSetChanged();
             fpListView.setAdapter(attenderAdapter);
-            fpListView.setScrollContainer(true);
-            fpListView.setNestedScrollingEnabled(true);
-/*
+
 
             txtTotalAttendance.setText("Total Attendance = " + personList.size());
             txtTotalMale.setText("Total Male's :- " + dataBaseHelper.getmaleCount(eventId));
             txtTotalFemale.setText("Total Female's :- " + dataBaseHelper.getfemaleCount(eventId));
-*/
+
 
            /* memberAdapter = new MemberAdapter(mContext,personList,"ic_person.png");
             memberAdapter.notifyDataSetChanged();
@@ -343,6 +348,7 @@ public class AttendersUploadFragment extends Fragment implements View.OnClickLis
                 postData.put("atten_date",txtdate);
                 //postData.put("event_id",attentime);
                 String json_output = performPostCall(URL,postData);
+
                 return json_output;
             }catch (Exception ex){
                 Log.e("--->",ex.toString());

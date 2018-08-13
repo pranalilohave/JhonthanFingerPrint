@@ -1527,7 +1527,7 @@ public class EventDetailsActivity extends AppCompatActivity implements BottomNav
         }
     }
 
-    @Override
+   @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.total_attenders, menu);
         return true;

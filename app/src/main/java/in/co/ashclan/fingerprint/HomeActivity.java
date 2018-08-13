@@ -126,12 +126,12 @@ public class HomeActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(HomeActivity.this, AttendanceActivity.class);
-                intent.putExtra("type", "register");
-                startActivity(intent);
-             /*   Intent intent = new Intent(HomeActivity.this, EventRegister.class);
+             /*   Intent intent = new Intent(HomeActivity.this, AttendanceActivity.class);
                 intent.putExtra("type", "register");
                 startActivity(intent);*/
+                Intent intent = new Intent(HomeActivity.this, EventRegister.class);
+                intent.putExtra("type", "register");
+                startActivity(intent);
             }
         });
 
@@ -368,10 +368,10 @@ public class HomeActivity extends AppCompatActivity
         } else if (id == R.id.nav_recording) {
             Intent intent = new Intent(HomeActivity.this, RecordingActivity.class);
             startActivity(intent);
-        } else if (id == R.id.nav_setting) {
-            Intent intenti = new Intent(HomeActivity.this,TestingActivity.class);
-            startActivity(intenti);
 
+        } else if (id == R.id.nav_setting) {
+            Intent intenti = new Intent(mContext,SettingsActivity.class);
+            startActivity(intenti);
 
         } else if(id==R.id.nav_upload){
             Intent intent = new Intent(mContext, UploadActivity.class);
@@ -388,7 +388,6 @@ public class HomeActivity extends AppCompatActivity
         lastSelectedPosition = position;
         //setMe
         setFragment(position);
-
     }
     @Override
     public void onTabUnselected(int position) {
