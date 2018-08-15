@@ -2,6 +2,7 @@ package in.co.ashclan.adpater;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -111,7 +112,8 @@ public class MemberAdapter extends BaseAdapter{
             }
         }
         if (null!=member.getPhotoURL()){
-            String imgURL= PreferenceUtils.getUrlUploadImage(mContext)+member.getPhotoURL();
+            String imgURL= PreferenceUtils.getUrlUploadImage(mContext)+member.getPhotoURL();//Directly loaded from server
+            Log.e("img-->",imgURL.toString() );
             try {
                 imageLoader.displayImage(imgURL, imageView, new ImageLoadingListener() {
                     @Override

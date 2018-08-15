@@ -1511,7 +1511,7 @@ public class AttendanceActivity extends AppCompatActivity implements AttendersUp
             public void run() {
                 detailDialog.dismiss();
             }
-        },1000);
+        },2500);
 
 
     }

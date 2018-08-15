@@ -1,5 +1,6 @@
 package in.co.ashclan.fingerprint;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -21,6 +22,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public void addNewUser(View view) {
+        startActivity(new Intent(SettingsActivity.this,AddNewUserActivity.class));
 
     }
 }

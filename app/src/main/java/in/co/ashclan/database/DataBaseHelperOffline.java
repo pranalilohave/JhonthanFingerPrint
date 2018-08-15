@@ -36,6 +36,7 @@ public class DataBaseHelperOffline extends SQLiteOpenHelper {
     public static final String MEMBER_COL_17 = "server_type";
     public static final String MEMBER_COL_18 = "mem_id";
     public static final String MEMBER_COL_19 = "fingerprint2";
+    public static final String MEMBER_COL_20 = "photo_url";
 
     public static final String CREATE_TABLE_MEMBER_OFFLINE =
             "CREATE TABLE " + MEMBERS_OFFLINE_TABLE + "("
@@ -57,7 +58,8 @@ public class DataBaseHelperOffline extends SQLiteOpenHelper {
                     + MEMBER_COL_16 + " TEXT,"
                     + MEMBER_COL_17 + " TEXT,"
                     + MEMBER_COL_18 + " TEXT,"
-                    + MEMBER_COL_19 + " TEXT"
+                    + MEMBER_COL_19 + " TEXT,"
+                    + MEMBER_COL_20 + " TEXT"
                     + ")";
 
 
@@ -76,8 +78,6 @@ public class DataBaseHelperOffline extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + MEMBERS_OFFLINE_TABLE);
         onCreate(db);
     }
-
-
 
     public boolean insertOfflineMemberData(MemberPOJO member) {
 
@@ -101,7 +101,8 @@ public class DataBaseHelperOffline extends SQLiteOpenHelper {
         values.put(MEMBER_COL_16,member.getFingerPrint());
         values.put(MEMBER_COL_17,member.getServerType());
         values.put(MEMBER_COL_18,member.getId());
-        values.put(MEMBER_COL_19,member.getFingerPrint2());
+        values.put(MEMBER_COL_19,member.getFingerPrint1());
+        values.put(MEMBER_COL_20,member.getPhotoURL());
 
 
         long result = db.insert(MEMBERS_OFFLINE_TABLE,null,values);
@@ -146,7 +147,8 @@ public class DataBaseHelperOffline extends SQLiteOpenHelper {
                 member.setPhotoLocalPath(cursor.getString(cursor.getColumnIndex(MEMBER_COL_15)));
                 member.setFingerPrint(cursor.getString(cursor.getColumnIndex(MEMBER_COL_16)));
                 member.setServerType(cursor.getString(cursor.getColumnIndex(MEMBER_COL_17)));
-                member.setFingerPrint2(cursor.getString(cursor.getColumnIndex(MEMBER_COL_19)));
+                member.setFingerPrint1(cursor.getString(cursor.getColumnIndex(MEMBER_COL_19)));
+                member.setPhotoURL(cursor.getString(cursor.getColumnIndex(MEMBER_COL_20)));
 
                 members.add(member);
             }while (cursor.moveToNext());

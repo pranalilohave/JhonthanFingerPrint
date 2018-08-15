@@ -828,6 +828,7 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
             memberDetails.setAddress(editTextAddress.getText().toString());
             memberDetails.setNotes(editTextDescription.getText().toString());
             memberDetails.setDob(editTextDOB.getText().toString());
+            memberDetails.setPhotoURL(getImagePath());
             memberDetails.setPhotoLocalPath(getImagePath());
             if (isEnroll1) {
                 fpByte1 = new byte[model1.length];
@@ -842,9 +843,9 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
                 fpByte2 = new byte[model2.length];
                 System.arraycopy(model2, 0, fpByte2, 0, model2.length);
                 fpStrByte2 = Base64.encodeToString(fpByte2, Base64.DEFAULT);
-                imageViewFingerPrint2.setColorFilter(getResources().getColor(R.color.green));
+                imageViewFingerPrint3.setColorFilter(getResources().getColor(R.color.green));
 
-                memberDetails.setFingerPrint2(fpStrByte2);
+                memberDetails.setFingerPrint1(fpStrByte2);
             }
 
             progressBar.setVisibility(View.VISIBLE);
@@ -872,7 +873,9 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
             memberDetails.setAddress(editTextAddress.getText().toString());
             memberDetails.setNotes(editTextDescription.getText().toString());
             memberDetails.setDob(editTextDOB.getText().toString());
+            memberDetails.setPhotoURL(getImagePath());
             memberDetails.setPhotoLocalPath(getImagePath());
+
             if (!isUpEnroll1) {
                 fpByte1 = new byte[model1.length];
                 System.arraycopy(model1, 0, fpByte1, 0, model1.length);
@@ -884,8 +887,8 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
                 fpByte2 = new byte[model2.length];
                 System.arraycopy(model2, 0, fpByte2, 0, model2.length);
                 fpStrByte2 = Base64.encodeToString(fpByte2, Base64.DEFAULT);
-                imageViewFingerPrint2.setColorFilter(getResources().getColor(R.color.green));
-                memberDetails.setFingerPrint2(fpStrByte2);
+                imageViewFingerPrint3.setColorFilter(getResources().getColor(R.color.green));
+                memberDetails.setFingerPrint1(fpStrByte2);
             }
 
             progressBar.setVisibility(View.VISIBLE);
@@ -1186,6 +1189,7 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
     }
     public String getImagePath(){
         memberDetails.setPhotoLocalPath(imagePath);
+        memberDetails.setPhotoURL(imagePath);
         return imagePath;
     }
     public String isNull(JSONObject object, String parma){

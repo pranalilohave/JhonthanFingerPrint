@@ -140,15 +140,12 @@ public class UploadActivity extends AppCompatActivity
         return true;
     }
 
-
     @Override
     protected void onRestart() {
         super.onRestart();
         finish();
         startActivity(getIntent());
     }
-
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -242,6 +239,7 @@ public class UploadActivity extends AppCompatActivity
             if(!token.equalsIgnoreCase("wrong email or password.")){
 
                 Log.e("--->",memberPOJO.getServerType());
+
                 if (memberPOJO.getServerType().equals(Constants.SUBMIT)){
                     memberRegisterGovNet(PreferenceUtils.getUrlCreateMember(mContext),memberPOJO,token);
                 }else{
@@ -274,7 +272,7 @@ public class UploadActivity extends AppCompatActivity
 
 
 
-            multipartUploadRequest.addFileToUpload(memberDetails.getPhotoLocalPath(),"photo" )
+            multipartUploadRequest.addFileToUpload(memberDetails.getPhotoURL(),"photo" )
                     .addParameter("token", token)
                     .addParameter("first_name", memberDetails.getFirstName())
                     .addParameter("middle_name", memberDetails.getMiddleName())
@@ -342,13 +340,13 @@ public class UploadActivity extends AppCompatActivity
                                 memberRegister.setFingerPrint1(isNull(memberObject,"fingerprint2"));
 
                                 dataBaseHelper.insertMemberData(memberRegister);
-/*
+
                                 dataBaseHelperOffline.deleteOfflineMember(memberDetails);
                                 list.addAll(dataBaseHelperOffline.getAllOfflineMembers());
                                 memberAdapter = new MemberAdapter(mContext,list,"ic_person.png");
                                 memberAdapter.notifyDataSetChanged();
                                 listView.setAdapter(memberAdapter);
-*/
+
                             }catch (Exception ex){
                                 ex.printStackTrace();
                             }
@@ -368,6 +366,8 @@ public class UploadActivity extends AppCompatActivity
                     })
                     .startUpload(); //Starting the upload
 
+            finish();
+
         } catch (Exception exc) {
             Toast.makeText(this, exc.getMessage(), Toast.LENGTH_SHORT).show();
         }
@@ -385,7 +385,7 @@ public class UploadActivity extends AppCompatActivity
             if (memberDetails.getServerType().equals(Constants.UPDATEWITHIMAGE)) {
                 Log.e("--->",Constants.UPDATEWITHIMAGE);
 
-                multipartUploadRequest.addFileToUpload(memberDetails.getPhotoLocalPath(), "photo")
+                multipartUploadRequest.addFileToUpload(memberDetails.getPhotoURL(), "photo")
                         .addParameter("token", token)
                         .addParameter("first_name", memberDetails.getFirstName())
                         .addParameter("middle_name", memberDetails.getMiddleName())
@@ -456,6 +456,8 @@ public class UploadActivity extends AppCompatActivity
                                 } catch (Exception ex) {
                                     ex.printStackTrace();
                                 }
+
+
                                 progressBar.setVisibility(View.GONE);
                                 dataBaseHelperOffline.deleteOfflineMember(memberDetails);
                                 list = (ArrayList<MemberPOJO>) dataBaseHelperOffline.getAllOfflineMembers();

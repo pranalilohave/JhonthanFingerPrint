@@ -370,6 +370,7 @@
             android:layout_marginTop="44dp"
             android:padding="5dp"
             android:orientation="horizontal">
+
             <android.support.v7.widget.AppCompatButton
                 android:id="@+id/button_offline_submit"
                 android:text="offline"

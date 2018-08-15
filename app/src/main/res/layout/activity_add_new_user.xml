@@ -29,7 +29,7 @@
                 android:layout_gravity="center">
                 <ImageView
                     android:background="@color/blue4"
-                    android:id="@+id/imageView2"
+                    android:id="@+id/imageView_profilepic"
                     android:layout_width="150dp"
                     android:layout_height="150dp"
                     android:padding="0dp"
@@ -166,7 +166,7 @@
                     app:ms_enableFloatingLabel="true"
                     app:ms_dropDownHintView="@layout/dropdown_hint_item"
                     app:ms_hintView="@layout/hint_item"
-                    app:ms_hint="Gender"
+                    app:ms_hint="Role"
                     app:ms_floatingLabelColor="#f8b4b6b4"
                     app:ms_floatingLabelText="Role"
                     app:ms_hintColor="#efb4b6b4"
