@@ -108,32 +108,40 @@
             android:theme="@style/Theme.Transparent" />
         <activity
             android:name=".HomeActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".CropImageActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".MemberListActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".UploadActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".MemberDetailsActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".MemberRegisterActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
         <!-- android:windowSoftInputMode="stateUnchanged" /> -->
 
         <activity
             android:name=".RecordingActivity"
+            android:screenOrientation="portrait"
             />
         <activity
             android:name=".EventsActivity"
+            android:screenOrientation="portrait"
             />
         <activity
             android:name=".DataLoadingActivity"
+            android:screenOrientation="portrait"
             android:hardwareAccelerated="true"
             android:theme="@style/Theme.Transparent" />
 
@@ -143,6 +151,7 @@
 
         <activity
             android:name=".AttendanceActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".EventDetailsActivity" />
 
