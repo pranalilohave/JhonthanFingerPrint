@@ -1,11 +1,17 @@
 package in.co.ashclan.fingerprint;
 
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -39,6 +45,17 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -46,7 +63,10 @@ import java.util.List;
 import java.util.UUID;
 
 import fr.ganfra.materialspinner.MaterialSpinner;
+import in.co.ashclan.AsynkTask.DownloadTask;
+import in.co.ashclan.DownloadImageFromURl;
 import in.co.ashclan.database.DataBaseHelper;
+import in.co.ashclan.database.test.Member;
 import in.co.ashclan.model.CalendarPOJO;
 import in.co.ashclan.model.ContributionsPOJO;
 import in.co.ashclan.model.EventAttendancePOJO;
@@ -55,6 +75,7 @@ import in.co.ashclan.model.FamilyPOJO;
 import in.co.ashclan.model.GroupsPOJO;
 import in.co.ashclan.model.LocationPOJO;
 import in.co.ashclan.model.MemberPOJO;
+import in.co.ashclan.model.MemberPhotoPojo;
 import in.co.ashclan.model.PledgesPOJO;
 import in.co.ashclan.utils.Constants;
 import in.co.ashclan.utils.PreferenceUtils;
@@ -77,6 +98,12 @@ public class LoginActivity extends AppCompatActivity implements OnItemSelectedLi
     ArrayList<EventPOJO> eventList = new ArrayList<EventPOJO>();
     int iSet;
     DataBaseHelper dataBaseHelper;
+    public Bitmap bitmapImage;
+    private File destination;
+    private String imagePath;
+    private AsyncTask mMyTask;
+    MemberPhotoPojo memberPhotoPojo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,20 +127,22 @@ public class LoginActivity extends AppCompatActivity implements OnItemSelectedLi
     public void init(){
         textViewVersions = (TextView)findViewById(R.id.text_login_versions);
         editTextAdmin = (EditText)findViewById(R.id.admin);
+        editTextAdmin.setText("test@gmail.com");
         editTextAdminPassword = (EditText)findViewById(R.id.admin_password);
+        editTextAdminPassword.setText("123456");
         buttonLogin = (Button)findViewById(R.id.button_login);
         progressBar = (ContentLoadingProgressBar)findViewById(R.id.progress_bar_login);
         msServer = (MaterialSpinner)findViewById(R.id.spinner_sever);
-        editTextAdmin.setText(PreferenceUtils.getAdminName(LoginActivity.this));
-        editTextAdminPassword.setText(PreferenceUtils.getAdminPassword(LoginActivity.this));
+        //editTextAdmin.setText(PreferenceUtils.getAdminName(LoginActivity.this));
+        //editTextAdminPassword.setText(PreferenceUtils.getAdminPassword(LoginActivity.this));
         msServer.setSelection(PreferenceUtils.getSelectServer(this));
         msServer.setOnItemSelectedListener(this);
+        memberPhotoPojo = new MemberPhotoPojo();
     }
     public void login(){
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 boolean cancel = false;
                 View focusView = null;
 
@@ -1386,11 +1415,11 @@ public class LoginActivity extends AppCompatActivity implements OnItemSelectedLi
     //GET ALL MEMBER DETAILS
     public class GetAllDetailsTask extends AsyncTask<String, String, String> {
         private Context mContext;
-        private String URL;
+        private String URL1;
         private String token;
         GetAllDetailsTask(Context mContext, String URL, String token) {
             this.mContext = mContext;
-            this.URL=URL;
+            this.URL1=URL;
             this.token=token;
         }
         @Override
@@ -1405,7 +1434,7 @@ public class LoginActivity extends AppCompatActivity implements OnItemSelectedLi
         protected String doInBackground(String... params) {
             HashMap<String, String> postData = new HashMap<>();
             postData.put("token", token);
-            String json_output = performPostCall(URL, postData);
+            String json_output = performPostCall(URL1, postData);
             return json_output;
         }
         @Override
@@ -1445,8 +1474,55 @@ public class LoginActivity extends AppCompatActivity implements OnItemSelectedLi
 
                     //remainber to do changes...
                     member.setPhotoURL(isNull(object,"photo",""));
+
+
+                    if(!member.getPhotoURL().equals("")){
+                        if (!dataBaseHelper.isPhotoAvailable(member.getId(), member.getPhotoURL())) {
+                            mMyTask = new DownloadTask(mContext,member)
+                                    .execute(stringToURL(
+                                            //"http://www.freeimageslive.com/galleries/objects/general/pics/woodenbox0482.jpg"
+                                            PreferenceUtils.getUrlUploadImage(mContext)+member.getPhotoURL()
+                                    ));
+                        }
+                    }
+                    else
+                    {
+                        Log.e("leave :- ",member.getId().toString());
+                    }
+
                     Log.e("D--->",member.toString());
                     dataBaseHelper.insertMemberData(member);
+                    //String imgURL= PreferenceUtils.getUrlUploadImage(mContext)+member.getPhotoURL();//Directly loaded from server
+                    //Log.e("img from server-->",imgURL.toString() );
+                    //******************************
+                   /* try{
+                        URL url = new URL (" http://52.172.221.235:8983/uploads/cropped1242626017.jpg");
+                        InputStream input = url.openStream();
+                        try {
+                                //The sdcard directory e.g. '/sdcard' can be used directly, or
+                                //more safely abstracted with getExternalStorageDirectory()
+                            File storagePath = Environment.getExternalStorageDirectory();
+                            OutputStream output1 = new FileOutputStream (storagePath + "/myImage.jpg");
+                            try {
+                                int aReasonableSize = 10000;
+                                byte[] buffer = new byte[aReasonableSize];
+                                int bytesRead = 0;
+                                while ((bytesRead = input.read(buffer, 0, buffer.length)) >= 0) {
+                                    output1.write(buffer, 0, bytesRead);
+                                }
+                            } finally {
+                                output1.close();
+                            }
+                        } finally {
+                            input.close();
+                        }
+                    }catch (Exception e) {
+                        e.printStackTrace();
+                    }*/
+                    //******************************
+
+                    //******************************
+                   // String imgURL ="http://52.172.221.235:8983/uploads/cropped1242626017.jpg";
 
                 }
 
@@ -1535,6 +1611,7 @@ public class LoginActivity extends AppCompatActivity implements OnItemSelectedLi
                     Log.e("D--->",contribution.toString());
                     //   eventList.add(event);
                     dataBaseHelper.insertOfflineContributionData(contribution);
+
                 }
 
                 dataBaseHelper.deleteAllFamily();
@@ -1695,4 +1772,160 @@ public class LoginActivity extends AppCompatActivity implements OnItemSelectedLi
     public void onNothingSelected(AdapterView<?> adapterView) {
 
     }
+
+  /*  private class DownloadTask extends AsyncTask<URL,Void,Bitmap>{
+        Context context;
+        MemberPOJO memberPOJO;
+
+        public DownloadTask(Context context, MemberPOJO memberPOJO) {
+            this.context = context;
+            this.memberPOJO = memberPOJO;
+        }
+
+        // Before the tasks execution
+        protected void onPreExecute(){
+            // Display the progress dialog on async task start
+           // mProgressDialog.show();
+        }
+
+        // Do the task in background/non UI thread
+        protected Bitmap doInBackground(URL...urls){
+            URL url = urls[0];
+            HttpURLConnection connection = null;
+
+            try{
+                // Initialize a new http url connection
+                connection = (HttpURLConnection) url.openConnection();
+
+                // Connect the http url connection
+                connection.connect();
+
+                // Get the input stream from http url connection
+                InputStream inputStream = connection.getInputStream();
+
+                *//*
+                    BufferedInputStream
+                        A BufferedInputStream adds functionality to another input stream-namely,
+                        the ability to buffer the input and to support the mark and reset methods.
+                *//*
+                *//*
+                    BufferedInputStream(InputStream in)
+                        Creates a BufferedInputStream and saves its argument,
+                        the input stream in, for later use.
+                *//*
+                // Initialize a new BufferedInputStream from InputStream
+                BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
+
+                *//*
+                    decodeStream
+                        Bitmap decodeStream (InputStream is)
+                            Decode an input stream into a bitmap. If the input stream is null, or
+                            cannot be used to decode a bitmap, the function returns null. The stream's
+                            position will be where ever it was after the encoded data was read.
+
+                        Parameters
+                            is InputStream : The input stream that holds the raw data
+                                              to be decoded into a bitmap.
+                        Returns
+                            Bitmap : The decoded bitmap, or null if the image data could not be decoded.
+                *//*
+                // Convert BufferedInputStream to Bitmap object
+                Bitmap bmp = BitmapFactory.decodeStream(bufferedInputStream);
+
+                // Return the downloaded bitmap
+                return bmp;
+
+            }catch(IOException e){
+                e.printStackTrace();
+            }finally{
+                // Disconnect the http url connection
+                connection.disconnect();
+            }
+            return null;
+        }
+
+        // When all async task done
+        protected void onPostExecute(Bitmap result){
+            // Hide the progress dialog
+            //mProgressDialog.dismiss();
+
+            if(result!=null){
+                // Display the downloaded image into ImageView
+              //  mImageView.setImageBitmap(result);
+
+                // Save bitmap to internal storage
+                Uri imageInternalUri = saveImageToInternalStorage(result);
+                // Set the ImageView image from internal storage
+                //mImageViewInternal.setImageURI(imageInternalUri);
+                memberPhotoPojo = new MemberPhotoPojo();
+
+                memberPhotoPojo.setFilepath(imageInternalUri.getPath().toString());
+                memberPhotoPojo.setMember_id(memberPOJO.getId());
+                memberPhotoPojo.setPhotoname(memberPOJO.getPhotoURL());
+
+                dataBaseHelper.insertMemberTempData(memberPhotoPojo);
+                Log.e("temp-->", memberPhotoPojo.toString() );
+
+            }else {
+                // Notify user that an error occurred while downloading image
+               // Snackbar.make(mContext,"Error",Snackbar.LENGTH_LONG).show();
+
+            }
+        }
+    }*/
+
+    // Custom method to convert string to url
+    protected URL stringToURL(String urlString){
+        try{
+            URL url = new URL(urlString);
+            return url;
+        }catch(MalformedURLException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    // Custom method to save a bitmap into internal storage
+    protected Uri saveImageToInternalStorage(Bitmap bitmap){
+        // Initialize ContextWrapper
+        ContextWrapper wrapper = new ContextWrapper(getApplicationContext());
+
+        // Initializing a new file
+        // The bellow line return a directory in internal storage
+        File file = wrapper.getDir("Images",MODE_PRIVATE);
+
+
+
+        // Create a file to save the image
+        String fileName=System.currentTimeMillis() + ".jpg";
+        file = new File(file, fileName);
+
+        try{
+            // Initialize a new OutputStream
+            OutputStream stream = null;
+
+            // If the output file exists, it can be replaced or appended to it
+            stream = new FileOutputStream(file);
+
+            // Compress the bitmap
+            bitmap.compress(Bitmap.CompressFormat.JPEG,100,stream);
+
+            // Flushes the stream
+            stream.flush();
+
+            // Closes the stream
+            stream.close();
+
+        }catch (IOException e) // Catch the exception
+        {
+            e.printStackTrace();
+        }
+
+        // Parse the gallery image url to uri
+        Uri savedImageURI = Uri.parse(file.getAbsolutePath());
+
+        // Return the saved image Uri
+        return savedImageURI;
+    }
+
 }

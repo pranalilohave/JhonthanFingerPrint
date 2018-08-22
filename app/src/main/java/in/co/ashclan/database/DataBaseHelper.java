@@ -24,6 +24,7 @@ import in.co.ashclan.model.FamilyPOJO;
 import in.co.ashclan.model.GroupsPOJO;
 import in.co.ashclan.model.LocationPOJO;
 import in.co.ashclan.model.MemberPOJO;
+import in.co.ashclan.model.MemberPhotoPojo;
 import in.co.ashclan.model.PledgesPOJO;
 import in.co.ashclan.model.RecordingPOJO;
 
@@ -426,6 +427,25 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                     + RECORDING_COL_8 + " TEXT"
                     + ")";
 
+
+
+
+    //EVENT LOCATION DETAILS
+    public static final String TempMemberPhotos = "temp_member_photo";
+    public static final String MEMBER_TEMP_COL1 = "id";
+    public static final String MEMBER_TEMP_COL2 = "member_id";
+    public static final String MEMBER_TEMP_COL3 = "photoname";
+    public static final String MEMBER_TEMP_COL4 = "filePath";
+
+
+    public static final String CREATE_TABLE_TEMPMEMBERPHOTO =
+            "CREATE TABLE " + TempMemberPhotos + "("
+                    + MEMBER_TEMP_COL1 + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + MEMBER_TEMP_COL2 + " TEXT,"
+                    + MEMBER_TEMP_COL3 + " TEXT,"
+                    + MEMBER_TEMP_COL4 + " TEXT"
+                    + ")";
+
     public DataBaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
     }
@@ -454,6 +474,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.execSQL(TEMP_CREATE_TABLE_EVENTATTEN);
         //CREATE TABLE RECORDING
         db.execSQL(CREATE_TABLE_RECORDING);
+        //CREATE TABLE TEMPMEMBERPHOTO
+        db.execSQL(CREATE_TABLE_TEMPMEMBERPHOTO);
     }
 
     @Override
@@ -469,6 +491,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + EVENT_CALENDAR_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + EVENT_lOCATION_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + RECORDING_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + TempMemberPhotos);
 
         // Create tables again
         onCreate(db);
@@ -670,6 +693,99 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
         db.update(MEMBERS_TABLE, values, MEMBER_COL_2 + " = ? ",
                 new String[]{member.getId()});
+    }
+
+
+    //Temp Members Photos
+    //Members
+    public boolean insertMemberTempData(MemberPhotoPojo member) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(MEMBER_TEMP_COL2, member.getMember_id());
+        values.put(MEMBER_TEMP_COL3, member.getPhotoname());
+        values.put(MEMBER_TEMP_COL4, member.getFilepath());
+
+
+        long result = db.insert(TempMemberPhotos, null, values);
+        Log.e("tempPhoto-->", "Values inserted successfuly" );
+
+        db.close();
+        if (result == -1) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+    public void UpdateMemberTempData(MemberPhotoPojo member) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(MEMBER_TEMP_COL2, member.getMember_id());
+        values.put(MEMBER_TEMP_COL3, member.getPhotoname());
+        values.put(MEMBER_TEMP_COL4, member.getFilepath());
+
+
+        db.update(TempMemberPhotos, values, MEMBER_TEMP_COL2 + " = ? ",
+                new String[]{member.getMember_id()});
+        Log.e("tempPhoto-->", "Values Updated successfuly" );
+
+    }
+    public String getTempMemberPhoto(String str) {
+        String img = null;
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+
+            String selectQuery = ("SELECT filepath as file FROM temp_member_photo WHERE member_id = '"+str+"'");
+            Cursor cursor = db.rawQuery(selectQuery, null);
+            if (cursor.moveToLast()) {
+                img = cursor.getString(cursor.getColumnIndex("file"));
+            }
+            db.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return img;
+    }
+    public List<MemberPhotoPojo> getAllTempMembers() {
+
+        List<MemberPhotoPojo> members = new ArrayList<MemberPhotoPojo>();
+
+        String selectQuery = "SELECT  * FROM " + TempMemberPhotos;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        //looping through all row and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+
+                MemberPhotoPojo member = new MemberPhotoPojo();
+                member.setId(cursor.getString(cursor.getColumnIndex(MEMBER_TEMP_COL2)));
+                member.setPhotoname(cursor.getString(cursor.getColumnIndex(MEMBER_TEMP_COL3)));
+                member.setFilepath(cursor.getString(cursor.getColumnIndex(MEMBER_TEMP_COL4)));
+
+                members.add(member);
+            } while (cursor.moveToNext());
+        }
+        db.close();
+        return members;
+    }
+    public boolean isPhotoAvailable(String memberid,String photoname) {
+        SQLiteDatabase db = getReadableDatabase();
+        String query = String.format("SELECT * FROM temp_member_photo WHERE member_id ='%s' AND photoname = '%s';",memberid,photoname);
+        Cursor cursor = db.rawQuery(query,null);
+        if(cursor.getCount()<=0)
+        {
+            cursor.close();
+            return false ;
+        }
+        cursor.close();
+        db.close();
+        return true;
     }
 
     //Events
@@ -1454,7 +1570,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 AttenderPOJO attenderPOJO = new AttenderPOJO();
 
                 // String id,branchId,userId,memberId,name,notes,picture,createdAt,updatedAt;
-
+                attenderPOJO.setMemberId(cursor.getString(cursor.getColumnIndex("id")));
                 attenderPOJO.setId(cursor.getString(cursor.getColumnIndex("rollno")));
                 attenderPOJO.setF_name(cursor.getString(cursor.getColumnIndex("first_name")));
                 attenderPOJO.setL_name(cursor.getString(cursor.getColumnIndex("last_name")));

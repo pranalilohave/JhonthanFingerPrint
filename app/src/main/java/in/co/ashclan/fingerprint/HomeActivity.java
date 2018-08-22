@@ -22,6 +22,7 @@ import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -89,6 +90,8 @@ public class HomeActivity extends AppCompatActivity
     ArrayList<MemberPOJO> list = new ArrayList<MemberPOJO>();
     ArrayList<EventPOJO> eventList = new ArrayList<EventPOJO>();
 
+    TextView name,email;
+
     EventAdapter eventAdapter;
 
     int lastSelectedPosition = 0;
@@ -144,6 +147,12 @@ public class HomeActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.getMenu().getItem(1).setChecked(true);
+        View header=navigationView.getHeaderView(0);
+
+        name = (TextView)header.findViewById(R.id.txt_adminName);
+        email = (TextView)header.findViewById(R.id.txt_adminEmail);
+        name.setText(/*PreferenceUtils.getAdminName(mContext)*/"Pentecost Church");
+        email.setText(PreferenceUtils.getAdminName(mContext));
 
 
         bottomNavigationBar.setTabSelectedListener(this);

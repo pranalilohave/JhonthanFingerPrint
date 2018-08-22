@@ -1,14 +1,19 @@
 package in.co.ashclan.adpater;
 
 import android.content.Context;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,7 +50,12 @@ public class RecordingAdapter extends BaseAdapter{
     RecordingPOJO recordingPOJO;
     TextView txt_RecordName,txt_RecordDate;
     ImageView imgUpload;
+    ImageView imgPlay;
     private ProgressBar progressBar;
+    private MediaPlayer mediaPlayer;
+    private SeekBar seekBar;
+
+    private final Handler handler = new Handler();
 
     public RecordingAdapter(Context mContext, ArrayList<RecordingPOJO> list) {
         this.mContext = mContext;
@@ -82,6 +92,11 @@ public class RecordingAdapter extends BaseAdapter{
         imgUpload = (ImageView)vList.findViewById(R.id.img_upload);
         progressBar=(ProgressBar)vList.findViewById(R.id.progress_bar_recording_register);
 
+        imgPlay = (ImageView)vList.findViewById(R.id.img_play);
+        imgPlay.setVisibility(View.GONE);
+
+        imgUpload.setVisibility(View.VISIBLE);
+
         recordingPOJO = list.get(i);
 
         txt_RecordName.setText(recordingPOJO.getFilename());
@@ -100,7 +115,60 @@ public class RecordingAdapter extends BaseAdapter{
             }
         });
 
+        imgPlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                buttonClick();
+            }
+        });
+
+
+
+        mediaPlayer = MediaPlayer.create(mContext, Uri.parse(list.get(i).getFilePath().toString()));
+
+        seekBar = (SeekBar) vList.findViewById(R.id.SeekBar01);
+
+        seekBar.setMax(mediaPlayer.getDuration());
+
+        seekBar.setOnTouchListener(new View.OnTouchListener() {@Override public boolean onTouch(View v, MotionEvent event) {
+            seekChange(v);
+            return false; }
+        });
+
         return vList;
+    }
+
+    // This is event handler thumb moving event
+    private void seekChange(View v){
+        if(mediaPlayer.isPlaying()){
+            SeekBar sb = (SeekBar)v;
+            mediaPlayer.seekTo(sb.getProgress());
+        }
+    }
+
+    private void buttonClick() {
+            try{
+                mediaPlayer.start();
+                startPlayProgressUpdater();
+            }catch (IllegalStateException e) {
+                mediaPlayer.pause();
+            }
+    }
+
+    public void startPlayProgressUpdater() {
+        seekBar.setProgress(mediaPlayer.getCurrentPosition());
+
+        if (mediaPlayer.isPlaying()) {
+            Runnable notification = new Runnable() {
+                public void run() {
+                    startPlayProgressUpdater();
+                }
+            };
+            handler.postDelayed(notification,100);
+        }else{
+            mediaPlayer.pause();
+            seekBar.setProgress(0);
+        }
     }
 
     public String datePattern(String dateStr) throws ParseException {
@@ -224,6 +292,8 @@ public class RecordingAdapter extends BaseAdapter{
                                 String result = (String) jsonObject.get("result");
 
                                 Toast.makeText(mContext,result,Toast.LENGTH_SHORT).show();
+                                imgPlay.setVisibility(View.VISIBLE);
+                                imgUpload.setVisibility(View.INVISIBLE);
                                 //Log.e("-->UP", result.toString() );
 
                                /* Toast.makeText(mContext,result,Toast.LENGTH_SHORT).show();
@@ -261,7 +331,5 @@ public class RecordingAdapter extends BaseAdapter{
     public String isNull(JSONObject object, String parma){
         return object.get(parma)!=null?object.get(parma).toString():"";
     }
-
-
 
 }

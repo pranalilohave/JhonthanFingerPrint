@@ -54,6 +54,7 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.squareup.picasso.Picasso;
 
 import net.gotev.uploadservice.MultipartUploadRequest;
 import net.gotev.uploadservice.ServerResponse;
@@ -1425,6 +1426,7 @@ public class AttendanceActivity extends AppCompatActivity implements AttendersUp
     }
 
     public void showMemberDialog(MemberPOJO memberPOJO) {
+
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         final LayoutInflater inflater = LayoutInflater.from(mContext);
         View dialogView = inflater.inflate(R.layout.custom_dialog_matchfound,null);
@@ -1463,7 +1465,7 @@ public class AttendanceActivity extends AppCompatActivity implements AttendersUp
         txt_attender_Time.setText(txt_time.getText().toString());
 
 
-        if (null!=memberPOJO.getPhotoURL()) {
+      /*  if (null!=memberPOJO.getPhotoURL()) {
             //    "http://52.172.221.235:8983/uploads/"
             String imgURL = PreferenceUtils.getUrlUploadImage(mContext) + memberPOJO.getPhotoURL();
             try {
@@ -1492,7 +1494,28 @@ public class AttendanceActivity extends AppCompatActivity implements AttendersUp
                 ImgAttendant.setImageResource(R.drawable.ic_profile_image_1);
                 ex.printStackTrace();
             }
+        }*/
+
+        DataBaseHelper dataBaseHelper = new DataBaseHelper(mContext);
+        String Imagepath = dataBaseHelper.getTempMemberPhoto(memberPOJO.getId());
+
+        if(null!=Imagepath){
+            try {
+                Picasso.with(mContext)
+                        .load("file://"+Imagepath)
+                        .config(Bitmap.Config.RGB_565)
+                        .fit()
+                        .centerCrop()
+                        .into(ImgAttendant);
+
+            }catch (Exception e){
+                ImgAttendant.setImageResource(R.drawable.ic_profile_image_1);
+                e.printStackTrace();
+            }
         }
+
+
+
         imgclose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -77,6 +77,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -92,6 +94,7 @@ import android_serialport_api.AsyncFingerprintA5;
 import android_serialport_api.SerialPortManager;
 import android_serialport_api.SerialPortManagerA5;
 import fr.ganfra.materialspinner.MaterialSpinner;
+import in.co.ashclan.AsynkTask.DownloadTask;
 import in.co.ashclan.database.DataBaseHelper;
 //import in.co.ashclan.fgtit.fpcore.FPMatch;
 import in.co.ashclan.database.DataBaseHelperOffline;
@@ -157,6 +160,9 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
     private File destination;
     private String imagePath;
     String type;
+
+    private AsyncTask mMyTask;
+
 
     ImageLoaderConfiguration loaderConfiguration;
     ImageLoader imageLoader = ImageLoader.getInstance();
@@ -1140,12 +1146,10 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         Toast.makeText(MemberRegisterActivity.this,destination.getAbsolutePath(),Toast.LENGTH_LONG).show();
         imageViewFingerPrint2.setImageBitmap(bitmapImage);
         //     memberDetails.setPhotoLocalPath(BitMapToString(bitmapImage));
         setImagePath(destination.getAbsolutePath());
-        Picasso.get().load(getImagePath()).into(imageViewFingerPrint2);
     }
     @SuppressWarnings("deprecation")
     private void onSelectFromGalleryResult(Intent data) {
@@ -1181,7 +1185,6 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
         imageViewFingerPrint2.setImageBitmap(bitmapImage);
         //   memberDetails.setPhotoLocalPath(BitMapToString(bitmapImage));
         setImagePath(path);
-        Picasso.get().load(path).into(imageViewFingerPrint2);
     }
     public void setImagePath(String path){
         editImage=true;
@@ -1641,7 +1644,18 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
                                 memberRegister.setId(isNull(memberObject,"id"));
                                 memberRegister.setNotes(isNull(memberObject,"notes"));
                                 memberRegister.setFingerPrint1(isNull(memberObject,"fingerprint2"));
+
                                 dataBaseHelper.insertMemberData(memberRegister);
+
+                                if (!dataBaseHelper.isPhotoAvailable(memberRegister.getId(), memberRegister.getPhotoURL())) {
+
+                                    mMyTask = new DownloadTask(mContext,memberRegister)
+                                            .execute(stringToURL(
+                                                    //"http://www.freeimageslive.com/galleries/objects/general/pics/woodenbox0482.jpg"
+                                                    PreferenceUtils.getUrlUploadImage(mContext)+memberRegister.getPhotoURL()
+                                            ));
+                                }
+
 
                             }catch (Exception ex){
                                 ex.printStackTrace();
@@ -1753,6 +1767,17 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
                                     memberRegister.setFingerPrint1(isNull(memberObject,"fingerprint2"));
                                     //    dataBaseHelper.insertMemberData(memberRegister);
                                     dataBaseHelper.updateMemberData(memberRegister);
+
+
+                                    if (!dataBaseHelper.isPhotoAvailable(memberRegister.getId(), memberRegister.getPhotoURL())) {
+
+                                        mMyTask = new DownloadTask(mContext,memberRegister,"update")
+                                                .execute(stringToURL(
+                                                        //"http://www.freeimageslive.com/galleries/objects/general/pics/woodenbox0482.jpg"
+                                                        PreferenceUtils.getUrlUploadImage(mContext)+memberRegister.getPhotoURL()
+                                                ));
+                                    }
+
                                 } catch (Exception ex) {
                                     ex.printStackTrace();
                                 }
@@ -1850,6 +1875,17 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
                                     memberRegister.setFingerPrint1(isNull(memberObject,"fingerprint2"));
                                     //    dataBaseHelper.insertMemberData(memberRegister);
                                     dataBaseHelper.updateMemberData(memberRegister);
+
+                                    if (!dataBaseHelper.isPhotoAvailable(memberRegister.getId(), memberRegister.getPhotoURL())) {
+
+                                        mMyTask = new DownloadTask(mContext,memberRegister,"update")
+                                                .execute(stringToURL(
+                                                        //"http://www.freeimageslive.com/galleries/objects/general/pics/woodenbox0482.jpg"
+                                                        PreferenceUtils.getUrlUploadImage(mContext)+memberRegister.getPhotoURL()
+                                                ));
+                                    }
+
+
                                 } catch (Exception ex) {
                                     ex.printStackTrace();
                                 }
@@ -1884,6 +1920,15 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
         } catch (Exception exc) {
             Toast.makeText(this, exc.getMessage(), Toast.LENGTH_SHORT).show();
         }
+    }
+    protected URL stringToURL(String urlString){
+        try{
+            URL url = new URL(urlString);
+            return url;
+        }catch(MalformedURLException e){
+            e.printStackTrace();
+        }
+        return null;
     }
 }
 

@@ -466,7 +466,6 @@ public class MemberListActivity extends AppCompatActivity
         requestQueue.add(smr);
     }
 
-
     public void getAccessTokenGovNet(String URL,String email,String password){
 
         try {
@@ -971,7 +970,6 @@ public class MemberListActivity extends AppCompatActivity
     private void closeKeyboard() {
         InputMethodManager inputManager = (InputMethodManager)mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
         inputManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-
     }
 
     private void openKeyboard() {

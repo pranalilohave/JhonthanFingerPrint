@@ -3,6 +3,7 @@ package in.co.ashclan.model;
 public class AttenderPOJO {
     String id,name,phone,gender,age,address,f_name,l_name,atten_date,atten_time;
     String photoURL,photoLocalPath;
+    String memberId;
 
     public AttenderPOJO() {
     }
@@ -20,6 +21,34 @@ public class AttenderPOJO {
         this.atten_date = atten_date;
         this.atten_time = atten_time;
         this.photoURL = photoURL;
+    }
+
+
+    @Override
+    public String toString() {
+        return "AttenderPOJO{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", phone='" + phone + '\'' +
+                ", gender='" + gender + '\'' +
+                ", age='" + age + '\'' +
+                ", address='" + address + '\'' +
+                ", f_name='" + f_name + '\'' +
+                ", l_name='" + l_name + '\'' +
+                ", atten_date='" + atten_date + '\'' +
+                ", atten_time='" + atten_time + '\'' +
+                ", photoURL='" + photoURL + '\'' +
+                ", photoLocalPath='" + photoLocalPath + '\'' +
+                ", memberId='" + memberId + '\'' +
+                '}';
+    }
+
+    public String getMemberId() {
+        return memberId;
+    }
+
+    public void setMemberId(String memberId) {
+        this.memberId = memberId;
     }
 
     public String getAtten_date() {

@@ -38,6 +38,8 @@ import net.gotev.uploadservice.UploadStatusDelegate;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,6 +47,7 @@ import java.util.UUID;
 
 import android_serialport_api.SerialPortManager;
 import android_serialport_api.SerialPortManagerA5;
+import in.co.ashclan.AsynkTask.DownloadTask;
 import in.co.ashclan.adpater.MemberAdapter;
 import in.co.ashclan.adpater.UploadAdapter;
 import in.co.ashclan.database.DataBaseHelper;
@@ -68,6 +71,8 @@ public class UploadActivity extends AppCompatActivity
     MemberAdapter memberAdapter;
     ArrayList<MemberPOJO> list = new ArrayList<MemberPOJO>();
     ProgressBar progressBar;
+    private AsyncTask mMyTask;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -347,6 +352,16 @@ public class UploadActivity extends AppCompatActivity
                                 memberAdapter.notifyDataSetChanged();
                                 listView.setAdapter(memberAdapter);
 
+                                if (!dataBaseHelper.isPhotoAvailable(memberRegister.getId(), memberRegister.getPhotoURL())) {
+
+                                    mMyTask = new DownloadTask(mContext,memberRegister)
+                                            .execute(stringToURL(
+                                                    //"http://www.freeimageslive.com/galleries/objects/general/pics/woodenbox0482.jpg"
+                                                    PreferenceUtils.getUrlUploadImage(mContext)+memberRegister.getPhotoURL()
+                                            ));
+                                }
+
+
                             }catch (Exception ex){
                                 ex.printStackTrace();
                             }
@@ -453,6 +468,18 @@ public class UploadActivity extends AppCompatActivity
                                     memberRegister.setFingerPrint1(isNull(memberObject,"fingerprint2"));
                                     //    dataBaseHelper.insertMemberData(memberRegister);
                                     dataBaseHelper.updateMemberData(memberRegister);
+
+
+                                    if (!dataBaseHelper.isPhotoAvailable(memberRegister.getId(), memberRegister.getPhotoURL())) {
+
+                                        mMyTask = new DownloadTask(mContext,memberRegister,"update")
+                                                .execute(stringToURL(
+                                                        //"http://www.freeimageslive.com/galleries/objects/general/pics/woodenbox0482.jpg"
+                                                        PreferenceUtils.getUrlUploadImage(mContext)+memberRegister.getPhotoURL()
+                                                ));
+                                    }
+
+
                                 } catch (Exception ex) {
                                     ex.printStackTrace();
                                 }
@@ -464,6 +491,8 @@ public class UploadActivity extends AppCompatActivity
                                 memberAdapter = new MemberAdapter(mContext,list,"ic_person.png");
                                 memberAdapter.notifyDataSetChanged();
                                 listView.setAdapter(memberAdapter);
+
+
 
                             }
 
@@ -623,4 +652,13 @@ public class UploadActivity extends AppCompatActivity
 
     }
 
+    protected URL stringToURL(String urlString){
+        try{
+            URL url = new URL(urlString);
+            return url;
+        }catch(MalformedURLException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

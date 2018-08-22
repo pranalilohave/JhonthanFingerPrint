@@ -2,12 +2,16 @@ package in.co.ashclan.adpater;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -16,7 +20,16 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.squareup.picasso.Picasso;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,8 +37,10 @@ import java.util.Calendar;
 import java.util.Date;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import in.co.ashclan.database.DataBaseHelper;
 import in.co.ashclan.fingerprint.R;
 import in.co.ashclan.model.MemberPOJO;
+import in.co.ashclan.model.MemberPhotoPojo;
 import in.co.ashclan.utils.PreferenceUtils;
 
 public class MemberAdapter extends BaseAdapter{
@@ -36,6 +51,9 @@ public class MemberAdapter extends BaseAdapter{
     ImageLoaderConfiguration loaderConfiguration;
     ImageLoader imageLoader = ImageLoader.getInstance();
     ImageView imageView;
+    ProgressBar progressBar;
+    ArrayList<MemberPhotoPojo> memberPhotoPojosList;
+    DataBaseHelper dataBaseHelper;
 
     TextView textViewName,textViewLocation,textViewGender,
             textViewAge,textViewPhone,textViewRollno;
@@ -59,6 +77,10 @@ public class MemberAdapter extends BaseAdapter{
         loaderConfiguration = new ImageLoaderConfiguration.Builder(context)
                 .defaultDisplayImageOptions(imageOptions).build();
         imageLoader.init(loaderConfiguration);
+
+        dataBaseHelper = new DataBaseHelper(mContext);
+        memberPhotoPojosList = (ArrayList<MemberPhotoPojo>) dataBaseHelper.getAllTempMembers();
+
     }
 
     @Override
@@ -93,6 +115,7 @@ public class MemberAdapter extends BaseAdapter{
         textViewPhone=(TextView)vList.findViewById(R.id.md_phone);
         textViewAge=(TextView)vList.findViewById(R.id.md_age);
         textViewRollno=(TextView)vList.findViewById(R.id.md_rollno);
+        progressBar = (ProgressBar)vList.findViewById(R.id.progress_img);
 
         MemberPOJO member = list.get(i);
         textViewName.setText(member.getFirstName()+" "+member.getLastName());
@@ -111,36 +134,104 @@ public class MemberAdapter extends BaseAdapter{
                 e.printStackTrace();
             }
         }
-        if (null!=member.getPhotoURL()){
-            String imgURL= PreferenceUtils.getUrlUploadImage(mContext)+member.getPhotoURL();//Directly loaded from server
-            Log.e("img-->",imgURL.toString() );
+
+        /*MemberPhotoPojo memberPhotoPojo = new MemberPhotoPojo();
+        memberPhotoPojo = memberPhotoPojosList.get(i);
+
+        if(member.getId().equals(memberPhotoPojo.getId())){
+            if(null!=memberPhotoPojo.getFilepath()){
+                   try {
+                       Picasso.with(mContext)
+                               .load("file://"+memberPhotoPojo.getFilepath())
+                               .config(Bitmap.Config.RGB_565)
+                               .fit()
+                               .centerCrop()
+                               .into(imageView);
+
+                       member.setPhotoLocalPath(memberPhotoPojo.getFilepath().toString());
+
+            }catch (Exception e){
+                imageView.setImageResource(R.drawable.ic_profile_image_1);
+                e.printStackTrace();
+            }
+            }
+        }*/
+
+        DataBaseHelper dataBaseHelper = new DataBaseHelper(mContext);
+        String Imagepath = dataBaseHelper.getTempMemberPhoto(member.getId());
+
+        if(null!=Imagepath){
             try {
-                imageLoader.displayImage(imgURL, imageView, new ImageLoadingListener() {
-                    @Override
-                    public void onLoadingStarted(String imageUri, View view) {
-                        //    imageLoader.displayImage("http://52.172.221.235:8983/uploads/" + defaultIcon, imageView);
-                    }
+                Picasso.with(mContext)
+                        .load("file://"+Imagepath)
+                        .config(Bitmap.Config.RGB_565)
+                        .fit()
+                        .centerCrop()
+                        .into(imageView);
 
-                    @Override
-                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-
-                    }
-
-                    @Override
-                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-
-                    }
-
-                    @Override
-                    public void onLoadingCancelled(String imageUri, View view) {
-
-                    }
-                });
             }catch (Exception e){
                 imageView.setImageResource(R.drawable.ic_profile_image_1);
                 e.printStackTrace();
             }
         }
+
+
+
+       /* if (null!=member.getPhotoURL()){
+
+            String imgURL= PreferenceUtils.getUrlUploadImage(mContext)+member.getPhotoURL();//Directly loaded from server
+            Log.e("img from server-->",imgURL.toString() );
+
+      *//*      // Show progress bar
+            progressBar.setVisibility(View.VISIBLE);
+            // Hide progress bar on successful load
+            Picasso.with(mContext).load(imgURL)
+                    .into(imageView, new com.squareup.picasso.Callback() {
+                        @Override
+                        public void onSuccess() {
+                            if (progressBar != null) {
+                                progressBar.setVisibility(View.GONE);
+                            }
+                        }
+
+                        @Override
+                        public void onError() {
+
+                        }
+                    });
+*//*
+
+           *//* try {
+                imageLoader.displayImage(
+                        imgURL,
+                        imageView,
+                        new ImageLoadingListener() {
+                            @Override
+                            public void onLoadingStarted(String imageUri, View view) {
+                                //    imageLoader.displayImage("http://52.172.221.235:8983/uploads/" + defaultIcon, imageView);
+                            }
+
+                            @Override
+                            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+
+                            }
+
+                            @Override
+                            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+
+                            }
+
+                            @Override
+                            public void onLoadingCancelled(String imageUri, View view) {
+
+                            }
+                        });
+
+            }catch (Exception e){
+                imageView.setImageResource(R.drawable.ic_profile_image_1);
+                e.printStackTrace();
+            }*//*
+        }*/
 
         return vList;
     }

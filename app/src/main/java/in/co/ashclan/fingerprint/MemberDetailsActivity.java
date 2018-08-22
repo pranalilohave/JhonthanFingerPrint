@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.media.Image;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -42,6 +43,7 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.squareup.picasso.Picasso;
 
 import net.gotev.uploadservice.MultipartUploadRequest;
 import net.gotev.uploadservice.ServerResponse;
@@ -252,7 +254,31 @@ public class MemberDetailsActivity extends AppCompatActivity
         //image set
         //profileImageView.
 
-        if (null!=memberDetails.getPhotoURL()) {
+
+            try {
+                DataBaseHelper dataBaseHelper = new DataBaseHelper(mContext);
+                String Imagepath = dataBaseHelper.getTempMemberPhoto(memberDetails.getId());
+                Log.e("memberid", memberDetails.getId().toString() );
+                Log.e("imagepath", Imagepath.toString() );
+
+                if(null!=Imagepath) {
+                    Picasso.with(mContext)
+                            .load("file://" + Imagepath)
+                            .config(Bitmap.Config.RGB_565)
+                            .fit()
+                            .centerCrop()
+                            .into(profileImageView);
+
+                }
+
+            }catch (Exception e){
+                profileImageView.setImageResource(R.drawable.ic_profile_image_1);
+                e.printStackTrace();
+            }
+
+
+
+        /*if (null!=memberDetails.getPhotoURL()) {
             //    "http://52.172.221.235:8983/uploads/"
             String imgURL = PreferenceUtils.getUrlUploadImage(context) + memberDetails.getPhotoURL();
             try {
@@ -281,7 +307,7 @@ public class MemberDetailsActivity extends AppCompatActivity
                 profileImageView.setImageResource(R.drawable.ic_profile_image_1);
                 ex.printStackTrace();
             }
-        }
+        }*/
     }
     public int calculateAge(Date birthdate) {
         Calendar birth = Calendar.getInstance();

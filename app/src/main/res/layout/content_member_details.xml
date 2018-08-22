@@ -19,7 +19,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-
             <LinearLayout
                 android:id="@+id/layout_details"
                 android:layout_width="match_parent"
@@ -327,6 +326,7 @@
 
 
             </LinearLayout>
+
             <com.ashokvarma.bottomnavigation.BottomNavigationBar
                 android:id="@+id/bottom_navigation_bar"
                 android:layout_width="match_parent"
@@ -336,6 +336,7 @@
                 android:layout_gravity="bottom|center"
                 android:layout_below="@+id/layout_details"
                 />
+
             <android.support.v4.view.ViewPager
                 android:id="@+id/member_view_pager"
                 android:layout_width="match_parent"
