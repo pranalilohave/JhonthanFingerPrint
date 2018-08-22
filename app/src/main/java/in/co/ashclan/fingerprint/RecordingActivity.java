@@ -100,7 +100,6 @@ public class RecordingActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-
             }
         });
 

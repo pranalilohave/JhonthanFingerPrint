@@ -51,11 +51,14 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
+import in.co.ashclan.AsynkTask.DownloadTask;
 import in.co.ashclan.adpater.EventAdapter;
 import in.co.ashclan.adpater.MemberAdapter;
 import in.co.ashclan.ashclancalendar.data.Day;
@@ -80,7 +83,7 @@ public class MemberListActivity extends AppCompatActivity
    // ArrayList<MemberPOJO> sList = new ArrayList<MemberPOJO>();
     ArrayList<MemberPOJO> memberList = new ArrayList<MemberPOJO>();
     ArrayList<EventPOJO> eventList = new ArrayList<EventPOJO>();
-
+    private AsyncTask mMyTask;
     EventAdapter eventAdapter;
 
     Context mContext;
@@ -841,12 +844,26 @@ public class MemberListActivity extends AppCompatActivity
                     member.setPhotoURL(Utils.isNull(object,"photo",""));
                     Log.e("--->",member.toString());
                     dataBaseHelper.insertMemberData(member);
+
+                        if (!dataBaseHelper.isPhotoAvailable(member.getId(), member.getPhotoURL())) {
+                            mMyTask = new DownloadTask(mContext,member)
+                                    .execute(stringToURL(
+                                            //"http://www.freeimageslive.com/galleries/objects/general/pics/woodenbox0482.jpg"
+                                            PreferenceUtils.getUrlUploadImage(mContext)+member.getPhotoURL()
+                                    ));
+                    }
+                    else
+                    {
+                        Log.e("leave :- ",member.getId().toString());
+                    }
                 }
 
             memberList = (ArrayList<MemberPOJO>)dataBaseHelper.getAllMembers();
             memberAdapter = new MemberAdapter(mContext,memberList,"ic_person.png");
             memberAdapter.notifyDataSetChanged();
             listView.setAdapter(memberAdapter);
+
+
 
             //"https://bwc.pentecostchurch.org/api/get_all_events"
             //"http://52.172.221.235:8983/api/get_all_events"
@@ -977,5 +994,15 @@ public class MemberListActivity extends AppCompatActivity
         if(imm != null){
             imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
         }
+    }
+    // Custom method to convert string to url
+    protected URL stringToURL(String urlString){
+        try{
+            URL url = new URL(urlString);
+            return url;
+        }catch(MalformedURLException e){
+            e.printStackTrace();
+        }
+        return null;
     }
 }

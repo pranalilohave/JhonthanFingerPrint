@@ -693,8 +693,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.update(MEMBERS_TABLE, values, MEMBER_COL_2 + " = ? ",
                 new String[]{member.getId()});
     }
-
-
     //Temp Members Photos
     //Members
     public boolean insertMemberTempData(MemberPhotoPojo member) {
