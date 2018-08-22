@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_attender"
+        android:icon="@drawable/ic_person_black_24dp"
+        android:title="Attender" />
+    <item
+        android:id="@+id/action_record"
+        android:icon="@drawable/microphone"
+        android:title="Record"/>
+    <item
+        android:id="@+id/action_member"
+        android:icon="@drawable/ic_person_add_black_24dp"
+        android:title="new Members" />
+    <item
+        android:id="@+id/action_home"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="Home" />
+</menu>

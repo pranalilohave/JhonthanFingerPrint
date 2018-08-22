@@ -37,6 +37,11 @@ public class PreferenceUtils {
     public static final String URL_GET_ALL_MEMBER_EVENTS="getAllMemberEvents";
 
     public static final String URL_GET_ALL_MEMBER_DETAILS="getAllMemberData";
+    public static final String URL_ADD_LOCATION="addLocations";
+    public static final String URL_ADD_CALENDAR="addCalender";
+    public static final String URL_EVENT_REGISTRATION="eventRegistrations";
+    public static final String URL_RECORDING_REGISTRATION="recording";
+    public static final String URL_EVENTUPDATE_REGISTRATION="updateEvent";
 
 
     //prevent instantiation
@@ -217,4 +222,47 @@ public class PreferenceUtils {
     public static String getUrlGetAllMemberEvents(Context context){
         return getSharedPreferences(context).getString(URL_GET_ALL_MEMBER_EVENTS,"");
     }
+
+
+    public static void setUrlAddLocation(Context context,String addLocation){
+        SharedPreferences.Editor editor = getSharedPreferences(context).edit();
+        editor.putString(URL_ADD_LOCATION,addLocation).apply();
+    }
+    public static String getUrlAddLocation(Context context){
+        return getSharedPreferences(context).getString(URL_ADD_LOCATION,"");
+    }
+
+    public static void setUrlAddCalendar(Context context,String addCalendar){
+        SharedPreferences.Editor editor = getSharedPreferences(context).edit();
+        editor.putString(URL_ADD_CALENDAR,addCalendar).apply();
+    }
+    public static String getUrlAddCalendar(Context context){
+        return getSharedPreferences(context).getString(URL_ADD_CALENDAR,"");
+    }
+
+    public static void setUrlEventRegistration(Context context,String eventRegistration){
+        SharedPreferences.Editor editor = getSharedPreferences(context).edit();
+        editor.putString(URL_EVENT_REGISTRATION,eventRegistration).apply();
+    }
+    public static String getUrlEventRegistration(Context context){
+        return getSharedPreferences(context).getString(URL_EVENT_REGISTRATION,"");
+    }
+
+    public static void setUrlRecordingRegistration(Context context,String eventRegistration){
+        SharedPreferences.Editor editor = getSharedPreferences(context).edit();
+        editor.putString(URL_RECORDING_REGISTRATION,eventRegistration).apply();
+    }
+    public static String getUrlRecordingRegistration(Context context){
+        return getSharedPreferences(context).getString(URL_RECORDING_REGISTRATION,"");
+    }
+
+    public static void setUrlEventUpdate(Context context,String eventRegistration){
+        SharedPreferences.Editor editor = getSharedPreferences(context).edit();
+        editor.putString(URL_EVENTUPDATE_REGISTRATION,eventRegistration).apply();
+    }
+    public static String getUrlEventUpdate(Context context){
+        return getSharedPreferences(context).getString(URL_EVENTUPDATE_REGISTRATION,"");
+    }
+
+
 }

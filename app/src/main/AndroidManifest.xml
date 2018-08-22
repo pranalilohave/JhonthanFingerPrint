@@ -28,6 +28,8 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
     <!-- **************************************************************************************** -->
     <!--
   <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
@@ -106,39 +108,33 @@
             android:theme="@style/Theme.Transparent" />
         <activity
             android:name=".HomeActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".CropImageActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".MemberListActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".UploadActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".MemberDetailsActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".MemberRegisterActivity"
-            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
         <!-- android:windowSoftInputMode="stateUnchanged" /> -->
 
         <activity
             android:name=".RecordingActivity"
-            android:screenOrientation="portrait" />
+            />
         <activity
             android:name=".EventsActivity"
-            android:screenOrientation="portrait" />
+            />
         <activity
             android:name=".DataLoadingActivity"
             android:hardwareAccelerated="true"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Transparent" />
 
         <meta-data
@@ -147,9 +143,7 @@
 
         <activity
             android:name=".AttendanceActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
-
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".EventDetailsActivity" />
 
         <provider
@@ -162,8 +156,20 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <activity android:name=".TestingActivity" />
-        <activity android:name=".EventRegister"></activity>
+        <activity android:name=".TestingActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".EventRegister"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".AttenderActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Base.Theme.AppCompat" />
+        <activity android:name=".SettingsActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".AddNewUserActivity"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

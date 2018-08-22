@@ -38,6 +38,8 @@ import net.gotev.uploadservice.UploadStatusDelegate;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,6 +47,7 @@ import java.util.UUID;
 
 import android_serialport_api.SerialPortManager;
 import android_serialport_api.SerialPortManagerA5;
+import in.co.ashclan.AsynkTask.DownloadTask;
 import in.co.ashclan.adpater.MemberAdapter;
 import in.co.ashclan.adpater.UploadAdapter;
 import in.co.ashclan.database.DataBaseHelper;
@@ -68,6 +71,8 @@ public class UploadActivity extends AppCompatActivity
     MemberAdapter memberAdapter;
     ArrayList<MemberPOJO> list = new ArrayList<MemberPOJO>();
     ProgressBar progressBar;
+    private AsyncTask mMyTask;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -140,15 +145,12 @@ public class UploadActivity extends AppCompatActivity
         return true;
     }
 
-
     @Override
     protected void onRestart() {
         super.onRestart();
         finish();
         startActivity(getIntent());
     }
-
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -224,8 +226,6 @@ public class UploadActivity extends AppCompatActivity
             HashMap<String, String> postData = new HashMap<>();
             postData.put("email", email);
             postData.put("password", password);
-         //   String url = "https://bwc.pentecostchurch.org/api/login";
-         //   String urls = "http://52.172.221.235:8983/api/login";
             String json_output = performPostCall(URL, postData);
             return json_output;
         }
@@ -244,6 +244,7 @@ public class UploadActivity extends AppCompatActivity
             if(!token.equalsIgnoreCase("wrong email or password.")){
 
                 Log.e("--->",memberPOJO.getServerType());
+
                 if (memberPOJO.getServerType().equals(Constants.SUBMIT)){
                     memberRegisterGovNet(PreferenceUtils.getUrlCreateMember(mContext),memberPOJO,token);
                 }else{
@@ -276,7 +277,7 @@ public class UploadActivity extends AppCompatActivity
 
 
 
-            multipartUploadRequest.addFileToUpload(memberDetails.getPhotoLocalPath(),"photo" )
+            multipartUploadRequest.addFileToUpload(memberDetails.getPhotoURL(),"photo" )
                     .addParameter("token", token)
                     .addParameter("first_name", memberDetails.getFirstName())
                     .addParameter("middle_name", memberDetails.getMiddleName())
@@ -292,7 +293,7 @@ public class UploadActivity extends AppCompatActivity
                     .addParameter("work_phone", memberDetails.getWorkPhone())
                     .addParameter("email", memberDetails.getEmail())
                     .addParameter("notes", memberDetails.getNotes())
-                    .addParameter("fingerprint2",memberDetails.getFingerPrint2())
+                    .addParameter("fingerprint2",memberDetails.getFingerPrint1())
                     .setNotificationConfig(new UploadNotificationConfig())
                     .setMaxRetries(2)
                     .setDelegate(new UploadStatusDelegate() {
@@ -341,16 +342,26 @@ public class UploadActivity extends AppCompatActivity
                                 memberRegister.setCreateAt(isNull(memberObject,"created_at"));
                                 memberRegister.setId(isNull(memberObject,"id"));
                                 memberRegister.setNotes(isNull(memberObject,"notes"));
-                                memberRegister.setFingerPrint2(isNull(memberObject,"fingerprint2"));
+                                memberRegister.setFingerPrint1(isNull(memberObject,"fingerprint2"));
 
                                 dataBaseHelper.insertMemberData(memberRegister);
-/*
+
                                 dataBaseHelperOffline.deleteOfflineMember(memberDetails);
                                 list.addAll(dataBaseHelperOffline.getAllOfflineMembers());
                                 memberAdapter = new MemberAdapter(mContext,list,"ic_person.png");
                                 memberAdapter.notifyDataSetChanged();
                                 listView.setAdapter(memberAdapter);
-*/
+
+                                if (!dataBaseHelper.isPhotoAvailable(memberRegister.getId(), memberRegister.getPhotoURL())) {
+
+                                    mMyTask = new DownloadTask(mContext,memberRegister)
+                                            .execute(stringToURL(
+                                                    //"http://www.freeimageslive.com/galleries/objects/general/pics/woodenbox0482.jpg"
+                                                    PreferenceUtils.getUrlUploadImage(mContext)+memberRegister.getPhotoURL()
+                                            ));
+                                }
+
+
                             }catch (Exception ex){
                                 ex.printStackTrace();
                             }
@@ -370,6 +381,8 @@ public class UploadActivity extends AppCompatActivity
                     })
                     .startUpload(); //Starting the upload
 
+            finish();
+
         } catch (Exception exc) {
             Toast.makeText(this, exc.getMessage(), Toast.LENGTH_SHORT).show();
         }
@@ -387,7 +400,7 @@ public class UploadActivity extends AppCompatActivity
             if (memberDetails.getServerType().equals(Constants.UPDATEWITHIMAGE)) {
                 Log.e("--->",Constants.UPDATEWITHIMAGE);
 
-                multipartUploadRequest.addFileToUpload(memberDetails.getPhotoLocalPath(), "photo")
+                multipartUploadRequest.addFileToUpload(memberDetails.getPhotoURL(), "photo")
                         .addParameter("token", token)
                         .addParameter("first_name", memberDetails.getFirstName())
                         .addParameter("middle_name", memberDetails.getMiddleName())
@@ -404,7 +417,7 @@ public class UploadActivity extends AppCompatActivity
                         .addParameter("email", memberDetails.getEmail())
                         .addParameter("notes", memberDetails.getNotes())
                         .addParameter("id", memberDetails.getUserId())
-                        .addParameter("fingerprint2",memberDetails.getFingerPrint2())
+                        .addParameter("fingerprint2",memberDetails.getFingerPrint1())
                         .setNotificationConfig(new UploadNotificationConfig())
                         .setMaxRetries(2)
                         .setDelegate(new UploadStatusDelegate() {
@@ -452,18 +465,34 @@ public class UploadActivity extends AppCompatActivity
                                     memberRegister.setCreateAt(isNull(memberObject, "created_at"));
                                     memberRegister.setId(isNull(memberObject, "id"));
                                     memberRegister.setNotes(isNull(memberObject, "notes"));
-                                    memberRegister.setFingerPrint2(isNull(memberObject,"fingerprint2"));
+                                    memberRegister.setFingerPrint1(isNull(memberObject,"fingerprint2"));
                                     //    dataBaseHelper.insertMemberData(memberRegister);
                                     dataBaseHelper.updateMemberData(memberRegister);
+
+
+                                    if (!dataBaseHelper.isPhotoAvailable(memberRegister.getId(), memberRegister.getPhotoURL())) {
+
+                                        mMyTask = new DownloadTask(mContext,memberRegister,"update")
+                                                .execute(stringToURL(
+                                                        //"http://www.freeimageslive.com/galleries/objects/general/pics/woodenbox0482.jpg"
+                                                        PreferenceUtils.getUrlUploadImage(mContext)+memberRegister.getPhotoURL()
+                                                ));
+                                    }
+
+
                                 } catch (Exception ex) {
                                     ex.printStackTrace();
                                 }
+
+
                                 progressBar.setVisibility(View.GONE);
                                 dataBaseHelperOffline.deleteOfflineMember(memberDetails);
                                 list = (ArrayList<MemberPOJO>) dataBaseHelperOffline.getAllOfflineMembers();
                                 memberAdapter = new MemberAdapter(mContext,list,"ic_person.png");
                                 memberAdapter.notifyDataSetChanged();
                                 listView.setAdapter(memberAdapter);
+
+
 
                             }
 
@@ -492,7 +521,7 @@ public class UploadActivity extends AppCompatActivity
                         .addParameter("email", memberDetails.getEmail())
                         .addParameter("notes", memberDetails.getNotes())
                         .addParameter("id", memberDetails.getUserId())
-                        .addParameter("fingerprint2", memberDetails.getFingerPrint2())
+                        .addParameter("fingerprint2", memberDetails.getFingerPrint1())
                         .setNotificationConfig(new UploadNotificationConfig())
                         .setMaxRetries(2)
                         .setDelegate(new UploadStatusDelegate() {
@@ -539,7 +568,7 @@ public class UploadActivity extends AppCompatActivity
                                     memberRegister.setCreateAt(isNull(memberObject, "created_at"));
                                     memberRegister.setId(isNull(memberObject, "id"));
                                     memberRegister.setNotes(isNull(memberObject, "notes"));
-                                    memberRegister.setFingerPrint2(isNull(memberObject,"fingerprint2"));
+                                    memberRegister.setFingerPrint1(isNull(memberObject,"fingerprint2"));
                                     dataBaseHelper.updateMemberData(memberRegister);
                                 } catch (Exception ex) {
                                     ex.printStackTrace();
@@ -623,4 +652,13 @@ public class UploadActivity extends AppCompatActivity
 
     }
 
+    protected URL stringToURL(String urlString){
+        try{
+            URL url = new URL(urlString);
+            return url;
+        }catch(MalformedURLException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

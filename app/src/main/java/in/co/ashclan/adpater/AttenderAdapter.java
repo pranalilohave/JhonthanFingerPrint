@@ -15,6 +15,7 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -23,6 +24,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import in.co.ashclan.database.DataBaseHelper;
 import in.co.ashclan.fingerprint.R;
 import in.co.ashclan.model.AttenderPOJO;
 import in.co.ashclan.utils.PreferenceUtils;
@@ -40,7 +42,6 @@ public class AttenderAdapter extends BaseAdapter {
         this.mContext = mContext;
         this.list = list;
 
-
         DisplayImageOptions imageOptions = new DisplayImageOptions.Builder()
                 .cacheInMemory(true)
                 .cacheOnDisk(true)
@@ -50,6 +51,8 @@ public class AttenderAdapter extends BaseAdapter {
                 .showImageForEmptyUri(R.drawable.ic_person)
                 .showImageOnFail(R.drawable.ic_person)
                 .build();
+
+        // imageLoader.destroy();
 
         loaderConfiguration = new ImageLoaderConfiguration.Builder(mContext)
                 .defaultDisplayImageOptions(imageOptions).build();
@@ -83,6 +86,7 @@ public class AttenderAdapter extends BaseAdapter {
         }else {
             vList = (View)view;
         }
+
         txt_id=(TextView)vList.findViewById(R.id.attender_id);
         txt_name=(TextView)vList.findViewById(R.id.attender_name);
         txt_address=(TextView)vList.findViewById(R.id.attender_address);
@@ -118,7 +122,25 @@ public class AttenderAdapter extends BaseAdapter {
             }
         }
 
-        if (null!=attenderPOJO.getPhotoURL()){
+        DataBaseHelper dataBaseHelper = new DataBaseHelper(mContext);
+        String Imagepath = dataBaseHelper.getTempMemberPhoto(attenderPOJO.getMemberId());
+
+        if(null!=Imagepath){
+            try {
+                Picasso.with(mContext)
+                        .load("file://"+Imagepath)
+                        .config(Bitmap.Config.RGB_565)
+                        .fit()
+                        .centerCrop()
+                        .into(imageView);
+
+            }catch (Exception e){
+                imageView.setImageResource(R.drawable.ic_profile_image_1);
+                e.printStackTrace();
+            }
+        }
+
+     /*   if (null!=attenderPOJO.getPhotoURL()){
             String imgURL= PreferenceUtils.getUrlUploadImage(mContext)+attenderPOJO.getPhotoURL();
             try {
                 imageLoader.displayImage(imgURL, imageView, new ImageLoadingListener() {
@@ -146,7 +168,7 @@ public class AttenderAdapter extends BaseAdapter {
                 imageView.setImageResource(R.drawable.ic_profile_image_1);
                 e.printStackTrace();
             }
-        }
+        }*/
 
 
         return vList;

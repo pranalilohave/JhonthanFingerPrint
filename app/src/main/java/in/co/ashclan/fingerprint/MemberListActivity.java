@@ -466,7 +466,6 @@ public class MemberListActivity extends AppCompatActivity
         requestQueue.add(smr);
     }
 
-
     public void getAccessTokenGovNet(String URL,String email,String password){
 
         try {
@@ -732,8 +731,6 @@ public class MemberListActivity extends AppCompatActivity
             HashMap<String, String> postData = new HashMap<>();
             postData.put("email", email);
             postData.put("password", password);
-            String url = "https://bwc.pentecostchurch.org/api/login";
-            String urls = "http://52.172.221.235:8983/api/login";
             String json_output = performPostCall(URL, postData);
             return json_output;
         }
@@ -838,7 +835,7 @@ public class MemberListActivity extends AppCompatActivity
                     member.setCreateAt(Utils.isNull(object,"created_at"));
                     member.setUpdateAt(Utils.isNull(object,"updated_at"));
                     member.setFingerPrint(Utils.isNull(object,"fingerprint"));
-                    member.setFingerPrint2(Utils.isNull(object,"fingerprint2"));
+                    member.setFingerPrint1(Utils.isNull(object,"fingerprint2"));
 
                     //remainber to do changes...
                     member.setPhotoURL(Utils.isNull(object,"photo",""));
@@ -973,7 +970,6 @@ public class MemberListActivity extends AppCompatActivity
     private void closeKeyboard() {
         InputMethodManager inputManager = (InputMethodManager)mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
         inputManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-
     }
 
     private void openKeyboard() {

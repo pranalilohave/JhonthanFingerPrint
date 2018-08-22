@@ -16,6 +16,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadata;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
@@ -56,6 +57,9 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.squareup.picasso.Picasso;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import net.gotev.uploadservice.MultipartUploadRequest;
 import net.gotev.uploadservice.ServerResponse;
@@ -73,6 +77,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -88,6 +94,7 @@ import android_serialport_api.AsyncFingerprintA5;
 import android_serialport_api.SerialPortManager;
 import android_serialport_api.SerialPortManagerA5;
 import fr.ganfra.materialspinner.MaterialSpinner;
+import in.co.ashclan.AsynkTask.DownloadTask;
 import in.co.ashclan.database.DataBaseHelper;
 //import in.co.ashclan.fgtit.fpcore.FPMatch;
 import in.co.ashclan.database.DataBaseHelperOffline;
@@ -101,7 +108,7 @@ import in.co.ashclan.utils.WebServiceCall;
 import static in.co.ashclan.utils.WebServiceCall.performPostCall;
 import static java.security.AccessController.getContext;
 
-public class MemberRegisterActivity extends AppCompatActivity implements View.OnClickListener{
+public class MemberRegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
     private EditText editTextFirstName,editTextMiddleName,editTextLastname,editTextEmail,editTextHomePhone,
             editTextMobilePhone,editTextWorkPhone,editTextDOB,editTextAddress,editTextDescription;
@@ -149,10 +156,13 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
 
     private int REQUEST_CAMERA = 0, SELECT_FILE = 1, CROP_IMAGE = 2;
     private String userChoosenTask;
-    private Bitmap bitmapImage;
+    public Bitmap bitmapImage;
     private File destination;
     private String imagePath;
     String type;
+
+    private AsyncTask mMyTask;
+
 
     ImageLoaderConfiguration loaderConfiguration;
     ImageLoader imageLoader = ImageLoader.getInstance();
@@ -209,11 +219,11 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
                     isEnroll2=true;
                 }
 
-
                 //"http://52.172.221.235:8983/uploads/"
-                if (null!=memberDetails.getPhotoURL()&&!memberDetails.getPhotoURL().equals("")) {
+                if (null!=memberDetails.getPhotoURL() && !memberDetails.getPhotoURL().equals("")) {
                     //editImage=true;
                     String imgURL =  PreferenceUtils.getUrlUploadImage(MemberRegisterActivity.this)+ memberDetails.getPhotoURL();
+
                     imageLoader.displayImage(imgURL, imageViewFingerPrint2, new ImageLoadingListener() {
                         @Override
                         public void onLoadingStarted(String imageUri, View view) {
@@ -238,6 +248,11 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
                         }
                     });
 
+                  /* Glide.with(mContext)
+                            .load(memberDetails.getPhotoURL())
+                            .into(imageViewFingerPrint2);*/
+                    //Picasso.get().load(imgURL).into(imageViewFingerPrint2);
+                    //imageViewFingerPrint2.setImageURI(Uri.parse(imgURL));
                 }
 
                 buttonOffline.setVisibility(View.VISIBLE);
@@ -275,7 +290,6 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
             }
         }
     }
-
     public void inits(){
         editTextFirstName=(EditText)findViewById(R.id.first_name);
         editTextMiddleName=(EditText)findViewById(R.id.middle_name);
@@ -321,9 +335,6 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
             isUpEnroll2=false;
             FPDialog(2);
         }
-
-
-
         if (view==imageViewFingerPrint2){
             //selectImage();
             cropImage();
@@ -333,7 +344,6 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
         }
         if (view==buttonSubmit){
             submitMemberRegistration();
-
         }
         if (view==buttonOffline){
             switch (type){
@@ -344,9 +354,7 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
                     offlineSubmitMemberRegistration();
                     break;
             }
-
         }
-
     }
     private void dateDialog(){
         // Get Current Date
@@ -656,6 +664,21 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
                             return;
                         }
                     }
+
+                    if(member.getFingerPrint1()!=null) {
+                        byte[] byt=Base64.decode(member.getFingerPrint1(),Base64.DEFAULT);
+                        if (FPMatch.getInstance().MatchTemplate(model,byt) > 60){
+                            fpStatusText.setText(getString(R.string.txt_fpduplicate));
+                            if(iFinger==1) {
+                                imageViewFingerPrint1.setColorFilter(getResources().getColor(R.color.red));
+                            }else{
+                                imageViewFingerPrint3.setColorFilter(getResources().getColor(R.color.red));
+                            }
+                            Toast.makeText(mContext,"Duplicate",Toast.LENGTH_LONG).show();
+                            fpDialog.cancel();
+                            return;
+                        }
+                    }
                 }
                 if (iFinger == 1) {
                     imageViewFingerPrint1.setColorFilter(getResources().getColor(R.color.green));
@@ -685,7 +708,6 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
             }
         });
     }
-
     public boolean utilsCheck(){
 
         boolean cancel = false;
@@ -771,11 +793,8 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
                 break;
 
         }
-
-
         return cancel;
     }
-
     private boolean isEmailValid(String email) {
         return email.contains("@")&&email.contains(".");
     }
@@ -789,11 +808,15 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
         }
         return true;
     }
-
-
     public void cropImage(){
-        Intent intent = new Intent(mContext,CropImageActivity.class);
-        startActivityForResult(intent,CROP_IMAGE);
+      /*  Intent intent = new Intent(mContext,CropImageActivity.class);
+        startActivityForResult(intent,CROP_IMAGE);*/
+
+        CropImage.activity()
+                .setGuidelines(CropImageView.Guidelines.ON)//enable image guidlines
+                .setAspectRatio(1,1)  //image will be suqare//
+                .start(this);
+
     }
     public void offlineSubmitMemberRegistration(){
         if(!utilsCheck()) {
@@ -811,6 +834,7 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
             memberDetails.setAddress(editTextAddress.getText().toString());
             memberDetails.setNotes(editTextDescription.getText().toString());
             memberDetails.setDob(editTextDOB.getText().toString());
+            memberDetails.setPhotoURL(getImagePath());
             memberDetails.setPhotoLocalPath(getImagePath());
             if (isEnroll1) {
                 fpByte1 = new byte[model1.length];
@@ -820,13 +844,14 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
 
                 memberDetails.setFingerPrint(fpStrByte1);
             }
+            
             if (isEnroll2) {
                 fpByte2 = new byte[model2.length];
                 System.arraycopy(model2, 0, fpByte2, 0, model2.length);
                 fpStrByte2 = Base64.encodeToString(fpByte2, Base64.DEFAULT);
-                imageViewFingerPrint2.setColorFilter(getResources().getColor(R.color.green));
+                imageViewFingerPrint3.setColorFilter(getResources().getColor(R.color.green));
 
-                memberDetails.setFingerPrint2(fpStrByte2);
+                memberDetails.setFingerPrint1(fpStrByte2);
             }
 
             progressBar.setVisibility(View.VISIBLE);
@@ -854,7 +879,9 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
             memberDetails.setAddress(editTextAddress.getText().toString());
             memberDetails.setNotes(editTextDescription.getText().toString());
             memberDetails.setDob(editTextDOB.getText().toString());
+            memberDetails.setPhotoURL(getImagePath());
             memberDetails.setPhotoLocalPath(getImagePath());
+
             if (!isUpEnroll1) {
                 fpByte1 = new byte[model1.length];
                 System.arraycopy(model1, 0, fpByte1, 0, model1.length);
@@ -866,8 +893,8 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
                 fpByte2 = new byte[model2.length];
                 System.arraycopy(model2, 0, fpByte2, 0, model2.length);
                 fpStrByte2 = Base64.encodeToString(fpByte2, Base64.DEFAULT);
-                imageViewFingerPrint2.setColorFilter(getResources().getColor(R.color.green));
-                memberDetails.setFingerPrint2(fpStrByte2);
+                imageViewFingerPrint3.setColorFilter(getResources().getColor(R.color.green));
+                memberDetails.setFingerPrint1(fpStrByte2);
             }
 
             progressBar.setVisibility(View.VISIBLE);
@@ -886,11 +913,13 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
         }
     }
     public void submitMemberRegistration(){
+
         boolean isDuplicated=false;
 
         if (utilsCheck()){
             Toast.makeText(mContext,"something is missing",Toast.LENGTH_LONG).show();
         }else {
+
             memberDetails.setFirstName(editTextFirstName.getText().toString());
             memberDetails.setLastName(editTextLastname.getText().toString());
             memberDetails.setMiddleName(editTextMiddleName.getText().toString());
@@ -907,6 +936,7 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
             memberDetails.setDob(editTextDOB.getText().toString());
 
             if (isEnroll1&&!isUpEnroll1) {
+
                 fpByte1 = new byte[model1.length];
                 System.arraycopy(model1, 0, fpByte1, 0, model1.length);
 
@@ -922,67 +952,25 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
                 fpStrByte2 = Base64.encodeToString(fpByte2, Base64.DEFAULT);
                 imageViewFingerPrint3.setColorFilter(getResources().getColor(R.color.green));
 
-                memberDetails.setFingerPrint2(fpStrByte2);
+                memberDetails.setFingerPrint1(fpStrByte2);
             }
 
             progressBar.setVisibility(View.VISIBLE);
             //"http://52.172.221.235:8983/api/create_member"
 
-            for (MemberPOJO member:list){
-                byte[] tmp1=new byte[256];
-                if(!member.getFingerPrint().equals("")){
-                    byte[] tmp2 = Base64.decode(member.getFingerPrint(),Base64.DEFAULT);
-                    if(tmp2!=null){
-                        System.arraycopy(tmp2, 0, tmp1, 0, 256);
-                        Log.e("---->",member.getId()+"  -->"+member.getFingerPrint()+" ><><><><><>< "+(FPMatch.getInstance().MatchTemplate(fpByte1,tmp1)>60));
-
-                        if(FPMatch.getInstance().MatchTemplate(fpByte1,tmp1)>60){
-                            Toast.makeText(MemberRegisterActivity.this,"inside",Toast.LENGTH_LONG).show();
-                            Log.e("----> inside",member.getFingerPrint());
-                            Log.e("----> inside",member.getId());
-
-                            isDuplicated = true;
-                            break;
-                        }
-                        if(FPMatch.getInstance().MatchTemplate(fpByte2,tmp1)>60){
-                            Toast.makeText(MemberRegisterActivity.this,"inside",Toast.LENGTH_LONG).show();
-                            Log.e("----> inside",member.getFingerPrint());
-                            Log.e("----> inside",member.getId());
-
-                            isDuplicated = true;
-                            break;
-                        }
-
-                        System.arraycopy(tmp2, 256, tmp1, 0, 256);
-
-                        if(FPMatch.getInstance().MatchTemplate(fpByte1,tmp1)>60){
-                            isDuplicated=true;
-                            break;
-                        }
-
-                        if(FPMatch.getInstance().MatchTemplate(fpByte2,tmp1)>60){
-                            isDuplicated=true;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            if(!isDuplicated) {
+        //    if(!isDuplicated) {
                 // getAccessTokenGovNet(PreferenceUtils.getUrlLogin(mContext),PreferenceUtils.getAdminName(mContext),PreferenceUtils.getAdminPassword(mContext));
 
                 GetAccessTokenTask aTask = new GetAccessTokenTask(mContext,PreferenceUtils.getUrlLogin(mContext),
                         PreferenceUtils.getAdminName(mContext),PreferenceUtils.getAdminPassword(mContext),memberDetails);
                 aTask.execute();
-            }else {
-                imageViewFingerPrint1.setColorFilter(getResources().getColor(R.color.red));
-                Toast.makeText(MemberRegisterActivity.this,"Duplicated FingerPrint",Toast.LENGTH_LONG).show();
-            }
+//            }else {
+//                imageViewFingerPrint1.setColorFilter(getResources().getColor(R.color.red));
+//                Toast.makeText(MemberRegisterActivity.this,"Duplicated FingerPrint",Toast.LENGTH_LONG).show();
+//            }
 
         }
     }
-
-
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
@@ -998,7 +986,6 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
                 break;
         }
     }
-
     private void selectImage() {
         final CharSequence[] items = { "Take Photo", "Choose from Library",
                 "Cancel" };
@@ -1037,7 +1024,6 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(intent, REQUEST_CAMERA);
     }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -1050,11 +1036,59 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
             else if (requestCode == CROP_IMAGE)
                 onCropImageResult(data);
         }
+
+        if(requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE)
+        {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if(resultCode == RESULT_OK)
+            {
+                Uri resultUri = result.getUri();
+                //set image choosed from gallery to image view
+                imageViewFingerPrint2.setImageURI(resultUri);
+
+                /*********************************************************/
+              /*  bitmapImage = (Bitmap) result.getBitmap();
+                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                bitmapImage.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
+                String fileName=System.currentTimeMillis() + ".JPEG";
+                destination = new File(Environment.getExternalStorageDirectory(),
+                        fileName);
+                //    setImagePath(fileName);
+                FileOutputStream fo;
+                try {
+                    destination.createNewFile();
+                    fo = new FileOutputStream(destination);
+                    //fo.write(resultUri.getPath().getBytes());
+                    fo.write(bytes.toByteArray());
+                    fo.close();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }*/
+
+                Toast.makeText(MemberRegisterActivity.this,resultUri.toString(),Toast.LENGTH_LONG).show();
+                //imageViewFingerPrint2.setImageBitmap(bitmapImage);
+                //     memberDetails.setPhotoLocalPath(BitMapToString(bitmapImage));
+                setImagePath(resultUri.getPath());
+                //Picasso.get().load(getImagePath()).into(imageViewFingerPrint2);
+
+                /********************************************************/
+            }
+            else if(resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE)
+            {
+                Exception error = result.getError();
+            }
+        }
+
+
+
     }
     private void onCropImageResult(Intent data) {
         //****************************
         //Bitmap bmp;
         byte[] byteArray = data.getByteArrayExtra("bytesArray");
+        String imagePath = data.getStringExtra("ImagePath");
         //bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
         //imageView.setImageBitmap(bmp);
         ///String str = data.getStringExtra("ImagePath");
@@ -1085,9 +1119,14 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
 
         Toast.makeText(MemberRegisterActivity.this,destination.getAbsolutePath(),Toast.LENGTH_LONG).show();
         imageViewFingerPrint2.setImageBitmap(bitmapImage);
+       // Picasso.get().load(imgURL).fit().into(imageViewFingerPrint2);
         //     memberDetails.setPhotoLocalPath(BitMapToString(bitmapImage));
         setImagePath(destination.getAbsolutePath());
+        //Picasso.get().load(getImagePath()).into(imageViewFingerPrint2);
+
+        /**************************************************************************************/
     }
+
     private void onCaptureImageResult(Intent data) {
         bitmapImage = (Bitmap) data.getExtras().get("data");
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -1107,14 +1146,11 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         Toast.makeText(MemberRegisterActivity.this,destination.getAbsolutePath(),Toast.LENGTH_LONG).show();
         imageViewFingerPrint2.setImageBitmap(bitmapImage);
         //     memberDetails.setPhotoLocalPath(BitMapToString(bitmapImage));
         setImagePath(destination.getAbsolutePath());
     }
-
-
     @SuppressWarnings("deprecation")
     private void onSelectFromGalleryResult(Intent data) {
 
@@ -1150,14 +1186,13 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
         //   memberDetails.setPhotoLocalPath(BitMapToString(bitmapImage));
         setImagePath(path);
     }
-
     public void setImagePath(String path){
         editImage=true;
         imagePath=path;
     }
-
     public String getImagePath(){
         memberDetails.setPhotoLocalPath(imagePath);
+        memberDetails.setPhotoURL(imagePath);
         return imagePath;
     }
     public String isNull(JSONObject object, String parma){
@@ -1166,10 +1201,9 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
     public String isNull(JSONObject object, String parma,String dafualtStr){
         return object.get(parma)!=null?object.get(parma).toString():dafualtStr;
     }
-
     public String BitMapToString(Bitmap bitmap) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        bitmap.compress(Bitmap.CompressFormat.PNG, 90, baos);
         byte[] b = baos.toByteArray();
         String temp = Base64.encodeToString(b, Base64.DEFAULT);
         return temp;
@@ -1185,9 +1219,6 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
             return null;
         }
     }
-
-
-
     public void getGender(String str) {
         List<String> l = Arrays.asList(getResources().getStringArray(R.array.array_gender));
         for (int i=0; i<l.size();i++){
@@ -1195,7 +1226,6 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
                 msGender.setSelection(i+1);
             }
         }
-
     }
     public void getStatus(String str){
         List<String> l = Arrays.asList(getResources().getStringArray(R.array.array_status));
@@ -1213,7 +1243,6 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
             }
         }
     }
-
     public void memberRegisterVolley(String URL, final MemberPOJO memberDetails){
         SimpleMultiPartRequest smr = new SimpleMultiPartRequest(Request.Method.POST, URL,
                 new Response.Listener<String>() {
@@ -1458,20 +1487,19 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
         } catch (Exception exc) {
             Toast.makeText(mContext, exc.getMessage(), Toast.LENGTH_SHORT).show();
         }
-
     }
-
     public class GetAccessTokenTask extends AsyncTask<String, String, String> {
 
         private Context mContext;
         private String URL;
         private String email,password;
         private MemberPOJO memberPOJO;
+
         GetAccessTokenTask(Context mContext,String URL,String email,String password,MemberPOJO memberPOJO) {
             this.mContext = mContext;
             this.email=email;
             this.password=password;
-            this.URL=URL;
+            this.URL = URL;
             this.memberPOJO = memberPOJO;
         }
 
@@ -1487,13 +1515,20 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
 
         @Override
         protected String doInBackground(String... params) {
+
             HashMap<String, String> postData = new HashMap<>();
+            postData.put("email", email);
+            postData.put("password", password);
+            String json_output = performPostCall(URL, postData);
+            return json_output;
+
+         /*   HashMap<String, String> postData = new HashMap<>();
             postData.put("email", email);
             postData.put("password", password);
             String url = "https://bwc.pentecostchurch.org/api/login";
             String urls = "http://52.172.221.235:8983/api/login";
             String json_output = performPostCall(url, postData);
-            return json_output;
+            return json_output;*/
         }
 
         @Override
@@ -1559,7 +1594,7 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
                     .addParameter("work_phone", memberDetails.getWorkPhone())
                     .addParameter("email", memberDetails.getEmail())
                     .addParameter("notes", memberDetails.getNotes())
-                    .addParameter("fingerprint2", memberDetails.getFingerPrint())
+                    .addParameter("fingerprint2", memberDetails.getFingerPrint1())
                     .setNotificationConfig(new UploadNotificationConfig())
                     .setMaxRetries(2)
                     .setDelegate(new UploadStatusDelegate() {
@@ -1608,8 +1643,19 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
                                 memberRegister.setCreateAt(isNull(memberObject,"created_at"));
                                 memberRegister.setId(isNull(memberObject,"id"));
                                 memberRegister.setNotes(isNull(memberObject,"notes"));
-                                memberRegister.setFingerPrint2(isNull(memberObject,"fingerprint2"));
+                                memberRegister.setFingerPrint1(isNull(memberObject,"fingerprint2"));
+
                                 dataBaseHelper.insertMemberData(memberRegister);
+
+                                if (!dataBaseHelper.isPhotoAvailable(memberRegister.getId(), memberRegister.getPhotoURL())) {
+
+                                    mMyTask = new DownloadTask(mContext,memberRegister)
+                                            .execute(stringToURL(
+                                                    //"http://www.freeimageslive.com/galleries/objects/general/pics/woodenbox0482.jpg"
+                                                    PreferenceUtils.getUrlUploadImage(mContext)+memberRegister.getPhotoURL()
+                                            ));
+                                }
+
 
                             }catch (Exception ex){
                                 ex.printStackTrace();
@@ -1627,8 +1673,7 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
                                 progressBar.setVisibility(View.INVISIBLE);
                             }
 
-
-
+                            finish();
                         }
 
                         @Override
@@ -1671,7 +1716,7 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
                         .addParameter("email", memberDetails.getEmail())
                         .addParameter("notes", memberDetails.getNotes())
                         .addParameter("id", memberDetails.getId())
-                        .addParameter("fingerprint2",memberDetails.getFingerPrint2())
+                        .addParameter("fingerprint2",memberDetails.getFingerPrint1())
                         .setNotificationConfig(new UploadNotificationConfig())
                         .setMaxRetries(2)
                         .setDelegate(new UploadStatusDelegate() {
@@ -1719,9 +1764,20 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
                                     memberRegister.setCreateAt(isNull(memberObject, "created_at"));
                                     memberRegister.setId(isNull(memberObject, "id"));
                                     memberRegister.setNotes(isNull(memberObject, "notes"));
-                                    memberRegister.setFingerPrint2(isNull(memberObject,"fingerprint2"));
+                                    memberRegister.setFingerPrint1(isNull(memberObject,"fingerprint2"));
                                     //    dataBaseHelper.insertMemberData(memberRegister);
                                     dataBaseHelper.updateMemberData(memberRegister);
+
+
+                                    if (!dataBaseHelper.isPhotoAvailable(memberRegister.getId(), memberRegister.getPhotoURL())) {
+
+                                        mMyTask = new DownloadTask(mContext,memberRegister,"update")
+                                                .execute(stringToURL(
+                                                        //"http://www.freeimageslive.com/galleries/objects/general/pics/woodenbox0482.jpg"
+                                                        PreferenceUtils.getUrlUploadImage(mContext)+memberRegister.getPhotoURL()
+                                                ));
+                                    }
+
                                 } catch (Exception ex) {
                                     ex.printStackTrace();
                                 }
@@ -1768,7 +1824,7 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
                         .addParameter("email", memberDetails.getEmail())
                         .addParameter("notes", memberDetails.getNotes())
                         .addParameter("id", memberDetails.getId())
-                        .addParameter("fingerprint2",memberDetails.getFingerPrint2())
+                        .addParameter("fingerprint2",memberDetails.getFingerPrint1())
                         .setNotificationConfig(new UploadNotificationConfig())
                         .setMaxRetries(2)
                         .setDelegate(new UploadStatusDelegate() {
@@ -1816,9 +1872,20 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
                                     memberRegister.setCreateAt(isNull(memberObject, "created_at"));
                                     memberRegister.setId(isNull(memberObject, "id"));
                                     memberRegister.setNotes(isNull(memberObject, "notes"));
-                                    memberRegister.setFingerPrint2(isNull(memberObject,"fingerprint2"));
+                                    memberRegister.setFingerPrint1(isNull(memberObject,"fingerprint2"));
                                     //    dataBaseHelper.insertMemberData(memberRegister);
                                     dataBaseHelper.updateMemberData(memberRegister);
+
+                                    if (!dataBaseHelper.isPhotoAvailable(memberRegister.getId(), memberRegister.getPhotoURL())) {
+
+                                        mMyTask = new DownloadTask(mContext,memberRegister,"update")
+                                                .execute(stringToURL(
+                                                        //"http://www.freeimageslive.com/galleries/objects/general/pics/woodenbox0482.jpg"
+                                                        PreferenceUtils.getUrlUploadImage(mContext)+memberRegister.getPhotoURL()
+                                                ));
+                                    }
+
+
                                 } catch (Exception ex) {
                                     ex.printStackTrace();
                                 }
@@ -1854,8 +1921,15 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
             Toast.makeText(this, exc.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
-
-
+    protected URL stringToURL(String urlString){
+        try{
+            URL url = new URL(urlString);
+            return url;
+        }catch(MalformedURLException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
 
 //*******************************************************

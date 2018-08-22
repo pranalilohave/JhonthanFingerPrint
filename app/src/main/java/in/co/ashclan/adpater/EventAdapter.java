@@ -12,6 +12,7 @@ import android.widget.TextView;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 
 import in.co.ashclan.fingerprint.AttendanceActivity;
@@ -29,7 +30,9 @@ public class EventAdapter extends BaseAdapter {
 
     public EventAdapter(Context mContext,ArrayList<EventPOJO> list){
         this.mContext=mContext;
-        this.list=list;
+//        this.list=list;
+        Collections.reverse(list);
+        this.list = list;
     }
 
     @Override

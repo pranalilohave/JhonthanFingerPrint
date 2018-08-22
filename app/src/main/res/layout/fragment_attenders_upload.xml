@@ -1,0 +1,82 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="in.co.ashclan.fragment.AttendersUploadFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:text="Attendance"
+            android:textAlignment="center"
+            android:gravity="center_horizontal|center_vertical"
+            android:background="@color/colorPrimary"
+            />
+
+        <TextView
+            android:id="@+id/total_attendance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="Total No of Attenders :- "
+            android:textColor="@color/black"
+            android:textSize="20sp"/>
+
+        <TextView
+            android:id="@+id/total_male"
+            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Total No of Males  :- "
+            android:textColor="@color/black"
+            android:textSize="20sp"/>
+
+        <TextView
+            android:id="@+id/total_female"
+            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Total No of Females :- "
+            android:textColor="@color/black"
+            android:textSize="20sp"/>
+
+    <ListView
+        android:id="@+id/attender_listView_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:isScrollContainer="true"/>
+
+    </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_upload_attendance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_marginBottom="35dp"
+        android:layout_marginEnd="38dp"
+        android:scaleType="fitXY"
+        android:tint="@android:color/black"
+        app:backgroundTint="@color/yellow"
+        app:fabSize="normal"
+        app:srcCompat="@android:drawable/ic_menu_upload" />
+
+    <android.support.v4.widget.ContentLoadingProgressBar
+        android:id="@+id/fragment_progress_bar_attender"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|center_vertical"
+        android:visibility="invisible" />
+
+</FrameLayout>

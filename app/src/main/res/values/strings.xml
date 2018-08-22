@@ -6,7 +6,6 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
-
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
@@ -25,6 +24,12 @@
         <item>UnKnown</item>
     </string-array>
 
+    <string-array name="array_role">
+        <item>Admin</item>
+        <item>Editor</item>
+        <item>View</item>
+    </string-array>
+
 
     <string-array name="array_marital_status">
         <item>Single</item>
@@ -34,6 +39,32 @@
         <item>Widowed</item>
         <item>Separated</item>
         <item>Unknown</item>
+    </string-array>
+
+    <string-array name="arry_temp">
+        <item>Single</item>
+    </string-array>
+
+    <string-array name="reccurType">
+        <item>Days(s)</item>
+        <item>Weeks(s)</item>
+        <item>Months(s)</item>
+        <item>Year(s)</item>
+    </string-array>
+
+    <string-array name="array_colors">
+        <item>#b2cd92</item>
+        <item>#698497</item>
+        <item>#cb6962</item>
+        <item>#d1ba39</item>
+        <item>#a773b8</item>
+        <item>#bdbdbd</item>
+        <item>#558B2F</item>
+        <item>#B71C1C</item>
+        <item>#6A1B9A</item>
+        <item>#00695C</item>
+        <item>#b2cd92</item>
+        <item>#424242</item>
     </string-array>
 
     <string-array name="array_status">

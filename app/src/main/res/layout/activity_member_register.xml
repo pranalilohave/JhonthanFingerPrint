@@ -13,7 +13,6 @@
         android:layout_centerVertical="true"
         android:id="@+id/progress_bar_member_register"
         android:visibility="invisible"
-
         />
 <ScrollView
     android:layout_width="match_parent"
@@ -28,7 +27,41 @@
         android:focusable="true"
         android:focusableInTouchMode="true">
 
+<<<<<<< HEAD
         <LinearLayout
+=======
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="5dp"
+        android:gravity="center"
+        android:layout_gravity="center">
+        <ImageView
+            android:background="@color/blue4"
+            android:id="@+id/imageView2"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:padding="0dp"
+            android:scaleType="fitXY"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_profile_image_1"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_weight="1">
+
+        <android.support.design.widget.TextInputLayout
+>>>>>>> 253aae955f2a5f1e752d3edb08702c9ef769c0ec
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -130,6 +163,7 @@
                     android:layout_height="wrap_content" />
 
             </android.support.design.widget.TextInputLayout>
+
             <fr.ganfra.materialspinner.MaterialSpinner
 
                 android:id="@+id/spinner_gender"
@@ -371,6 +405,7 @@
             android:layout_marginTop="44dp"
             android:padding="5dp"
             android:orientation="horizontal">
+
             <android.support.v7.widget.AppCompatButton
                 android:id="@+id/button_offline_submit"
                 android:text="offline"

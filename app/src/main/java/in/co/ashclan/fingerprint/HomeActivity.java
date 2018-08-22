@@ -22,6 +22,7 @@ import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -52,6 +53,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.UUID;
@@ -87,6 +89,8 @@ public class HomeActivity extends AppCompatActivity
     ListView listView;
     ArrayList<MemberPOJO> list = new ArrayList<MemberPOJO>();
     ArrayList<EventPOJO> eventList = new ArrayList<EventPOJO>();
+
+    TextView name,email;
 
     EventAdapter eventAdapter;
 
@@ -125,7 +129,10 @@ public class HomeActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(HomeActivity.this, MemberRegisterActivity.class);
+             /*   Intent intent = new Intent(HomeActivity.this, AttendanceActivity.class);
+                intent.putExtra("type", "register");
+                startActivity(intent);*/
+                Intent intent = new Intent(HomeActivity.this, EventRegister.class);
                 intent.putExtra("type", "register");
                 startActivity(intent);
             }
@@ -140,6 +147,12 @@ public class HomeActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.getMenu().getItem(1).setChecked(true);
+        View header=navigationView.getHeaderView(0);
+
+        name = (TextView)header.findViewById(R.id.txt_adminName);
+        email = (TextView)header.findViewById(R.id.txt_adminEmail);
+        name.setText(/*PreferenceUtils.getAdminName(mContext)*/"Pentecost Church");
+        email.setText(PreferenceUtils.getAdminName(mContext));
 
 
         bottomNavigationBar.setTabSelectedListener(this);
@@ -156,7 +169,6 @@ public class HomeActivity extends AppCompatActivity
         FPMatch.getInstance().InitMatch();
 
     }
-
     public void minitData() {
         try {
 
@@ -210,7 +222,6 @@ public class HomeActivity extends AppCompatActivity
         }catch (Exception e){
         }
     }
-
     public void inits() {
 
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
@@ -228,7 +239,6 @@ public class HomeActivity extends AppCompatActivity
         cardViewMonth.setOnClickListener(this);
         cardViewYear.setOnClickListener(this);
     }
-
     public void calendar() {
         System.out.println("Testing date " + collapsibleCalendar.getSelectedDay().getDay() + "/" + collapsibleCalendar.getSelectedDay().getMonth() + "/" + collapsibleCalendar.getSelectedDay().getYear());
         collapsibleCalendar.setCalendarListener(new CollapsibleCalendar.CalendarListener() {
@@ -309,7 +319,6 @@ public class HomeActivity extends AppCompatActivity
         });
 
     }
-
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -319,14 +328,12 @@ public class HomeActivity extends AppCompatActivity
             super.onBackPressed();
         }
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.home, menu);
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -350,7 +357,6 @@ public class HomeActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -371,10 +377,10 @@ public class HomeActivity extends AppCompatActivity
         } else if (id == R.id.nav_recording) {
             Intent intent = new Intent(HomeActivity.this, RecordingActivity.class);
             startActivity(intent);
-        } else if (id == R.id.nav_setting) {
-            Intent intenti = new Intent(HomeActivity.this,TestingActivity.class);
-            startActivity(intenti);
 
+        } else if (id == R.id.nav_setting) {
+            Intent intenti = new Intent(mContext,SettingsActivity.class);
+            startActivity(intenti);
 
         } else if(id==R.id.nav_upload){
             Intent intent = new Intent(mContext, UploadActivity.class);
@@ -385,33 +391,23 @@ public class HomeActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
     //BottNavigationBar
     @Override
     public void onTabSelected(int position) {
         lastSelectedPosition = position;
         //setMe
-
         setFragment(position);
-
     }
-
     @Override
     public void onTabUnselected(int position) {
 
     }
-
     @Override
     public void onTabReselected(int position) {
-
-
     }
-
     //View.OnclickListener
     @Override
     public void onClick(View view) {
-
-
         if (view == cardViewAll) {
 
             cardViewAll.setCardBackgroundColor(getResources().getColor(R.color.blue4));
@@ -511,7 +507,6 @@ public class HomeActivity extends AppCompatActivity
 
         }
     }
-
     private void refresh() {
         bottomNavigationBar.clearAll();
         bottomNavigationBar.setFab(fab);
@@ -530,18 +525,15 @@ public class HomeActivity extends AppCompatActivity
                 .setFirstSelectedPosition(lastSelectedPosition)
                 .initialise();
     }
-
     private void setFragment(int position) {
 
     }
-
     @Override
     protected void onRestart() {
         super.onRestart();
         finish();
         startActivity(getIntent());
     }
-
     public boolean isEventLive(DateFormat df, Date startDate, Date endDate) {
         //     Toast.makeText(HomeActivity.this,today,Toast.LENGTH_LONG).show();
         Date mDate = null;
@@ -555,14 +547,12 @@ public class HomeActivity extends AppCompatActivity
         }
         return false;
     }
-
     public boolean isEventAvialibity(DateFormat df, Date startDate, Date endDate, Date onClickDate) {
         if (startDate.compareTo(onClickDate) >= 0 && endDate.compareTo(onClickDate) <= 0) {
             return true;
         }
         return false;
     }
-
     public boolean isEventMonth(DateFormat df, Date startDate, Date endDate) {
         Date mDate = null;
         try {
@@ -576,7 +566,6 @@ public class HomeActivity extends AppCompatActivity
         }
         return false;
     }
-
     public boolean isEventYear(DateFormat df, Date startDate, Date endDate) {
         Date mDate = null;
         try {
@@ -589,10 +578,6 @@ public class HomeActivity extends AppCompatActivity
         }
         return false;
     }
-
-
-
-
     public void getAccessTokenVolley(String URL, String email, String password) {
         SimpleMultiPartRequest smr = new SimpleMultiPartRequest(Request.Method.POST, URL,
                 new Response.Listener<String>() {
@@ -777,7 +762,6 @@ public class HomeActivity extends AppCompatActivity
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         requestQueue.add(smr);
     }
-
     public void getAccessTokenGovNet(String URL, String email, String password) {
 
         try {
@@ -1010,7 +994,6 @@ public class HomeActivity extends AppCompatActivity
             Toast.makeText(this, exc.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
-
     public class GetAccessTokenTask extends AsyncTask<String, String, String> {
 
         private Context mContext;
@@ -1039,8 +1022,6 @@ public class HomeActivity extends AppCompatActivity
             HashMap<String, String> postData = new HashMap<>();
             postData.put("email", email);
             postData.put("password", password);
-            String url = "https://bwc.pentecostchurch.org/api/login";
-            String urls = "http://52.172.221.235:8983/api/login";
             String json_output = performPostCall(URL, postData);
             return json_output;
         }
