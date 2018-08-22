@@ -2320,7 +2320,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public void deleteAllChangePAssword() {
+    public void deleteAllChangePassword() {
         try {
             String selectQuery = "DELETE FROM " + CHANGE_PASSWORD;
             SQLiteDatabase db = this.getWritableDatabase();

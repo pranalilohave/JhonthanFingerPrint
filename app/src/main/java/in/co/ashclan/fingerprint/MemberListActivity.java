@@ -265,6 +265,9 @@ public class MemberListActivity extends AppCompatActivity
             startActivity(intent);
 
         } else if (id == R.id.nav_setting) {
+            Intent intent = new Intent(mContext, SettingsActivity.class);
+            startActivity(intent);
+
 
         } else if(id==R.id.nav_upload){
             Intent intent = new Intent(mContext, UploadActivity.class);

@@ -189,6 +189,8 @@ public class UploadActivity extends AppCompatActivity
             startActivity(intent);
 
         } else if (id == R.id.nav_setting) {
+            Intent intent = new Intent(mContext,SettingsActivity.class);
+            startActivity(intent);
 
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
