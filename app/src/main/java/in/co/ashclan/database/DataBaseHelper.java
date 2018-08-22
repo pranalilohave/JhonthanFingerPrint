@@ -403,7 +403,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             return true;
         }
     }
-
     public List<MemberPOJO> getSerachMember(String str) {
         List<MemberPOJO> members = new ArrayList<MemberPOJO>();
         String selectQuery = "SELECT  * FROM " + MEMBERS_TABLE + " WHERE " + MEMBER_COL_4 + " LIKE '" + str + "%'"
@@ -444,9 +443,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.close();
         return members;
     }
-
     public List<MemberPOJO> getAllMembers() {
-
         List<MemberPOJO> members = new ArrayList<MemberPOJO>();
 
         String selectQuery = "SELECT  * FROM " + MEMBERS_TABLE;
@@ -523,7 +520,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
         return member;
     }
-
     public void deleteAllMembers() {
         try {
             String selectQuery = "DELETE FROM " + MEMBERS_TABLE;
@@ -535,7 +531,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             Log.e("Member Delete-->", ex.toString());
         }
     }
-
     public void updateMemberData(MemberPOJO member) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -565,6 +560,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.update(MEMBERS_TABLE, values, MEMBER_COL_2 + " = ? ",
                 new String[]{member.getId()});
     }
+
 
     //Events
     public boolean insertEventData(EventPOJO event) {

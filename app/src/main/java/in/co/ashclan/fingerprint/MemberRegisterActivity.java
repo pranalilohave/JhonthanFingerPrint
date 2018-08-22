@@ -368,7 +368,6 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
                 }, mYear, mMonth, mDay);
         datePickerDialog.show();
     }
-
     public void FPDialog(int i){
         iFinger = i;
         AlertDialog.Builder builder = new AlertDialog.Builder(MemberRegisterActivity.this);
