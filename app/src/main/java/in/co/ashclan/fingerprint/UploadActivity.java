@@ -3,6 +3,7 @@ package in.co.ashclan.fingerprint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -17,8 +18,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -27,6 +30,7 @@ import com.android.volley.Response;
 import com.android.volley.error.VolleyError;
 import com.android.volley.request.SimpleMultiPartRequest;
 import com.android.volley.toolbox.Volley;
+import com.squareup.picasso.Picasso;
 
 import net.gotev.uploadservice.MultipartUploadRequest;
 import net.gotev.uploadservice.ServerResponse;
@@ -47,6 +51,7 @@ import java.util.UUID;
 
 import android_serialport_api.SerialPortManager;
 import android_serialport_api.SerialPortManagerA5;
+import de.hdodenhof.circleimageview.CircleImageView;
 import in.co.ashclan.AsynkTask.DownloadTask;
 import in.co.ashclan.adpater.MemberAdapter;
 import in.co.ashclan.adpater.UploadAdapter;
@@ -72,6 +77,8 @@ public class UploadActivity extends AppCompatActivity
     ArrayList<MemberPOJO> list = new ArrayList<MemberPOJO>();
     ProgressBar progressBar;
     private AsyncTask mMyTask;
+    CircleImageView imgAdminPhoto;
+    TextView name,email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +119,30 @@ public class UploadActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.getMenu().getItem(2).setChecked(true);
+
+        View header=navigationView.getHeaderView(0);
+
+
+        imgAdminPhoto = (CircleImageView)header.findViewById(R.id.img_admin_photo);
+        name = (TextView)header.findViewById(R.id.txt_adminName);
+        email = (TextView)header.findViewById(R.id.txt_adminEmail);
+
+        name.setText(PreferenceUtils.getAdminFirstName(mContext) + " "+ PreferenceUtils.getAdminLastName(mContext));
+        email.setText(PreferenceUtils.getAdminEmail(mContext));
+        if(!PreferenceUtils.getAdminPhoto(mContext).equals("")) {
+            try {
+                Picasso.with(mContext)
+                        .load("file://" + PreferenceUtils.getAdminPhoto(mContext))
+                        .config(Bitmap.Config.RGB_565)
+                        .fit()
+                        .centerCrop()
+                        .into(imgAdminPhoto);
+
+            } catch (Exception e) {
+                imgAdminPhoto.setImageResource(R.drawable.ic_church);
+                e.printStackTrace();
+            }
+        }
 
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

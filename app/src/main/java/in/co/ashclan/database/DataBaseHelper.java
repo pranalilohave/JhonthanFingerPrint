@@ -2318,9 +2318,33 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             return true;
         }
     }
+    public List<ChangePasswordPOJO> getAllpassword() {
 
+        List<ChangePasswordPOJO> members = new ArrayList<ChangePasswordPOJO>();
+        String selectQuery = "SELECT  * FROM " + CHANGE_PASSWORD;
 
-    public void deleteAllChangePassword() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        //looping through all row and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+
+                ChangePasswordPOJO member = new ChangePasswordPOJO();
+
+                member.setUserid(cursor.getString(cursor.getColumnIndex(CHANGE_PASSWORD_COL_2)));
+                member.setAdminfirstname(cursor.getString(cursor.getColumnIndex(CHANGE_PASSWORD_COL_6)));
+                member.setAdminlastname(cursor.getString(cursor.getColumnIndex(CHANGE_PASSWORD_COL_7)));
+                member.setAdminid(cursor.getString(cursor.getColumnIndex(CHANGE_PASSWORD_COL_8)));
+                member.setPhotoUrl(cursor.getString(cursor.getColumnIndex(CHANGE_PASSWORD_COL_9)));
+
+                members.add(member);
+            } while (cursor.moveToNext());
+        }
+        db.close();
+        return members;
+    }
+    public void deleteAllChangePAssword() {
         try {
             String selectQuery = "DELETE FROM " + CHANGE_PASSWORD;
             SQLiteDatabase db = this.getWritableDatabase();
@@ -2331,6 +2355,29 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             Log.e("Locations Error-->", ex.toString());
         }
     }
+    public void UpdatePassword(ChangePasswordPOJO change) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+       // values.put(CHANGE_PASSWORD_COl_1, change.getId());
+      //  values.put(CHANGE_PASSWORD_COL_2, change.getUserid());
+        values.put(CHANGE_PASSWORD_COL_3, change.getOldpassword());
+        values.put(CHANGE_PASSWORD_COL_4, change.getNewpassword());
+        values.put(CHANGE_PASSWORD_COL_5, change.getComformpassword());
+        values.put(CHANGE_PASSWORD_COL_6, change.getAdminfirstname());
+        values.put(CHANGE_PASSWORD_COL_7, change.getAdminlastname());
+        values.put(CHANGE_PASSWORD_COL_8, change.getAdminid());
+        values.put(CHANGE_PASSWORD_COL_9, change.getPhotoUrl());
+
+
+
+        db.update(CHANGE_PASSWORD, values, CHANGE_PASSWORD_COL_2 + " = ? ",
+                new String[]{change.getUserid()});
+        Log.e("password-->", "Password Updated successfuly" );
+
+    }
+
 
 }
 

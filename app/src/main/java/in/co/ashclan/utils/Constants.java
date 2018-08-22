@@ -50,6 +50,10 @@ public class  Constants {
 
                 PreferenceUtils.setUrlEventUpdate(context,"http://52.172.221.235:8983/api/update_event");
 
+
+                PreferenceUtils.setUrlUserDetails(context,"http://52.172.221.235:8983/api/get_user_details");
+                PreferenceUtils.setUrlUpdateUser(context,"http://52.172.221.235:8983/api/update_user");
+
                 break;
 
             case 1:
@@ -83,6 +87,9 @@ public class  Constants {
 
                 PreferenceUtils.setUrlEventUpdate(context,"https://bwc.pentecostchurch.org/api/update_event");
 
+                PreferenceUtils.setUrlUserDetails(context,"https://bwc.pentecostchurch.org/api/get_user_details");
+                PreferenceUtils.setUrlUpdateUser(context,"https://bwc.pentecostchurch.org/api/update_user");
+
 
                 break;
 
@@ -112,6 +119,10 @@ public class  Constants {
 
                 PreferenceUtils.setUrlEventUpdate(context,"http://52.172.221.235:8983/api/update_event");
 
+
+
+                PreferenceUtils.setUrlUserDetails(context,"http://52.172.221.235:8983/api/get_user_details");
+                PreferenceUtils.setUrlUpdateUser(context,"http://52.172.221.235:8983/api/update_user");
 
                 break;
         }

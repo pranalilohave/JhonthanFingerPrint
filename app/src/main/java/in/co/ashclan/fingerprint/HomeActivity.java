@@ -3,6 +3,7 @@ package in.co.ashclan.fingerprint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -34,6 +36,7 @@ import com.android.volley.toolbox.Volley;
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.fgtit.fpcore.FPMatch;
+import com.squareup.picasso.Picasso;
 
 import net.gotev.uploadservice.MultipartUploadRequest;
 import net.gotev.uploadservice.ServerResponse;
@@ -56,16 +59,19 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 import android_serialport_api.SerialPortManager;
 import android_serialport_api.SerialPortManagerA5;
+import de.hdodenhof.circleimageview.CircleImageView;
 import in.co.ashclan.adpater.EventAdapter;
 import in.co.ashclan.adpater.MemberAdapter;
 import in.co.ashclan.ashclancalendar.data.Day;
 import in.co.ashclan.ashclancalendar.widget.CollapsibleCalendar;
 import in.co.ashclan.database.DataBaseHelper;
 import in.co.ashclan.fgtit.utils.ToastUtil;
+import in.co.ashclan.model.ChangePasswordPOJO;
 import in.co.ashclan.model.EventPOJO;
 import in.co.ashclan.model.MemberPOJO;
 import in.co.ashclan.utils.Constants;
@@ -89,7 +95,7 @@ public class HomeActivity extends AppCompatActivity
     ListView listView;
     ArrayList<MemberPOJO> list = new ArrayList<MemberPOJO>();
     ArrayList<EventPOJO> eventList = new ArrayList<EventPOJO>();
-
+    CircleImageView imgAdminPhoto;
     TextView name,email;
 
     EventAdapter eventAdapter;
@@ -149,11 +155,40 @@ public class HomeActivity extends AppCompatActivity
         navigationView.getMenu().getItem(1).setChecked(true);
         View header=navigationView.getHeaderView(0);
 
+        List<ChangePasswordPOJO> User = new ArrayList<ChangePasswordPOJO>();
+        User =  dataBaseHelper.getAllpassword();
+
+        PreferenceUtils.setAdminEmail(mContext,User.get(0).getAdminid().toString());
+        PreferenceUtils.setAdminFirstName(mContext,User.get(0).getAdminfirstname().toString());
+        PreferenceUtils.setAdminLastName(mContext,User.get(0).getAdminlastname().toString());
+        PreferenceUtils.setUserId(mContext,User.get(0).getUserid().toString());
+        if(User.get(0).getPhotoUrl().toString()!=null||!User.get(0).getPhotoUrl().toString().equals(""))
+        {
+            PreferenceUtils.setAdminPhoto(mContext,User.get(0).getPhotoUrl().toString());
+            Log.e("-->user", User.get(0).getPhotoUrl().toString());
+        }
+
+
+        imgAdminPhoto = (CircleImageView) header.findViewById(R.id.img_admin_photo);
         name = (TextView)header.findViewById(R.id.txt_adminName);
         email = (TextView)header.findViewById(R.id.txt_adminEmail);
-        name.setText(/*PreferenceUtils.getAdminName(mContext)*/"Pentecost Church");
-        email.setText(PreferenceUtils.getAdminName(mContext));
 
+        name.setText(PreferenceUtils.getAdminFirstName(mContext) + " "+ PreferenceUtils.getAdminLastName(mContext));
+        email.setText(PreferenceUtils.getAdminEmail(mContext));
+        if(!PreferenceUtils.getAdminPhoto(mContext).equals("")) {
+            try {
+                Picasso.with(mContext)
+                        .load("file://" + PreferenceUtils.getAdminPhoto(mContext))
+                        .config(Bitmap.Config.RGB_565)
+                        .fit()
+                        .centerCrop()
+                        .into(imgAdminPhoto);
+
+            } catch (Exception e) {
+                imgAdminPhoto.setImageResource(R.drawable.ic_church);
+                e.printStackTrace();
+            }
+        }
 
         bottomNavigationBar.setTabSelectedListener(this);
         refresh();

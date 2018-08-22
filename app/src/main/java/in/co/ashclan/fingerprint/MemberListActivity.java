@@ -2,6 +2,7 @@ package in.co.ashclan.fingerprint;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -29,6 +30,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -38,6 +40,7 @@ import com.android.volley.error.VolleyError;
 import com.android.volley.request.SimpleMultiPartRequest;
 import com.android.volley.toolbox.Volley;
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
+import com.squareup.picasso.Picasso;
 
 import net.gotev.uploadservice.MultipartUploadRequest;
 import net.gotev.uploadservice.ServerResponse;
@@ -56,14 +59,17 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import in.co.ashclan.AsynkTask.DownloadTask;
 import in.co.ashclan.adpater.EventAdapter;
 import in.co.ashclan.adpater.MemberAdapter;
 import in.co.ashclan.ashclancalendar.data.Day;
 import in.co.ashclan.ashclancalendar.widget.CollapsibleCalendar;
 import in.co.ashclan.database.DataBaseHelper;
+import in.co.ashclan.model.ChangePasswordPOJO;
 import in.co.ashclan.model.EventPOJO;
 import in.co.ashclan.model.MemberPOJO;
 import in.co.ashclan.utils.PreferenceUtils;
@@ -94,6 +100,8 @@ public class MemberListActivity extends AppCompatActivity
     LinearLayout searchLayout;
 
     InputMethodManager inputMethodManager;
+    CircleImageView imgAdminPhoto;
+    TextView name,email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,6 +139,32 @@ public class MemberListActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.getMenu().getItem(0).setChecked(true);
+
+        View header=navigationView.getHeaderView(0);
+
+
+        imgAdminPhoto = (CircleImageView) header.findViewById(R.id.img_admin_photo);
+        name = (TextView)header.findViewById(R.id.txt_adminName);
+        email = (TextView)header.findViewById(R.id.txt_adminEmail);
+
+        name.setText(PreferenceUtils.getAdminFirstName(mContext) + " "+ PreferenceUtils.getAdminLastName(mContext));
+        email.setText(PreferenceUtils.getAdminEmail(mContext));
+        if(!PreferenceUtils.getAdminPhoto(mContext).equals("")) {
+            try {
+                Picasso.with(mContext)
+                        .load("file://" + PreferenceUtils.getAdminPhoto(mContext))
+                        .config(Bitmap.Config.RGB_565)
+                        .fit()
+                        .centerCrop()
+                        .into(imgAdminPhoto);
+
+            } catch (Exception e) {
+                imgAdminPhoto.setImageResource(R.drawable.ic_church);
+                e.printStackTrace();
+            }
+        }
+
+
 
         memberAdapter = new MemberAdapter(mContext,memberList,"ic_person.png");
         memberAdapter.notifyDataSetChanged();
@@ -276,16 +310,15 @@ public class MemberListActivity extends AppCompatActivity
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+
+
         return true;
     }
-
-
 
     @Override
     public void onClick(View view) {
 
     }
-
 
     public void getAccessTokenVolley(String URL, String email, String password){
         SimpleMultiPartRequest smr = new SimpleMultiPartRequest(Request.Method.POST, URL,
@@ -471,7 +504,6 @@ public class MemberListActivity extends AppCompatActivity
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         requestQueue.add(smr);
     }
-
     public void getAccessTokenGovNet(String URL,String email,String password){
 
         try {
@@ -707,7 +739,6 @@ public class MemberListActivity extends AppCompatActivity
             Toast.makeText(this, exc.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
-
     public class GetAccessTokenTask extends AsyncTask<String, String, String> {
 
         private Context mContext;
@@ -986,12 +1017,10 @@ public class MemberListActivity extends AppCompatActivity
         }
     }
 
-
     private void closeKeyboard() {
         InputMethodManager inputManager = (InputMethodManager)mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
         inputManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
-
     private void openKeyboard() {
         InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
         if(imm != null){

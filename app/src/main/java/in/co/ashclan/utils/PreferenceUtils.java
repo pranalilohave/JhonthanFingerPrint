@@ -19,8 +19,12 @@ public class PreferenceUtils {
     public static final String PREFERENCE_KEY_SIGN_IN="signIn";
 
     public static final String PREFERENCE_KEY_ADMIN_NAME = "adminName";
+    public static final String USERID = "userID";
     public static final String PREFERENCE_KEY_ADMIN_PASSWORD = "adminPassword";
     public static final String PREFERENCE_KEY_TOKEN = "token";
+    public static final String FIRSTNAME = "firstname";
+    public static final String LASTNAME = "lastname";
+
 
     public static final String URL_LOGIN="login";
     public static final String URL_GET_ALL_MEMBERS="getAllMembers";
@@ -42,6 +46,10 @@ public class PreferenceUtils {
     public static final String URL_EVENT_REGISTRATION="eventRegistrations";
     public static final String URL_RECORDING_REGISTRATION="recording";
     public static final String URL_EVENTUPDATE_REGISTRATION="updateEvent";
+    public static final String USER_DETAILS = "UserDetails" ;
+    public static final String USER_UPDATE = "userUpdate" ;
+    private static final String ADMIN_EMAIL = "admin_email";
+    private static final String ADMIN_PHOTO = "admin_photo";
 
 
     //prevent instantiation
@@ -106,6 +114,8 @@ public class PreferenceUtils {
     public static String getAdminName(Context context){
         return getSharedPreferences(context).getString(PREFERENCE_KEY_ADMIN_NAME,"");
     }
+
+
 
     public static void setAdminPassword(Context context,String adminPassword){
         SharedPreferences.Editor editor =getSharedPreferences(context).edit();
@@ -264,5 +274,64 @@ public class PreferenceUtils {
         return getSharedPreferences(context).getString(URL_EVENTUPDATE_REGISTRATION,"");
     }
 
+    public static void setUrlUserDetails(Context context,String userDetails){
+        SharedPreferences.Editor editor = getSharedPreferences(context).edit();
+        editor.putString(USER_DETAILS,userDetails).apply();
+    }
+    public static String getUrlUserDetails(Context context){
+        return getSharedPreferences(context).getString(USER_DETAILS,"");
+    }
+
+    public static void setUrlUpdateUser(Context context,String updateUser){
+        SharedPreferences.Editor editor = getSharedPreferences(context).edit();
+        editor.putString(USER_UPDATE,updateUser).apply();
+    }
+    public static String getUrlUpdateUser(Context context){
+        return getSharedPreferences(context).getString(USER_UPDATE,"");
+    }
+
+    public static void setAdminEmail(Context context,String adminemail){
+        SharedPreferences.Editor editor = getSharedPreferences(context).edit();
+        editor.putString(ADMIN_EMAIL,adminemail).apply();
+    }
+    public static String getAdminEmail(Context context){
+        return getSharedPreferences(context).getString(ADMIN_EMAIL,"");
+    }
+
+    public static void setAdminPhoto(Context context,String adminphoto){
+        SharedPreferences.Editor editor = getSharedPreferences(context).edit();
+        editor.putString(ADMIN_PHOTO,adminphoto).apply();
+    }
+    public static String getAdminPhoto(Context context){
+        return getSharedPreferences(context).getString(ADMIN_PHOTO,"");
+    }
+
+
+    public static String getAdminFirstName(Context context){
+        return getSharedPreferences(context).getString(FIRSTNAME,"");
+    }
+
+    public static void setAdminFirstName(Context context,String firtsName){
+        SharedPreferences.Editor editor = getSharedPreferences(context).edit();
+        editor.putString(FIRSTNAME,firtsName).apply();
+    }
+
+    public static String getAdminLastName(Context context){
+        return getSharedPreferences(context).getString(LASTNAME,"");
+    }
+
+    public static void setAdminLastName(Context context,String lastName){
+        SharedPreferences.Editor editor = getSharedPreferences(context).edit();
+        editor.putString(LASTNAME,lastName).apply();
+    }
+
+    public static String getUserId(Context context){
+        return getSharedPreferences(context).getString(USERID,"");
+    }
+
+    public static void setUserId(Context context,String lastName){
+        SharedPreferences.Editor editor = getSharedPreferences(context).edit();
+        editor.putString(USERID,lastName).apply();
+    }
 
 }

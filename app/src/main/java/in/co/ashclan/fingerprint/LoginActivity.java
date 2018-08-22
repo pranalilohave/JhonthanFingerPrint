@@ -68,6 +68,7 @@ import in.co.ashclan.DownloadImageFromURl;
 import in.co.ashclan.database.DataBaseHelper;
 import in.co.ashclan.database.test.Member;
 import in.co.ashclan.model.CalendarPOJO;
+import in.co.ashclan.model.ChangePasswordPOJO;
 import in.co.ashclan.model.ContributionsPOJO;
 import in.co.ashclan.model.EventAttendancePOJO;
 import in.co.ashclan.model.EventPOJO;
@@ -127,14 +128,14 @@ public class LoginActivity extends AppCompatActivity implements OnItemSelectedLi
     public void init(){
         textViewVersions = (TextView)findViewById(R.id.text_login_versions);
         editTextAdmin = (EditText)findViewById(R.id.admin);
-        editTextAdmin.setText("test@gmail.com");
+        //editTextAdmin.setText("test@gmail.com");
         editTextAdminPassword = (EditText)findViewById(R.id.admin_password);
-        editTextAdminPassword.setText("123456");
+        //editTextAdminPassword.setText("123456");
         buttonLogin = (Button)findViewById(R.id.button_login);
         progressBar = (ContentLoadingProgressBar)findViewById(R.id.progress_bar_login);
         msServer = (MaterialSpinner)findViewById(R.id.spinner_sever);
-        //editTextAdmin.setText(PreferenceUtils.getAdminName(LoginActivity.this));
-        //editTextAdminPassword.setText(PreferenceUtils.getAdminPassword(LoginActivity.this));
+        editTextAdmin.setText(PreferenceUtils.getAdminName(LoginActivity.this));
+        editTextAdminPassword.setText(PreferenceUtils.getAdminPassword(LoginActivity.this));
         msServer.setSelection(PreferenceUtils.getSelectServer(this));
         msServer.setOnItemSelectedListener(this);
         memberPhotoPojo = new MemberPhotoPojo();
@@ -1390,12 +1391,12 @@ public class LoginActivity extends AppCompatActivity implements OnItemSelectedLi
 
 
 
-                Intent intent = new Intent(mContext,HomeActivity.class);
+                //Intent intent = new Intent(mContext,HomeActivity.class);
 //            intent.putExtra("member_list",memberList);
-                startActivity(intent);
+               // startActivity(intent);
                 progressBar.setVisibility(View.VISIBLE);
                 buttonLogin.setEnabled(false);
-                finish();
+               // finish();
             } catch (Exception e) {
                 Log.e("--->", e.toString());
                 Toast.makeText(mContext,"No Internet Access",Toast.LENGTH_LONG).show();
@@ -1746,6 +1747,10 @@ public class LoginActivity extends AppCompatActivity implements OnItemSelectedLi
                 GetAllGroupsTask groupsTask = new GetAllGroupsTask(mContext,PreferenceUtils.getUrlGetGroup(mContext),token);
                 groupsTask.execute();
 
+                //Users
+                GetAllUserTask userTask = new GetAllUserTask(mContext,PreferenceUtils.getUrlUserDetails(mContext),token);
+                userTask.execute();
+
             } catch (Exception e) {
                 Log.e("--->", e.toString());
                 Toast.makeText(mContext,"No Internet Access",Toast.LENGTH_LONG).show();
@@ -1803,45 +1808,46 @@ public class LoginActivity extends AppCompatActivity implements OnItemSelectedLi
         protected String doInBackground(String... params) {
             HashMap<String, String> postData = new HashMap<>();
             postData.put("token", token);
+
             String json_output = performPostCall(URL, postData);
             return json_output;
         }
         @Override
         protected void onPostExecute(String output) {
             try {
-                Log.e("family",URL);
+                Log.e("User",URL);
                 //    Log.e("--->THIS!T", output);
-                Log.e("--->family", output);
+                Log.e("--->User", output);
 
-                dataBaseHelper.deleteAllFamily();
+                dataBaseHelper.deleteAllChangePAssword();
 
                 JSONParser parser = new JSONParser();
                 JSONObject jsonObject = (JSONObject)parser.parse(output.toString());
-                JSONArray jsonArray =(JSONArray) jsonObject.get("result");
+               // JSONArray jsonArray =(JSONArray) jsonObject.get("result");
 
-                for(int i=0;i<jsonArray.size();i++){
 
-                    FamilyPOJO family = new FamilyPOJO();
-                    JSONObject object = (JSONObject)jsonArray.get(i);
+
+
+
+                    ChangePasswordPOJO password = new ChangePasswordPOJO();
+                    JSONObject object = (JSONObject) jsonObject.get("result");
 
                   /*  String id,branchId,userId,memberId,familyId,fundId;
                     String memberType,contributionBatchId,paymentMethodId,date;
                     String files,notes,transRef,amount,year,month;
                     String createdAt,updatedAt;
 */
-                    family.setId(String.valueOf(object.get("id")));
-                    family.setBranchId(isNull(object,"branch_id"));
-                    family.setUserId(isNull(object,"user_id"));
-                    family.setMemberId(isNull(object,"member_id"));
-                    family.setName(isNull(object,"name"));
-                    family.setNotes(isNull(object,"notes"));
-                    family.setPicture(isNull(object,"picture"));
-                    family.setCreatedAt(isNull(object,"created_at"));
-                    family.setUpdatedAt(isNull(object,"updated_at"));
-                    Log.e("--->",family.toString());
+                    password.setUserid(String.valueOf(object.get("id")));
+                    password.setAdminid(isNull(object,"email"));
+                    password.setAdminfirstname(isNull(object,"first_name"));
+                    password.setAdminlastname(isNull(object,"last_name"));
+                    password.setPhotoUrl("");
+
+                    Log.e("--->",password.toString());
                     //   eventList.add(event);
-                    dataBaseHelper.insertFAMILYData(family);
-                }
+
+                    dataBaseHelper.insertChangePasswordData(password);
+
 
 //                //Groups
 //                GetAllGroupsTask groupsTask = new GetAllGroupsTask(mContext,PreferenceUtils.getUrlGetGroup(mContext),token);

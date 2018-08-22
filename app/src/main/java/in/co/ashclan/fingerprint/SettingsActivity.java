@@ -1,7 +1,9 @@
 package in.co.ashclan.fingerprint;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.design.widget.TextInputEditText;
@@ -13,7 +15,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
+import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -24,9 +26,11 @@ import java.util.HashMap;
 
 import in.co.ashclan.database.DataBaseHelper;
 import in.co.ashclan.model.ChangePasswordPOJO;
+import in.co.ashclan.model.EventPOJO;
 import in.co.ashclan.model.MemberPOJO;
 import in.co.ashclan.utils.PreferenceUtils;
 
+import static in.co.ashclan.utils.Utils.isNull;
 import static in.co.ashclan.utils.WebServiceCall.performPostCall;
 
 public class SettingsActivity extends AppCompatActivity implements View.OnClickListener {
@@ -38,6 +42,9 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             customeConformPassword,customAdminFirstName,customAdminLastName,customAdminId;
     DataBaseHelper dataBaseHelper;
     String ImagePath;
+    private ProgressDialog nDialog;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +70,29 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         customAdminId          = (TextInputEditText) findViewById(R.id.custom_adnimId);
         customeBtnSubmit       = (Button) findViewById(R.id.custome_btn_submit);
 
-       dataBaseHelper = new DataBaseHelper(mcontext);
+        dataBaseHelper = new DataBaseHelper(mcontext);
+
+        customAdminFirstName.setText(PreferenceUtils.getAdminFirstName(mcontext));
+        customAdminLastName.setText(PreferenceUtils.getAdminLastName(mcontext));
+        customAdminId.setText(PreferenceUtils.getAdminEmail(mcontext));
+
+        if(!PreferenceUtils.getAdminPhoto(mcontext).equals("")){
+            try {
+                Picasso.with(mcontext)
+                        .load("file://"+PreferenceUtils.getAdminPhoto(mcontext))
+                        .config(Bitmap.Config.RGB_565)
+                        .fit()
+                        .centerCrop()
+                        .into(ProfileImage);
+
+            }catch (Exception e){
+                ProfileImage.setImageResource(R.drawable.ic_church);
+                e.printStackTrace();
+            }
+        }else
+        {
+            ProfileImage.setImageResource(R.drawable.ic_church);
+        }
     }
 
     @Override
@@ -88,6 +117,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     private void ChangepasswpordMethod() {
         changePasswordPOJO = new ChangePasswordPOJO();
 
+        changePasswordPOJO.setUserid(PreferenceUtils.getUserId(mcontext));
         changePasswordPOJO.setOldpassword(customeOldPassword.getText().toString());
         changePasswordPOJO.setNewpassword(customNewPassword.getText().toString());
         changePasswordPOJO.setComformpassword(customeConformPassword.getText().toString());
@@ -97,8 +127,12 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
        // changePasswordPOJO.setPhotoUrl(ProfileImage.getResources().toString());
         changePasswordPOJO.setPhotoUrl(getImagePath());
 
-        dataBaseHelper.insertChangePasswordData(changePasswordPOJO);
+        PreferenceUtils.setAdminPhoto(mcontext,getImagePath());
+
+        dataBaseHelper.UpdatePassword(changePasswordPOJO);
       //  profileimage.setImageURI(Uri.parse(workerModel.getImageUrl().toString()));
+
+        finish();
 
 
         /*Glide.with(mcontext)
@@ -107,8 +141,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         setImagePath(changePasswordPOJO.getPhotoUrl());*/
 
     }
-
-
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Uri imageUri = data.getData();
         if(requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE)
@@ -137,19 +169,19 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         ImagePath = photoUrl;
     }
 
-    /*public class GetAccessTokenTask extends AsyncTask<String, String, String> {
+    public class GetAccessTokenTask extends AsyncTask<String, String, String> {
 
         private Context mContext;
         private String URL;
         private String email,password;
-        private MemberPOJO memberPOJO;
 
-        GetAccessTokenTask(Context mContext,String URL,String email,String password,MemberPOJO memberPOJO) {
+
+        GetAccessTokenTask(Context mContext,String URL,String email,String password) {
             this.mContext = mContext;
             this.email=email;
             this.password=password;
             this.URL = URL;
-            this.memberPOJO = memberPOJO;
+
         }
 
         @Override
@@ -171,13 +203,13 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             String json_output = performPostCall(URL, postData);
             return json_output;
 
-         *//*   HashMap<String, String> postData = new HashMap<>();
+         /*   HashMap<String, String> postData = new HashMap<>();
             postData.put("email", email);
             postData.put("password", password);
             String url = "https://bwc.pentecostchurch.org/api/login";
             String urls = "http://52.172.221.235:8983/api/login";
             String json_output = performPostCall(url, postData);
-            return json_output;*//*
+            return json_output;*/
         }
 
         @Override
@@ -193,16 +225,10 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
                 if(!token.equalsIgnoreCase("wrong email or password.")){
 
-
                     PreferenceUtils.setToken(mContext,token);
-                    switch (type) {
-                        case "edit":
-                            memberUpdateGovNet(PreferenceUtils.getUrlUpdateMember(mContext), memberDetails);
-                            break;
-                        case "register":
-                            memberRegisterGovNet(PreferenceUtils.getUrlCreateMember(mContext), memberDetails);
-                            break;
-                    }
+
+                    UpdatePasswrodTask updatePasswrodTask = new UpdatePasswrodTask(mContext,PreferenceUtils.getUrlUpdateUser(mContext),token,changePasswordPOJO);
+                    updatePasswrodTask.execute();
 
                 }else{
                     Toast.makeText(mContext,"Something went Wrong",Toast.LENGTH_LONG).show();
@@ -210,7 +236,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             } catch (Exception e) {
                 Log.e("--->", e.toString());
                 //progressBar.setVisibility(View.GONE);
-                buttonSubmit.setEnabled(true);
                 e.printStackTrace();
             }
 
@@ -218,5 +243,88 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         @Override
         protected void onCancelled() {
         }
-    }*/
+    }
+
+    public class UpdatePasswrodTask extends AsyncTask<String, String, String> {
+
+        private Context mContext;
+        private String URL;
+        private String token,password;
+        private ChangePasswordPOJO passwordPOJO;
+
+        UpdatePasswrodTask(Context mContext,String URL,String token,ChangePasswordPOJO eventPOJO) {
+            this.mContext = mContext;
+            this.URL=URL;
+            this.passwordPOJO = eventPOJO;
+            this.token = token;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            nDialog = new ProgressDialog(mContext); //Here I get an error: The constructor ProgressDialog(PFragment) is undefined
+            nDialog.setMessage("Loading..");
+            nDialog.setTitle("Uploading Data");
+            nDialog.setIndeterminate(false);
+            nDialog.setCancelable(false);
+            nDialog.show();
+        }
+
+        @Override
+        protected void onProgressUpdate(String... values) {
+            super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            HashMap<String, String> postData = new HashMap<>();
+
+            postData.put("token", token);
+            postData.put("id", passwordPOJO.getUserid());
+            postData.put("email", passwordPOJO.getAdminid());
+            postData.put("password", passwordPOJO.getNewpassword());
+            postData.put("first_name", passwordPOJO.getAdminfirstname());
+            postData.put("last_name", passwordPOJO.getAdminlastname());
+
+
+            String json_output = performPostCall(URL, postData);
+            return json_output;
+        }
+
+        @Override
+        protected void onPostExecute(String output) {
+            String token=null;
+            try {
+                JSONParser parser = new JSONParser();
+                JSONObject jsonObject = (JSONObject)parser.parse(output);
+                //JSONArray jsonCalendarArray = (JSONArray)jsonObject.get("calendars");
+                JSONObject object = (JSONObject)jsonObject.get("event");
+
+                ChangePasswordPOJO event = new ChangePasswordPOJO();
+
+                event.setUserid(String.valueOf(object.get("id")));
+                event.setAdminid(isNull(object,"email"));
+                event.setAdminfirstname(isNull(object,"first_name"));
+                event.setAdminlastname(isNull(object,"last_name"));
+
+                Log.e("D--->",event.toString());
+                //   eventList.add(event);
+                dataBaseHelper.UpdatePassword(event);
+                nDialog.dismiss();
+                Toast.makeText(mContext, "Password Updated Successfully", Toast.LENGTH_SHORT).show();
+                finish();
+
+            } catch (Exception e) {
+                Log.e("--->", e.toString());
+                /*progressBar.setVisibility(View.GONE);
+                buttonSubmit.setEnabled(true);*/
+                e.printStackTrace();
+            }
+
+        }
+        @Override
+        protected void onCancelled() {
+        }
+    }
 }
