@@ -26,10 +26,8 @@
         android:orientation="vertical"
         android:focusable="true"
         android:focusableInTouchMode="true">
-
-<<<<<<< HEAD
         <LinearLayout
-=======
+
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -61,7 +59,6 @@
         android:layout_weight="1">
 
         <android.support.design.widget.TextInputLayout
->>>>>>> 253aae955f2a5f1e752d3edb08702c9ef769c0ec
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
