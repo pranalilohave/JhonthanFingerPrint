@@ -695,8 +695,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     }
 
 
-<<<<<<< HEAD
-=======
     //Temp Members Photos
     //Members
     public boolean insertMemberTempData(MemberPhotoPojo member) {
@@ -789,7 +787,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return true;
     }
 
->>>>>>> 253aae955f2a5f1e752d3edb08702c9ef769c0ec
     //Events
     public boolean insertEventData(EventPOJO event) {
         SQLiteDatabase db = this.getWritableDatabase();
