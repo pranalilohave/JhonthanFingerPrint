@@ -2319,5 +2319,18 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         }
     }
 
+
+    public void deleteAllChangePAssword() {
+        try {
+            String selectQuery = "DELETE FROM " + CHANGE_PASSWORD;
+            SQLiteDatabase db = this.getWritableDatabase();
+            db.delete(CHANGE_PASSWORD, null, null);
+            db.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Log.e("Locations Error-->", ex.toString());
+        }
+    }
+
 }
 
