@@ -14,423 +14,390 @@
         android:id="@+id/progress_bar_member_register"
         android:visibility="invisible"
         />
-<ScrollView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:layout_gravity="center|top"
-        android:orientation="vertical"
-        android:focusable="true"
-        android:focusableInTouchMode="true">
+        android:layout_height="match_parent">
         <LinearLayout
-
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    >
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:layout_marginTop="20dp"
-        android:layout_marginRight="5dp"
-        android:gravity="center"
-        android:layout_gravity="center">
-        <ImageView
-            android:background="@color/blue4"
-            android:id="@+id/imageView2"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:padding="0dp"
-            android:scaleType="fitXY"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_profile_image_1"
-            />
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_weight="1">
-
-        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_gravity="center|top"
+            android:orientation="vertical"
+            android:focusable="true"
+            android:focusableInTouchMode="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_marginRight="5dp"
-                android:layout_marginTop="20dp"
-                android:layout_weight="1"
-                android:gravity="center">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="5dp"
+                    android:gravity="center"
+                    android:layout_gravity="center">
+                    <ImageView
+                        android:background="@color/blue4"
+                        android:id="@+id/imageView2"
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
+                        android:padding="0dp"
+                        android:scaleType="fitXY"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_profile_image_1"
+                        />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:layout_weight="1">
 
-                <ImageView
-                    android:id="@+id/imageView2"
-                    android:layout_width="170dp"
-                    android:layout_height="170dp"
-                    android:layout_gravity="center"
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:layout_weight="1">
+
+                        <android.support.design.widget.TextInputEditText
+                            android:id="@+id/first_name"
+                            android:inputType="textVisiblePassword"
+                            android:imeOptions="actionNext"
+                            android:hint="First Name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:layout_weight="1"
+                        >
+                        <android.support.design.widget.TextInputEditText
+                            android:id="@+id/middle_name"
+                            android:inputType="textVisiblePassword"
+                            android:imeOptions="actionNext"
+                            android:hint="Middle Name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                    </android.support.design.widget.TextInputLayout>
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:layout_weight="1">
+
+                        <android.support.design.widget.TextInputEditText
+                            android:id="@+id/last_name"
+                            android:inputType="textVisiblePassword"
+                            android:imeOptions="actionNext"
+                            android:hint="Last Name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                    </android.support.design.widget.TextInputLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="3dp"
+                    android:layout_weight="1">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/email"
+                        android:inputType="textEmailAddress"
+                        android:imeOptions="actionNext"
+                        android:hint="Email"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <fr.ganfra.materialspinner.MaterialSpinner
+
+                    android:id="@+id/spinner_gender"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:ms_enableErrorLabel="true"
+                    app:ms_enableFloatingLabel="true"
+                    app:ms_dropDownHintView="@layout/dropdown_hint_item"
+                    app:ms_hintView="@layout/hint_item"
+                    app:ms_hint="Gender"
+                    app:ms_floatingLabelColor="#f8b4b6b4"
+                    app:ms_floatingLabelText="Gender"
+                    app:ms_hintColor="#efb4b6b4"
+                    android:entries="@array/array_gender" />
+
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+                <fr.ganfra.materialspinner.MaterialSpinner
+                    android:layout_weight="1"
+                    android:id="@+id/spinner_martial_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:layout_marginRight="3dp"
+                    app:ms_enableErrorLabel="true"
+                    app:ms_enableFloatingLabel="true"
+                    app:ms_dropDownHintView="@layout/dropdown_hint_item"
+                    app:ms_hintView="@layout/hint_item"
+                    app:ms_hint="Marital Status"
+                    app:ms_floatingLabelColor="#f8b4b6b4"
+                    app:ms_floatingLabelText="Marital Status"
+                    app:ms_hintColor="#efb4b6b4"
+                    android:entries="@array/array_marital_status" />
+
+                <fr.ganfra.materialspinner.MaterialSpinner
+                    android:layout_weight="1"
+                    android:id="@+id/spinner_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:layout_marginRight="3dp"
+                    app:ms_enableErrorLabel="true"
+                    app:ms_enableFloatingLabel="true"
+                    app:ms_dropDownHintView="@layout/dropdown_hint_item"
+                    app:ms_hintView="@layout/hint_item"
+                    app:ms_hint="Status"
+                    app:ms_floatingLabelColor="#f8b4b6b4"
+                    app:ms_floatingLabelText="Status"
+                    app:ms_hintColor="#efb4b6b4"
+                    android:entries="@array/array_status" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    >
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/home_phone"
+                        android:inputType="number"
+                        android:imeOptions="actionNext"
+                        android:hint="Home Phone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </android.support.design.widget.TextInputLayout>
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/mobile_phone"
+                        android:inputType="number"
+                        android:imeOptions="actionNext"
+                        android:hint="Mobile phone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    >
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/work_phone"
+                        android:inputType="number"
+                        android:imeOptions="actionNext"
+                        android:hint="Work Phone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </android.support.design.widget.TextInputLayout>
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    >
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/dob"
+                        android:inputType="date"
+                        android:imeOptions="actionNext"
+                        android:hint="yyyy-mm-dd"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="false"
+                        android:clickable="true"
+                        android:editable="false"/>
+
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="3dp"
+                    android:layout_weight="1">
+                    <EditText
+                        android:id="@+id/address"
+                        android:inputType="textMultiLine"
+                        android:lines="8"
+                        android:minLines="4"
+                        android:gravity="top|left"
+                        android:hint="Address"
+                        android:maxLines="10"
+                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:scrollbars="vertical"
+                        />
+                </android.support.design.widget.TextInputLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+
+                    <ImageView
+                        android:layout_margin="10dp"
+                        android:paddingHorizontal="10dp"
+                        android:paddingVertical="10dp"
+                        android:id="@+id/imageView1"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:padding="10dp"
+                        android:layout_weight="1"
+                        android:src="@drawable/ic_fingerprint_1" />
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+
+                    <ImageView
+                        android:layout_margin="10dp"
+                        android:paddingHorizontal="10dp"
+                        android:paddingVertical="10dp"
+                        android:id="@+id/imageView3"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:padding="10dp"
+                        android:layout_weight="1"
+                        android:src="@drawable/ic_fingerprint_1" />
+
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="3dp"
+                    android:layout_weight="1">
+                    <EditText
+                        android:id="@+id/description"
+                        android:inputType="textMultiLine"
+                        android:lines="8"
+                        android:minLines="8"
+                        android:gravity="top|left"
+                        android:hint="Description"
+                        android:maxLines="10"
+                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:scrollbars="vertical"
+                        />
+                </android.support.design.widget.TextInputLayout>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="44dp"
+                android:padding="5dp"
+                android:orientation="horizontal">
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/button_offline_submit"
+                    android:text="offline"
+                    android:layout_marginRight="5dp"
+                    style="@style/Widget.AppCompat.Button.Colored"
+                    app:theme="@style/AppTheme.ButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:stateListAnimator="@null"
                     android:background="@color/blue4"
-                    android:padding="0dp"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/ic_profile_image_1" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
+                    android:visibility="gone"
                     android:layout_weight="1">
+                </android.support.v7.widget.AppCompatButton>
 
-                    <android.support.design.widget.TextInputEditText
-                        android:id="@+id/first_name"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="First Name"
-                        android:imeOptions="actionNext"
-                        android:inputType="textVisiblePassword" />
-
-                </android.support.design.widget.TextInputLayout>
-
-                <android.support.design.widget.TextInputLayout
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/button_submit"
+                    android:text="Submit"
+                    android:layout_marginLeft="5dp"
+                    style="@style/Widget.AppCompat.Button.Colored"
+                    app:theme="@style/AppTheme.ButtonStyle"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
+                    android:layout_height="56dp"
+                    android:stateListAnimator="@null"
+                    android:background="@color/blue4"
                     android:layout_weight="1">
-
-                    <android.support.design.widget.TextInputEditText
-                        android:id="@+id/middle_name"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Middle Name"
-                        android:imeOptions="actionNext"
-                        android:inputType="textVisiblePassword" />
-
-                </android.support.design.widget.TextInputLayout>
-
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
-                    android:layout_weight="1">
-
-                    <android.support.design.widget.TextInputEditText
-                        android:id="@+id/last_name"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Last Name"
-                        android:imeOptions="actionNext"
-                        android:inputType="textVisiblePassword" />
-
-                </android.support.design.widget.TextInputLayout>
-            </LinearLayout>
-
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            >
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="3dp"
-                android:layout_weight="1">
-
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/email"
-                    android:inputType="textEmailAddress"
-                    android:imeOptions="actionNext"
-                    android:hint="Email"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-            </android.support.design.widget.TextInputLayout>
-
-            <fr.ganfra.materialspinner.MaterialSpinner
-
-                android:id="@+id/spinner_gender"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                app:ms_enableErrorLabel="true"
-                app:ms_enableFloatingLabel="true"
-                app:ms_dropDownHintView="@layout/dropdown_hint_item"
-                app:ms_hintView="@layout/hint_item"
-                app:ms_hint="Gender"
-                app:ms_floatingLabelColor="#f8b4b6b4"
-                app:ms_floatingLabelText="Gender"
-                app:ms_hintColor="#efb4b6b4"
-                android:entries="@array/array_gender" />
-
-
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
-            <fr.ganfra.materialspinner.MaterialSpinner
-                android:layout_weight="1"
-                android:id="@+id/spinner_martial_status"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="3dp"
-                android:layout_marginRight="3dp"
-                app:ms_enableErrorLabel="true"
-                app:ms_enableFloatingLabel="true"
-                app:ms_dropDownHintView="@layout/dropdown_hint_item"
-                app:ms_hintView="@layout/hint_item"
-                app:ms_hint="Marital Status"
-                app:ms_floatingLabelColor="#f8b4b6b4"
-                app:ms_floatingLabelText="Marital Status"
-                app:ms_hintColor="#efb4b6b4"
-                android:entries="@array/array_marital_status" />
-
-            <fr.ganfra.materialspinner.MaterialSpinner
-                android:layout_weight="1"
-                android:id="@+id/spinner_status"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="3dp"
-                android:layout_marginRight="3dp"
-                app:ms_enableErrorLabel="true"
-                app:ms_enableFloatingLabel="true"
-                app:ms_dropDownHintView="@layout/dropdown_hint_item"
-                app:ms_hintView="@layout/hint_item"
-                app:ms_hint="Status"
-                app:ms_floatingLabelColor="#f8b4b6b4"
-                app:ms_floatingLabelText="Status"
-                app:ms_hintColor="#efb4b6b4"
-                android:entries="@array/array_status" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            >
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                >
-
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/home_phone"
-                    android:inputType="number"
-                    android:imeOptions="actionNext"
-                    android:hint="Home Phone"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-            </android.support.design.widget.TextInputLayout>
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1">
-
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/mobile_phone"
-                    android:inputType="number"
-                    android:imeOptions="actionNext"
-                    android:hint="Mobile phone"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-            </android.support.design.widget.TextInputLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                >
-
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/work_phone"
-                    android:inputType="number"
-                    android:imeOptions="actionNext"
-                    android:hint="Work Phone"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-            </android.support.design.widget.TextInputLayout>
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                >
-
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/dob"
-                    android:inputType="date"
-                    android:imeOptions="actionNext"
-                    android:hint="yyyy-mm-dd"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:focusable="false"
-                    android:clickable="true"
-                    android:editable="false"/>
-
-            </android.support.design.widget.TextInputLayout>
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            >
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="3dp"
-                android:layout_weight="1">
-                <EditText
-                    android:id="@+id/address"
-                    android:inputType="textMultiLine"
-                    android:lines="8"
-                    android:minLines="4"
-                    android:gravity="top|left"
-                    android:hint="Address"
-                    android:maxLines="10"
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:scrollbars="vertical"
-                    />
-            </android.support.design.widget.TextInputLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_weight="1"
-                android:orientation="horizontal">
-
-
-                <ImageView
-                    android:layout_margin="10dp"
-                    android:paddingHorizontal="10dp"
-                    android:paddingVertical="10dp"
-                    android:id="@+id/imageView1"
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:padding="10dp"
-                    android:layout_weight="1"
-                    android:src="@drawable/ic_fingerprint_1" />
-
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_weight="1"
-                android:orientation="horizontal">
-
-
-                <ImageView
-                    android:layout_margin="10dp"
-                    android:paddingHorizontal="10dp"
-                    android:paddingVertical="10dp"
-                    android:id="@+id/imageView3"
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:padding="10dp"
-                    android:layout_weight="1"
-                    android:src="@drawable/ic_fingerprint_1" />
+                </android.support.v7.widget.AppCompatButton>
 
             </LinearLayout>
         </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            >
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="3dp"
-                android:layout_weight="1">
-                <EditText
-                    android:id="@+id/description"
-                    android:inputType="textMultiLine"
-                    android:lines="8"
-                    android:minLines="8"
-                    android:gravity="top|left"
-                    android:hint="Description"
-                    android:maxLines="10"
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:scrollbars="vertical"
-                    />
-            </android.support.design.widget.TextInputLayout>
-
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="44dp"
-            android:padding="5dp"
-            android:orientation="horizontal">
-
-            <android.support.v7.widget.AppCompatButton
-                android:id="@+id/button_offline_submit"
-                android:text="offline"
-                android:layout_marginRight="5dp"
-                style="@style/Widget.AppCompat.Button.Colored"
-                app:theme="@style/AppTheme.ButtonStyle"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:stateListAnimator="@null"
-                android:background="@color/blue4"
-                android:visibility="gone"
-                android:layout_weight="1">
-            </android.support.v7.widget.AppCompatButton>
-
-            <android.support.v7.widget.AppCompatButton
-                android:id="@+id/button_submit"
-                android:text="Submit"
-                android:layout_marginLeft="5dp"
-                style="@style/Widget.AppCompat.Button.Colored"
-                app:theme="@style/AppTheme.ButtonStyle"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:stateListAnimator="@null"
-                android:background="@color/blue4"
-                android:layout_weight="1">
-        </android.support.v7.widget.AppCompatButton>
-
-        </LinearLayout>
-    </LinearLayout>
-</ScrollView>
+    </ScrollView>
 </RelativeLayout>
