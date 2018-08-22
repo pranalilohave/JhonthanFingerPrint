@@ -130,6 +130,17 @@ public class DownloadTask extends AsyncTask<URL,Void,Bitmap> {
                 dataBaseHelper.UpdateMemberTempData(memberPhotoPojo);
                 Log.e("temp-->", memberPhotoPojo.toString() );
 
+            } else if(str.equals("empty")){
+
+                memberPhotoPojo = new MemberPhotoPojo();
+
+                memberPhotoPojo.setFilepath("");
+                memberPhotoPojo.setMember_id(memberPOJO.getId());
+                memberPhotoPojo.setPhotoname(memberPOJO.getPhotoURL());
+                dataBaseHelper = new DataBaseHelper(context);
+                dataBaseHelper.insertMemberTempData(memberPhotoPojo);
+                Log.e("temp-->", memberPhotoPojo.toString() );
+
             }else
             {
                 memberPhotoPojo = new MemberPhotoPojo();

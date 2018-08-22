@@ -173,6 +173,8 @@ public class MemberAdapter extends BaseAdapter{
                 imageView.setImageResource(R.drawable.ic_profile_image_1);
                 e.printStackTrace();
             }
+        }else{
+            imageView.setImageResource(R.drawable.ic_profile_image_1);
         }
 
 

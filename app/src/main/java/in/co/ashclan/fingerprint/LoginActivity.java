@@ -1487,10 +1487,18 @@ public class LoginActivity extends AppCompatActivity implements OnItemSelectedLi
                     }
                     else
                     {
-                        Log.e("leave :- ",member.getId().toString());
+                        Log.e("leave :- ",member.getId().toString()+"Member Photo :- "+member.getPhotoURL().toString());
+                        if (!dataBaseHelper.isPhotoAvailable(member.getId(), member.getPhotoURL())) {
+                            mMyTask = new DownloadTask(mContext,member,"empty")
+                                    .execute(stringToURL(
+                                            //"http://www.freeimageslive.com/galleries/objects/general/pics/woodenbox0482.jpg"
+                                            PreferenceUtils.getUrlUploadImage(mContext)+member.getPhotoURL()
+                                    ));
+                        }
                     }
 
                     Log.e("D--->",member.toString());
+
                     dataBaseHelper.insertMemberData(member);
                     //String imgURL= PreferenceUtils.getUrlUploadImage(mContext)+member.getPhotoURL();//Directly loaded from server
                     //Log.e("img from server-->",imgURL.toString() );
