@@ -1781,107 +1781,92 @@ public class LoginActivity extends AppCompatActivity implements OnItemSelectedLi
 
     }
 
-  /*  private class DownloadTask extends AsyncTask<URL,Void,Bitmap>{
-        Context context;
-        MemberPOJO memberPOJO;
-
-        public DownloadTask(Context context, MemberPOJO memberPOJO) {
-            this.context = context;
-            this.memberPOJO = memberPOJO;
+    //GET USER BY LOGINS
+    public class GetAllUserTask extends AsyncTask<String, String, String> {
+        private Context mContext;
+        private String URL;
+        private String token;
+        GetAllUserTask(Context mContext, String URL, String token) {
+            this.mContext = mContext;
+            this.URL=URL;
+            this.token=token;
         }
-
-        // Before the tasks execution
-        protected void onPreExecute(){
-            // Display the progress dialog on async task start
-           // mProgressDialog.show();
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
         }
+        @Override
+        protected void onProgressUpdate(String... values) {
+            super.onProgressUpdate(values);
+        }
+        @Override
+        protected String doInBackground(String... params) {
+            HashMap<String, String> postData = new HashMap<>();
+            postData.put("token", token);
+            String json_output = performPostCall(URL, postData);
+            return json_output;
+        }
+        @Override
+        protected void onPostExecute(String output) {
+            try {
+                Log.e("family",URL);
+                //    Log.e("--->THIS!T", output);
+                Log.e("--->family", output);
 
-        // Do the task in background/non UI thread
-        protected Bitmap doInBackground(URL...urls){
-            URL url = urls[0];
-            HttpURLConnection connection = null;
+                dataBaseHelper.deleteAllFamily();
 
-            try{
-                // Initialize a new http url connection
-                connection = (HttpURLConnection) url.openConnection();
+                JSONParser parser = new JSONParser();
+                JSONObject jsonObject = (JSONObject)parser.parse(output.toString());
+                JSONArray jsonArray =(JSONArray) jsonObject.get("result");
 
-                // Connect the http url connection
-                connection.connect();
+                for(int i=0;i<jsonArray.size();i++){
 
-                // Get the input stream from http url connection
-                InputStream inputStream = connection.getInputStream();
+                    FamilyPOJO family = new FamilyPOJO();
+                    JSONObject object = (JSONObject)jsonArray.get(i);
 
-                *//*
-                    BufferedInputStream
-                        A BufferedInputStream adds functionality to another input stream-namely,
-                        the ability to buffer the input and to support the mark and reset methods.
-                *//*
-                *//*
-                    BufferedInputStream(InputStream in)
-                        Creates a BufferedInputStream and saves its argument,
-                        the input stream in, for later use.
-                *//*
-                // Initialize a new BufferedInputStream from InputStream
-                BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
+                  /*  String id,branchId,userId,memberId,familyId,fundId;
+                    String memberType,contributionBatchId,paymentMethodId,date;
+                    String files,notes,transRef,amount,year,month;
+                    String createdAt,updatedAt;
+*/
+                    family.setId(String.valueOf(object.get("id")));
+                    family.setBranchId(isNull(object,"branch_id"));
+                    family.setUserId(isNull(object,"user_id"));
+                    family.setMemberId(isNull(object,"member_id"));
+                    family.setName(isNull(object,"name"));
+                    family.setNotes(isNull(object,"notes"));
+                    family.setPicture(isNull(object,"picture"));
+                    family.setCreatedAt(isNull(object,"created_at"));
+                    family.setUpdatedAt(isNull(object,"updated_at"));
+                    Log.e("--->",family.toString());
+                    //   eventList.add(event);
+                    dataBaseHelper.insertFAMILYData(family);
+                }
 
-                *//*
-                    decodeStream
-                        Bitmap decodeStream (InputStream is)
-                            Decode an input stream into a bitmap. If the input stream is null, or
-                            cannot be used to decode a bitmap, the function returns null. The stream's
-                            position will be where ever it was after the encoded data was read.
+//                //Groups
+//                GetAllGroupsTask groupsTask = new GetAllGroupsTask(mContext,PreferenceUtils.getUrlGetGroup(mContext),token);
+//                groupsTask.execute();
 
-                        Parameters
-                            is InputStream : The input stream that holds the raw data
-                                              to be decoded into a bitmap.
-                        Returns
-                            Bitmap : The decoded bitmap, or null if the image data could not be decoded.
-                *//*
-                // Convert BufferedInputStream to Bitmap object
-                Bitmap bmp = BitmapFactory.decodeStream(bufferedInputStream);
-
-                // Return the downloaded bitmap
-                return bmp;
-
-            }catch(IOException e){
+                Intent intent = new Intent(mContext,HomeActivity.class);
+//            intent.putExtra("member_list",memberList);
+                startActivity(intent);
+                progressBar.setVisibility(View.VISIBLE);
+                buttonLogin.setEnabled(false);
+                finish();
+            } catch (Exception e) {
+                Log.e("--->", e.toString());
+                Toast.makeText(mContext,"No Internet Access",Toast.LENGTH_LONG).show();
+                progressBar.setVisibility(View.GONE);
+                buttonLogin.setEnabled(true);
                 e.printStackTrace();
-            }finally{
-                // Disconnect the http url connection
-                connection.disconnect();
-            }
-            return null;
-        }
-
-        // When all async task done
-        protected void onPostExecute(Bitmap result){
-            // Hide the progress dialog
-            //mProgressDialog.dismiss();
-
-            if(result!=null){
-                // Display the downloaded image into ImageView
-              //  mImageView.setImageBitmap(result);
-
-                // Save bitmap to internal storage
-                Uri imageInternalUri = saveImageToInternalStorage(result);
-                // Set the ImageView image from internal storage
-                //mImageViewInternal.setImageURI(imageInternalUri);
-                memberPhotoPojo = new MemberPhotoPojo();
-
-                memberPhotoPojo.setFilepath(imageInternalUri.getPath().toString());
-                memberPhotoPojo.setMember_id(memberPOJO.getId());
-                memberPhotoPojo.setPhotoname(memberPOJO.getPhotoURL());
-
-                dataBaseHelper.insertMemberTempData(memberPhotoPojo);
-                Log.e("temp-->", memberPhotoPojo.toString() );
-
-            }else {
-                // Notify user that an error occurred while downloading image
-               // Snackbar.make(mContext,"Error",Snackbar.LENGTH_LONG).show();
-
             }
         }
-    }*/
-
+        @Override
+        protected void onCancelled() {
+            progressBar.setVisibility(View.VISIBLE);
+            buttonLogin.setEnabled(false);
+        }
+    }
     // Custom method to convert string to url
     protected URL stringToURL(String urlString){
         try{
