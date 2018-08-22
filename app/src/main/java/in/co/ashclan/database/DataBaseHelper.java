@@ -17,6 +17,7 @@ import java.util.List;
 
 import in.co.ashclan.model.AttenderPOJO;
 import in.co.ashclan.model.CalendarPOJO;
+import in.co.ashclan.model.ChangePasswordPOJO;
 import in.co.ashclan.model.ContributionsPOJO;
 import in.co.ashclan.model.EventAttendancePOJO;
 import in.co.ashclan.model.EventPOJO;
@@ -446,6 +447,38 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                     + MEMBER_TEMP_COL4 + " TEXT"
                     + ")";
 
+
+
+
+    //create table change password
+    public static final String CHANGE_PASSWORD = "changepassword";
+    public static final String CHANGE_PASSWORD_COl_1 = "id";
+    public static final String CHANGE_PASSWORD_COL_2 = "userid";
+    public static final String CHANGE_PASSWORD_COL_3 = "oldpassword";
+    public static final String CHANGE_PASSWORD_COL_4 = "newpassword";
+    public static final String CHANGE_PASSWORD_COL_5 = "conformpassword";
+    public static final String CHANGE_PASSWORD_COL_6 = "adminfirstname";
+    public static final String CHANGE_PASSWORD_COL_7 = "adminlastname";
+    public static final String CHANGE_PASSWORD_COL_8 = "adminid";
+    public static final String CHANGE_PASSWORD_COL_9 = "photourl";
+
+
+    public static final String CREATE_TABLE_CHANGE_PASSWORD =
+            "CREATE TABLE " + CHANGE_PASSWORD + "("
+                    + CHANGE_PASSWORD_COl_1 + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + CHANGE_PASSWORD_COL_2 + " TEXT,"
+                    + CHANGE_PASSWORD_COL_3 + " TEXT,"
+                    + CHANGE_PASSWORD_COL_4 + " TEXT,"
+                    + CHANGE_PASSWORD_COL_5 + " TEXT,"
+                    + CHANGE_PASSWORD_COL_6 + " TEXT,"
+                    + CHANGE_PASSWORD_COL_7 + " TEXT,"
+                    + CHANGE_PASSWORD_COL_8 + " TEXT,"
+                    + CHANGE_PASSWORD_COL_9 + " TEXT"
+
+                    + ")";
+
+
+
     public DataBaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
     }
@@ -476,6 +509,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_RECORDING);
         //CREATE TABLE TEMPMEMBERPHOTO
         db.execSQL(CREATE_TABLE_TEMPMEMBERPHOTO);
+         //CREATE TABLE CHANGE PASSWORD
+        db.execSQL(CREATE_TABLE_CHANGE_PASSWORD);
     }
 
     @Override
@@ -492,6 +527,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + EVENT_lOCATION_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + RECORDING_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + TempMemberPhotos);
+        db.execSQL("DROP TABLE IF EXISTS " + CHANGE_PASSWORD);
+
 
         // Create tables again
         onCreate(db);
@@ -535,6 +572,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             return true;
         }
     }
+
     public List<MemberPOJO> getSerachMember(String str) {
         List<MemberPOJO> members = new ArrayList<MemberPOJO>();
         String selectQuery = "SELECT  * FROM " + MEMBERS_TABLE + " WHERE " + MEMBER_COL_4 + " LIKE '" + str + "%'"
@@ -2251,6 +2289,35 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         }
     }
 
+
+
+    //insert change password data
+    public boolean insertChangePasswordData(ChangePasswordPOJO change) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(CHANGE_PASSWORD_COl_1, change.getId());
+        values.put(CHANGE_PASSWORD_COL_2, change.getUserid());
+        values.put(CHANGE_PASSWORD_COL_3, change.getOldpassword());
+        values.put(CHANGE_PASSWORD_COL_4, change.getNewpassword());
+        values.put(CHANGE_PASSWORD_COL_5, change.getComformpassword());
+        values.put(CHANGE_PASSWORD_COL_6, change.getAdminfirstname());
+        values.put(CHANGE_PASSWORD_COL_7, change.getAdminlastname());
+        values.put(CHANGE_PASSWORD_COL_8, change.getAdminid());
+        values.put(CHANGE_PASSWORD_COL_9, change.getPhotoUrl());
+
+
+
+        long result = db.insert(CHANGE_PASSWORD, null, values);
+
+        db.close();
+        if (result == -1) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 
 }
 
