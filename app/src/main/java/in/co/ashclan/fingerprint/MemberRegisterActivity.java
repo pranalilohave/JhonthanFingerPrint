@@ -103,6 +103,7 @@ import in.co.ashclan.model.MemberPOJO;
 import in.co.ashclan.utils.Constants;
 import in.co.ashclan.utils.PreferenceUtils;
 import in.co.ashclan.utils.Utility;
+import in.co.ashclan.utils.Utils;
 import in.co.ashclan.utils.WebServiceCall;
 
 import static in.co.ashclan.utils.WebServiceCall.performPostCall;
@@ -854,11 +855,12 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
                 memberDetails.setFingerPrint1(fpStrByte2);
             }
 
-            progressBar.setVisibility(View.VISIBLE);
+            //progressBar.setVisibility(View.VISIBLE);
 
             memberDetails.setServerType(Constants.SUBMIT);
             dataBaseHelperOffline.insertOfflineMemberData(memberDetails);
             finish();
+            Toast.makeText(mContext,"Data Saved in Offline",Toast.LENGTH_LONG).show();
         }else {
             Toast.makeText(mContext,"something is missing",Toast.LENGTH_LONG).show();
         }
@@ -906,7 +908,6 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
                 memberDetails.setServerType(Constants.UDATEWITHOUTIMAGE);
             }
             dataBaseHelperOffline.insertOfflineMemberData(memberDetails);
-
             finish();
         }else {
             Toast.makeText(mContext,"something is missing",Toast.LENGTH_LONG).show();
@@ -919,7 +920,6 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
         if (utilsCheck()){
             Toast.makeText(mContext,"something is missing",Toast.LENGTH_LONG).show();
         }else {
-
             memberDetails.setFirstName(editTextFirstName.getText().toString());
             memberDetails.setLastName(editTextLastname.getText().toString());
             memberDetails.setMiddleName(editTextMiddleName.getText().toString());
@@ -961,9 +961,17 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
         //    if(!isDuplicated) {
                 // getAccessTokenGovNet(PreferenceUtils.getUrlLogin(mContext),PreferenceUtils.getAdminName(mContext),PreferenceUtils.getAdminPassword(mContext));
 
+           // if(Utils.isConnectedToInterNet(mContext)){
+
                 GetAccessTokenTask aTask = new GetAccessTokenTask(mContext,PreferenceUtils.getUrlLogin(mContext),
                         PreferenceUtils.getAdminName(mContext),PreferenceUtils.getAdminPassword(mContext),memberDetails);
                 aTask.execute();
+
+          /*  }else {
+                progressBar.setVisibility(View.INVISIBLE);
+                Toast.makeText(mContext, "No Internet Connection", Toast.LENGTH_SHORT).show();
+            }*/
+
 //            }else {
 //                imageViewFingerPrint1.setColorFilter(getResources().getColor(R.color.red));
 //                Toast.makeText(MemberRegisterActivity.this,"Duplicated FingerPrint",Toast.LENGTH_LONG).show();
@@ -1663,22 +1671,18 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
 
                             if (isPhone){
                                 SerialPortManagerA5.getInstance().closeSerialPort();
-                                finish();
                                 progressBar.setVisibility(View.INVISIBLE);
-
+                                finish();
                             }
                             if (isTablet) {
                                 SerialPortManager.getInstance().closeSerialPort();
-                                finish();
                                 progressBar.setVisibility(View.INVISIBLE);
+                                finish();
                             }
-
-                            finish();
                         }
 
                         @Override
                         public void onCancelled(Context context, UploadInfo uploadInfo) {
-
                             Log.e("--->","caln");
                         }
                     })
@@ -1696,7 +1700,6 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
 
             MultipartUploadRequest multipartUploadRequest = new MultipartUploadRequest(mContext, uploadId, URL);
             UploadServiceBroadcastReceiver uploadServiceBroadcastReceiver = null;
-
 
             if (editImage) {
                 multipartUploadRequest.addFileToUpload(getImagePath(), "photo")
@@ -1729,7 +1732,6 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
                                 Log.e("---->", serverResponse.getBodyAsString().toString());
                                 progressBar.setVisibility(View.GONE);
                                 Toast.makeText(mContext,"fail",Toast.LENGTH_LONG).show();
-
                             }
 
                             @Override
@@ -1787,15 +1789,15 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
                                 if (isPhone) {
                                     SerialPortManagerA5.getInstance().closeSerialPort();
                                     setResult(Activity.RESULT_OK, intent);
-                                    finish();
                                     progressBar.setVisibility(View.INVISIBLE);
+                                    finish();
 
                                 }
                                 if (isTablet) {
                                     SerialPortManager.getInstance().closeSerialPort();
                                     setResult(Activity.RESULT_OK, intent);
-                                    finish();
                                     progressBar.setVisibility(View.INVISIBLE);
+                                    finish();
                                 }
 
                             }
@@ -1895,18 +1897,16 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
                                 if (isPhone) {
                                     SerialPortManagerA5.getInstance().closeSerialPort();
                                     setResult(Activity.RESULT_OK, intent);
-                                    finish();
                                     progressBar.setVisibility(View.INVISIBLE);
-
+                                    finish();
                                 }
                                 if (isTablet) {
                                     SerialPortManager.getInstance().closeSerialPort();
                                     setResult(Activity.RESULT_OK, intent);
-                                    finish();
                                     progressBar.setVisibility(View.INVISIBLE);
+                                    finish();
                                 }
                                 finish();
-
                             }
 
                             @Override
@@ -1929,6 +1929,13 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(mContext,MemberListActivity.class));
+        finish();
     }
 }
 

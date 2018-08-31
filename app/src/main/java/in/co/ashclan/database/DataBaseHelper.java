@@ -2378,6 +2378,23 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     }
 
+    public String strEventName(String event_id){
+        String event_Name = null;
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+
+            String selectQuery = ("SELECT name as name FROM event_table WHERE id = '"+event_id+"'");
+            Cursor cursor = db.rawQuery(selectQuery, null);
+            if (cursor.moveToLast()) {
+                event_Name = cursor.getString(cursor.getColumnIndex("name"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return event_Name;
+
+    }
+
 
 }
 

@@ -95,8 +95,6 @@ public class PreferenceUtils {
         return getSharedPreferences(context).getBoolean(PREFERENCE_KEY_INTERNET_ACCESS,false);
     }
 
-
-
     public static void setSignIn(Context context,boolean signIn){
         SharedPreferences.Editor editor = getSharedPreferences(context).edit();
         editor.putBoolean(PREFERENCE_KEY_SIGN_IN,signIn).apply();

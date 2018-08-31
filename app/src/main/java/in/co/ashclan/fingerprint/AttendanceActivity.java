@@ -1310,7 +1310,7 @@ public class AttendanceActivity extends AppCompatActivity implements AttendersUp
                 .record();
         RecordingPOJO recordingPOJO = new RecordingPOJO();
         //recordingPOJO.setEventid(eventId);
-        recordingPOJO.setEventid("25");
+        recordingPOJO.setEventid(eventId);
         recordingPOJO.setEventDate(txt_date.getText().toString());
         //recordingPOJO.setFilename(uri.getPath().toString());
         recordingPOJO.setFilename(fileName);
@@ -1556,6 +1556,7 @@ public class AttendanceActivity extends AppCompatActivity implements AttendersUp
 
         if (id == R.id.action_recording) {
             Intent intent = new Intent(mContext, LoginActivity.class);
+           // intent.putExtra("event_name",txt_service.getText().toString());
             startActivity(intent);
         }
 

@@ -31,6 +31,7 @@ import com.android.volley.Response;
 import com.android.volley.error.VolleyError;
 import com.android.volley.request.SimpleMultiPartRequest;
 import com.android.volley.toolbox.Volley;
+import com.crashlytics.android.Crashlytics;
 import com.nostra13.universalimageloader.utils.L;
 
 import net.gotev.uploadservice.MultipartUploadRequest;
@@ -81,6 +82,7 @@ import in.co.ashclan.model.PledgesPOJO;
 import in.co.ashclan.utils.Constants;
 import in.co.ashclan.utils.PreferenceUtils;
 import in.co.ashclan.utils.Utils;
+import io.fabric.sdk.android.Fabric;
 
 import static in.co.ashclan.utils.Utils.isNull;
 import static in.co.ashclan.utils.WebServiceCall.performPostCall;
@@ -116,10 +118,12 @@ public class LoginActivity extends AppCompatActivity implements OnItemSelectedLi
         Configuration config = getResources().getConfiguration();
         if (config.smallestScreenWidthDp >= 600)
         {
+            Fabric.with(this, new Crashlytics());
             setContentView(R.layout.activity_login);
         }
         else
         {
+            Fabric.with(this, new Crashlytics());
             setContentView(R.layout.activity_login);
         }
         init();
@@ -128,14 +132,14 @@ public class LoginActivity extends AppCompatActivity implements OnItemSelectedLi
     public void init(){
         textViewVersions = (TextView)findViewById(R.id.text_login_versions);
         editTextAdmin = (EditText)findViewById(R.id.admin);
-        //editTextAdmin.setText("test@gmail.com");
+        editTextAdmin.setText("test@gmail.com");
         editTextAdminPassword = (EditText)findViewById(R.id.admin_password);
-        //editTextAdminPassword.setText("123456");
+        editTextAdminPassword.setText("123456");
         buttonLogin = (Button)findViewById(R.id.button_login);
         progressBar = (ContentLoadingProgressBar)findViewById(R.id.progress_bar_login);
         msServer = (MaterialSpinner)findViewById(R.id.spinner_sever);
-        editTextAdmin.setText(PreferenceUtils.getAdminName(LoginActivity.this));
-        editTextAdminPassword.setText(PreferenceUtils.getAdminPassword(LoginActivity.this));
+       // editTextAdmin.setText(PreferenceUtils.getAdminName(LoginActivity.this));
+       // editTextAdminPassword.setText(PreferenceUtils.getAdminPassword(LoginActivity.this));
         msServer.setSelection(PreferenceUtils.getSelectServer(this));
         msServer.setOnItemSelectedListener(this);
         memberPhotoPojo = new MemberPhotoPojo();

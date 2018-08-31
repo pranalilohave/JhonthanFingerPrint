@@ -125,9 +125,21 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         changePasswordPOJO.setAdminlastname(customAdminLastName.getText().toString());
         changePasswordPOJO.setAdminid(customAdminId.getText().toString());
        // changePasswordPOJO.setPhotoUrl(ProfileImage.getResources().toString());
-        changePasswordPOJO.setPhotoUrl(getImagePath());
+        try{
+            if(!getImagePath().equals("")||!getImagePath().equals(null))
+            {
+                changePasswordPOJO.setPhotoUrl(getImagePath());
+            }else{
+                changePasswordPOJO.setPhotoUrl("");
+            }
+            PreferenceUtils.setAdminPhoto(mcontext,getImagePath());
 
-        PreferenceUtils.setAdminPhoto(mcontext,getImagePath());
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+
 
         dataBaseHelper.UpdatePassword(changePasswordPOJO);
       //  profileimage.setImageURI(Uri.parse(workerModel.getImageUrl().toString()));

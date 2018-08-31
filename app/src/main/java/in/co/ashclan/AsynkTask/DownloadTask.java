@@ -144,14 +144,12 @@ public class DownloadTask extends AsyncTask<URL,Void,Bitmap> {
             }else
             {
                 memberPhotoPojo = new MemberPhotoPojo();
-
                 memberPhotoPojo.setFilepath(imageInternalUri.getPath().toString());
                 memberPhotoPojo.setMember_id(memberPOJO.getId());
                 memberPhotoPojo.setPhotoname(memberPOJO.getPhotoURL());
                 dataBaseHelper = new DataBaseHelper(context);
                 dataBaseHelper.insertMemberTempData(memberPhotoPojo);
                 Log.e("temp-->", memberPhotoPojo.toString() );
-
             }
 
         }else {

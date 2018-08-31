@@ -157,16 +157,22 @@ public class HomeActivity extends AppCompatActivity
 
         List<ChangePasswordPOJO> User = new ArrayList<ChangePasswordPOJO>();
         User =  dataBaseHelper.getAllpassword();
-
+        try{
         PreferenceUtils.setAdminEmail(mContext,User.get(0).getAdminid().toString());
         PreferenceUtils.setAdminFirstName(mContext,User.get(0).getAdminfirstname().toString());
         PreferenceUtils.setAdminLastName(mContext,User.get(0).getAdminlastname().toString());
         PreferenceUtils.setUserId(mContext,User.get(0).getUserid().toString());
-        if(User.get(0).getPhotoUrl().toString()!=null||!User.get(0).getPhotoUrl().toString().equals(""))
+
+            if(User.get(0).getPhotoUrl().toString()!=null||!User.get(0).getPhotoUrl().toString().equals(""))
+            {
+                PreferenceUtils.setAdminPhoto(mContext,User.get(0).getPhotoUrl().toString());
+                Log.e("-->user", User.get(0).getPhotoUrl().toString());
+            }
+        }catch (Exception e)
         {
-            PreferenceUtils.setAdminPhoto(mContext,User.get(0).getPhotoUrl().toString());
-            Log.e("-->user", User.get(0).getPhotoUrl().toString());
+            e.printStackTrace();
         }
+
 
 
         imgAdminPhoto = (CircleImageView) header.findViewById(R.id.img_admin_photo);

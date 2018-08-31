@@ -34,6 +34,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.UUID;
 
+import in.co.ashclan.database.DataBaseHelper;
 import in.co.ashclan.fingerprint.R;
 import in.co.ashclan.fingerprint.RecordingActivity;
 import in.co.ashclan.model.AttenderPOJO;
@@ -48,12 +49,13 @@ public class RecordingAdapter extends BaseAdapter{
     private Context mContext;
     private ArrayList<RecordingPOJO> list;
     RecordingPOJO recordingPOJO;
-    TextView txt_RecordName,txt_RecordDate;
+    TextView txt_RecordName,txt_RecordDate,txt_eventName;
     ImageView imgUpload;
     ImageView imgPlay;
     private ProgressBar progressBar;
     private MediaPlayer mediaPlayer;
     private SeekBar seekBar;
+    DataBaseHelper dataBaseHelper;
 
     private final Handler handler = new Handler();
 
@@ -87,8 +89,11 @@ public class RecordingAdapter extends BaseAdapter{
         }else {
             vList = (View)view;
         }
+
+        dataBaseHelper = new DataBaseHelper(mContext);
         txt_RecordName =(TextView)vList.findViewById(R.id.record_name);
         txt_RecordDate=(TextView)vList.findViewById(R.id.record_date);
+        txt_eventName=(TextView)vList.findViewById(R.id.EventName);
         imgUpload = (ImageView)vList.findViewById(R.id.img_upload);
         progressBar=(ProgressBar)vList.findViewById(R.id.progress_bar_recording_register);
 
@@ -101,6 +106,8 @@ public class RecordingAdapter extends BaseAdapter{
 
         txt_RecordName.setText(recordingPOJO.getFilename());
         txt_RecordDate.setText(recordingPOJO.getEventDate());
+
+        txt_eventName.setText(dataBaseHelper.strEventName(recordingPOJO.getEventid().toString()));
 
         imgUpload.setOnClickListener(new View.OnClickListener() {
             @Override

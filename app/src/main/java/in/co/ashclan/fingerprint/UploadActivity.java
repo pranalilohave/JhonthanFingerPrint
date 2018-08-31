@@ -299,7 +299,6 @@ public class UploadActivity extends AppCompatActivity
         }
     }
 
-
     public void memberRegisterGovNet(String URL, final MemberPOJO memberDetails,final String token){
         try {
             Log.e("---->",URL);
@@ -307,8 +306,6 @@ public class UploadActivity extends AppCompatActivity
             final String uploadId = UUID.randomUUID().toString();
             MultipartUploadRequest multipartUploadRequest = new MultipartUploadRequest(mContext, uploadId, URL);
          //   UploadServiceBroadcastReceiver uploadServiceBroadcastReceiver;
-
-
 
             multipartUploadRequest.addFileToUpload(memberDetails.getPhotoURL(),"photo" )
                     .addParameter("token", token)
@@ -380,6 +377,8 @@ public class UploadActivity extends AppCompatActivity
                                 dataBaseHelper.insertMemberData(memberRegister);
 
                                 dataBaseHelperOffline.deleteOfflineMember(memberDetails);
+
+                                progressBar.setVisibility(View.GONE);
                                 list.addAll(dataBaseHelperOffline.getAllOfflineMembers());
                                 memberAdapter = new MemberAdapter(mContext,list,"ic_person.png");
                                 memberAdapter.notifyDataSetChanged();
@@ -394,16 +393,18 @@ public class UploadActivity extends AppCompatActivity
                                             ));
                                 }
 
+                                finish();
 
                             }catch (Exception ex){
                                 ex.printStackTrace();
                             }
-                            progressBar.setVisibility(View.GONE);
-                            dataBaseHelperOffline.deleteOfflineMember(memberDetails);
-                            list = (ArrayList<MemberPOJO>) dataBaseHelperOffline.getAllOfflineMembers();
-                            memberAdapter = new MemberAdapter(mContext,list,"ic_person.png");
-                            memberAdapter.notifyDataSetChanged();
-                            listView.setAdapter(memberAdapter);
+                         //   progressBar.setVisibility(View.GONE);
+                          //  dataBaseHelperOffline.deleteOfflineMember(memberDetails);
+                           // list = (ArrayList<MemberPOJO>) dataBaseHelperOffline.getAllOfflineMembers();
+                          // memberAdapter = new MemberAdapter(mContext,list,"ic_person.png");
+                           // memberAdapter.notifyDataSetChanged();
+                          //  listView.setAdapter(memberAdapter);
+
                         }
 
                         @Override
@@ -413,8 +414,6 @@ public class UploadActivity extends AppCompatActivity
                         }
                     })
                     .startUpload(); //Starting the upload
-
-            finish();
 
         } catch (Exception exc) {
             Toast.makeText(this, exc.getMessage(), Toast.LENGTH_SHORT).show();
@@ -524,9 +523,7 @@ public class UploadActivity extends AppCompatActivity
                                 memberAdapter = new MemberAdapter(mContext,list,"ic_person.png");
                                 memberAdapter.notifyDataSetChanged();
                                 listView.setAdapter(memberAdapter);
-
-
-
+                                finish();
                             }
 
                             @Override
@@ -612,7 +609,7 @@ public class UploadActivity extends AppCompatActivity
                                 memberAdapter = new MemberAdapter(mContext,list,"ic_person.png");
                                 memberAdapter.notifyDataSetChanged();
                                 listView.setAdapter(memberAdapter);
-
+                                finish();
                             }
 
                             @Override

@@ -22,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -63,6 +64,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import in.co.ashclan.adpater.ContributionAdapter;
 import in.co.ashclan.adpater.EventAttendanceAdapter;
 import in.co.ashclan.adpater.FamilyAdapter;
@@ -111,6 +113,10 @@ public class MemberDetailsActivity extends AppCompatActivity
     MemberFragment memberFragment;
     ImageLoaderConfiguration loaderConfiguration;
     ImageLoader imageLoader = ImageLoader.getInstance();
+    InputMethodManager inputMethodManager;
+    CircleImageView imgAdminPhoto;
+    TextView name,email;
+
 
     Context context,mContext;// = MemberDetailsActivity.this;
     @Override
@@ -124,7 +130,6 @@ public class MemberDetailsActivity extends AppCompatActivity
 
         dataBaseHelper = new DataBaseHelper(this);
         bottomNavigationBar = (BottomNavigationBar)findViewById(R.id.bottom_navigation_bar);
-
         list.addAll(dataBaseHelper.getAllMembers());
 
         inits();
@@ -155,6 +160,32 @@ public class MemberDetailsActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.getMenu().getItem(0).setChecked(true);
+
+
+
+        View header=navigationView.getHeaderView(0);
+
+
+        imgAdminPhoto = (CircleImageView) header.findViewById(R.id.img_admin_photo);
+        name = (TextView)header.findViewById(R.id.txt_adminName);
+        email = (TextView)header.findViewById(R.id.txt_adminEmail);
+
+        name.setText(PreferenceUtils.getAdminFirstName(mContext) + " "+ PreferenceUtils.getAdminLastName(mContext));
+        email.setText(PreferenceUtils.getAdminEmail(mContext));
+        if(!PreferenceUtils.getAdminPhoto(mContext).equals("")) {
+            try {
+                Picasso.with(mContext)
+                        .load("file://" + PreferenceUtils.getAdminPhoto(mContext))
+                        .config(Bitmap.Config.RGB_565)
+                        .fit()
+                        .centerCrop()
+                        .into(imgAdminPhoto);
+
+            } catch (Exception e) {
+                imgAdminPhoto.setImageResource(R.drawable.ic_church);
+                e.printStackTrace();
+            }
+        }
 
         bottomNavigationBar.setTabSelectedListener(this);
     }
@@ -275,7 +306,6 @@ public class MemberDetailsActivity extends AppCompatActivity
                 profileImageView.setImageResource(R.drawable.ic_profile_image_1);
                 e.printStackTrace();
             }
-
 
 
         /*if (null!=memberDetails.getPhotoURL()) {

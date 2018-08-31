@@ -127,6 +127,7 @@ public class MemberListActivity extends AppCompatActivity
                 Intent intent=new Intent(mContext,MemberRegisterActivity.class);
                 intent.putExtra("type","register");
                 startActivity(intent);
+                finish();
             }
         });
 
