@@ -54,6 +54,7 @@ import android_serialport_api.SerialPortManagerA5;
 import de.hdodenhof.circleimageview.CircleImageView;
 import in.co.ashclan.AsynkTask.DownloadTask;
 import in.co.ashclan.adpater.MemberAdapter;
+import in.co.ashclan.adpater.OfflineMemberAdapter;
 import in.co.ashclan.adpater.UploadAdapter;
 import in.co.ashclan.database.DataBaseHelper;
 import in.co.ashclan.database.DataBaseHelperOffline;
@@ -73,7 +74,7 @@ public class UploadActivity extends AppCompatActivity
     DataBaseHelper dataBaseHelper;
     DataBaseHelperOffline dataBaseHelperOffline;
     UploadAdapter uploadAdapter;
-    MemberAdapter memberAdapter;
+    OfflineMemberAdapter memberAdapter;
     ArrayList<MemberPOJO> list = new ArrayList<MemberPOJO>();
     ProgressBar progressBar;
     private AsyncTask mMyTask;
@@ -97,7 +98,7 @@ public class UploadActivity extends AppCompatActivity
 
         list = (ArrayList<MemberPOJO>) dataBaseHelperOffline.getAllOfflineMembers();
 
-        memberAdapter = new MemberAdapter(mContext,list,"ic_person.png");
+        memberAdapter = new OfflineMemberAdapter(mContext,list,"ic_person.png");
         listView.setAdapter(memberAdapter);
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -380,7 +381,7 @@ public class UploadActivity extends AppCompatActivity
 
                                 progressBar.setVisibility(View.GONE);
                                 list.addAll(dataBaseHelperOffline.getAllOfflineMembers());
-                                memberAdapter = new MemberAdapter(mContext,list,"ic_person.png");
+                                memberAdapter = new OfflineMemberAdapter(mContext,list,"ic_person.png");
                                 memberAdapter.notifyDataSetChanged();
                                 listView.setAdapter(memberAdapter);
 
@@ -392,18 +393,17 @@ public class UploadActivity extends AppCompatActivity
                                                     PreferenceUtils.getUrlUploadImage(mContext)+memberRegister.getPhotoURL()
                                             ));
                                 }
-
-                                finish();
-
+                               // startActivity(new Intent(mContext,UploadActivity.class));
+                                // finish();
                             }catch (Exception ex){
                                 ex.printStackTrace();
                             }
                          //   progressBar.setVisibility(View.GONE);
-                          //  dataBaseHelperOffline.deleteOfflineMember(memberDetails);
-                           // list = (ArrayList<MemberPOJO>) dataBaseHelperOffline.getAllOfflineMembers();
-                          // memberAdapter = new MemberAdapter(mContext,list,"ic_person.png");
-                           // memberAdapter.notifyDataSetChanged();
-                          //  listView.setAdapter(memberAdapter);
+                           // dataBaseHelperOffline.deleteOfflineMember(memberDetails);
+                            list = (ArrayList<MemberPOJO>) dataBaseHelperOffline.getAllOfflineMembers();
+                            memberAdapter = new OfflineMemberAdapter(mContext,list,"ic_person.png");
+                            memberAdapter.notifyDataSetChanged();
+                            listView.setAdapter(memberAdapter);
 
                         }
 
@@ -520,10 +520,10 @@ public class UploadActivity extends AppCompatActivity
                                 progressBar.setVisibility(View.GONE);
                                 dataBaseHelperOffline.deleteOfflineMember(memberDetails);
                                 list = (ArrayList<MemberPOJO>) dataBaseHelperOffline.getAllOfflineMembers();
-                                memberAdapter = new MemberAdapter(mContext,list,"ic_person.png");
+                                memberAdapter = new OfflineMemberAdapter(mContext,list,"ic_person.png");
                                 memberAdapter.notifyDataSetChanged();
                                 listView.setAdapter(memberAdapter);
-                                finish();
+                                //finish();
                             }
 
                             @Override
@@ -606,10 +606,10 @@ public class UploadActivity extends AppCompatActivity
                                 progressBar.setVisibility(View.GONE);
                                 dataBaseHelperOffline.deleteOfflineMember(memberDetails);
                                 list = (ArrayList<MemberPOJO>) dataBaseHelperOffline.getAllOfflineMembers();
-                                memberAdapter = new MemberAdapter(mContext,list,"ic_person.png");
+                                memberAdapter = new OfflineMemberAdapter(mContext,list,"ic_person.png");
                                 memberAdapter.notifyDataSetChanged();
                                 listView.setAdapter(memberAdapter);
-                                finish();
+                                //finish();
                             }
 
                             @Override

@@ -1569,7 +1569,19 @@ public class AttendanceActivity extends AppCompatActivity implements AttendersUp
     }
 
 
+    @Override
+    public void onPause(){
+        super.onPause();
+        if(fpDialog != null)
+            fpDialog.dismiss();
+    }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(fpDialog != null)
+            fpDialog.dismiss();
+    }
 
 }
 

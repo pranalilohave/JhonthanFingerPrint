@@ -91,7 +91,6 @@ public class TestingActivity extends AppCompatActivity {
         });
     }
 
-
     public void FPDialog(int i) {
         iFinger = i;
         AlertDialog.Builder builder = new AlertDialog.Builder(TestingActivity.this);
@@ -121,7 +120,6 @@ public class TestingActivity extends AppCompatActivity {
         FPProcess();
     }
 
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -133,7 +131,6 @@ public class TestingActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-
         if (fpDialog != null && fpDialog.isShowing()) {
             fpDialog.dismiss();
         }
@@ -142,8 +139,9 @@ public class TestingActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+        if(fpDialog != null)
+            fpDialog.dismiss();
     }
-
 
     public void FPProcess() {
         count = 1;
@@ -406,7 +404,6 @@ public class TestingActivity extends AppCompatActivity {
             }
         });
     }
-
 
 }
 

@@ -980,6 +980,20 @@ public class MemberRegisterActivity extends AppCompatActivity implements View.On
         }
     }
     @Override
+    public void onPause(){
+        super.onPause();
+        if(fpDialog != null)
+            fpDialog.dismiss();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(fpDialog != null)
+            fpDialog.dismiss();
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
             case Utility.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:

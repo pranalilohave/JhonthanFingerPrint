@@ -160,7 +160,7 @@ public class MemberAdapter extends BaseAdapter{
         DataBaseHelper dataBaseHelper = new DataBaseHelper(mContext);
         String Imagepath = dataBaseHelper.getTempMemberPhoto(member.getId());
 
-        if(null!=Imagepath){
+        if(null!=Imagepath ||Imagepath == ""){
             try {
                 Picasso.with(mContext)
                         .load("file://"+Imagepath)
