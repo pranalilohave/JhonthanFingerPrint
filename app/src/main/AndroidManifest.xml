@@ -143,6 +143,7 @@
         <activity
             android:name=".AttendanceActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity android:name=".EventDetailsActivity" />
 
         <provider
@@ -165,8 +166,7 @@
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Base.Theme.AppCompat" />
-        <activity android:name=".SettingsActivity"
-            android:screenOrientation="portrait"/>
+        <activity android:name=".SettingsActivity" />
         <activity android:name=".AddNewUserActivity"
             android:screenOrientation="portrait"></activity>
     </application>

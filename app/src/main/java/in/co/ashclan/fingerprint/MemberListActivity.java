@@ -277,8 +277,6 @@ public class MemberListActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
-
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -315,12 +313,10 @@ public class MemberListActivity extends AppCompatActivity
 
         return true;
     }
-
     @Override
     public void onClick(View view) {
 
     }
-
     public void getAccessTokenVolley(String URL, String email, String password){
         SimpleMultiPartRequest smr = new SimpleMultiPartRequest(Request.Method.POST, URL,
                 new Response.Listener<String>() {

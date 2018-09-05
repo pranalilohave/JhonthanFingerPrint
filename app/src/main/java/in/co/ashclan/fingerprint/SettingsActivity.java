@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -37,7 +38,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     ChangePasswordPOJO changePasswordPOJO;
     ImageView ProfileImage;
     Button customeBtnSubmit;
-    Context mcontext;
+    Context mContext;
     TextInputEditText customeOldPassword,customNewPassword,
             customeConformPassword,customAdminFirstName,customAdminLastName,customAdminId;
     DataBaseHelper dataBaseHelper;
@@ -60,7 +61,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void mInit() {
-        mcontext = SettingsActivity.this;
+        mContext = SettingsActivity.this;
         ProfileImage           = (ImageView)findViewById(R.id.image_profilepic);
         customeOldPassword     = (TextInputEditText) findViewById(R.id.custom_old_password);
         customNewPassword      = (TextInputEditText) findViewById(R.id.custome_new_password);
@@ -70,16 +71,16 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         customAdminId          = (TextInputEditText) findViewById(R.id.custom_adnimId);
         customeBtnSubmit       = (Button) findViewById(R.id.custome_btn_submit);
 
-        dataBaseHelper = new DataBaseHelper(mcontext);
+        dataBaseHelper = new DataBaseHelper(mContext);
 
-        customAdminFirstName.setText(PreferenceUtils.getAdminFirstName(mcontext));
-        customAdminLastName.setText(PreferenceUtils.getAdminLastName(mcontext));
-        customAdminId.setText(PreferenceUtils.getAdminEmail(mcontext));
+        customAdminFirstName.setText(PreferenceUtils.getAdminFirstName(mContext));
+        customAdminLastName.setText(PreferenceUtils.getAdminLastName(mContext));
+        customAdminId.setText(PreferenceUtils.getAdminEmail(mContext));
 
-        if(!PreferenceUtils.getAdminPhoto(mcontext).equals("")){
+        if(!PreferenceUtils.getAdminPhoto(mContext).equals("")){
             try {
-                Picasso.with(mcontext)
-                        .load("file://"+PreferenceUtils.getAdminPhoto(mcontext))
+                Picasso.with(mContext)
+                        .load("file://"+PreferenceUtils.getAdminPhoto(mContext))
                         .config(Bitmap.Config.RGB_565)
                         .fit()
                         .centerCrop()
@@ -94,7 +95,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             ProfileImage.setImageResource(R.drawable.ic_church);
         }
     }
-
     @Override
     public void onClick(View view) {
         if(view == ProfileImage)
@@ -108,16 +108,16 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         if(view == customeBtnSubmit)
         {
             ChangepasswpordMethod();
-            Toast.makeText(mcontext, "Saved Data of Change Password....", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "Saved Data of Change Password....", Toast.LENGTH_SHORT).show();
         }
 
 
     }
-
     private void ChangepasswpordMethod() {
+        if(!utilsCheck()){
         changePasswordPOJO = new ChangePasswordPOJO();
 
-        changePasswordPOJO.setUserid(PreferenceUtils.getUserId(mcontext));
+        changePasswordPOJO.setUserid(PreferenceUtils.getUserId(mContext));
         changePasswordPOJO.setOldpassword(customeOldPassword.getText().toString());
         changePasswordPOJO.setNewpassword(customNewPassword.getText().toString());
         changePasswordPOJO.setComformpassword(customeConformPassword.getText().toString());
@@ -132,25 +132,30 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             }else{
                 changePasswordPOJO.setPhotoUrl("");
             }
-            PreferenceUtils.setAdminPhoto(mcontext,getImagePath());
+            PreferenceUtils.setAdminPhoto(mContext,getImagePath());
 
         }catch (Exception e)
         {
             e.printStackTrace();
         }
 
-
-
         dataBaseHelper.UpdatePassword(changePasswordPOJO);
-      //  profileimage.setImageURI(Uri.parse(workerModel.getImageUrl().toString()));
+        GetAccessTokenTask aTask=new GetAccessTokenTask(mContext,PreferenceUtils.getUrlLogin(mContext),
+                PreferenceUtils.getAdminName(mContext),PreferenceUtils.getAdminPassword(mContext));
+        aTask.execute();
+
+
+        //  profileimage.setImageURI(Uri.parse(workerModel.getImageUrl().toString()));
 
         finish();
 
-
-        /*Glide.with(mcontext)
+        /*Glide.with(mContext)
                 .load(changePasswordPOJO.getPhotoUrl().toString())
                 .into(ProfileImage);
         setImagePath(changePasswordPOJO.getPhotoUrl());*/
+        }else {
+            Toast.makeText(mContext,"something is missing",Toast.LENGTH_LONG).show();
+        }
 
     }
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -294,8 +299,9 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
             postData.put("token", token);
             postData.put("id", passwordPOJO.getUserid());
+            postData.put("password", passwordPOJO.getOldpassword());
             postData.put("email", passwordPOJO.getAdminid());
-            postData.put("password", passwordPOJO.getNewpassword());
+            postData.put("confirmpassword", passwordPOJO.getNewpassword());
             postData.put("first_name", passwordPOJO.getAdminfirstname());
             postData.put("last_name", passwordPOJO.getAdminlastname());
 
@@ -339,4 +345,29 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         protected void onCancelled() {
         }
     }
+
+    public boolean utilsCheck(){
+
+        boolean cancel = false;
+        View focusView = null;
+        if (TextUtils.isEmpty(customeOldPassword.getText())){
+            customeOldPassword.setError("Please enter first Name");
+            focusView=customeOldPassword;
+            cancel=true;
+        }
+
+        if (TextUtils.isEmpty(customNewPassword.getText())){
+            customNewPassword.setError("Please enter Last Name");
+            focusView=customNewPassword;
+            cancel=true;
+        }
+
+        if (TextUtils.isEmpty(customeConformPassword.getText())){
+            customeConformPassword.setError("Please enter Last Name");
+            focusView=customeConformPassword;
+            cancel=true;
+        }
+        return cancel;
+    }
+
 }

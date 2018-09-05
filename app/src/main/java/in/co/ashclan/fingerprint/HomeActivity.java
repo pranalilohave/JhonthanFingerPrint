@@ -135,12 +135,12 @@ public class HomeActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(HomeActivity.this, AttendanceActivity.class);
-                intent.putExtra("type", "register");
-                startActivity(intent);
-                /*Intent intent = new Intent(HomeActivity.this, EventRegister.class);
+               /* Intent intent = new Intent(HomeActivity.this, AttendanceActivity.class);
                 intent.putExtra("type", "register");
                 startActivity(intent);*/
+                Intent intent = new Intent(HomeActivity.this, EventRegister.class);
+                intent.putExtra("type", "register");
+                startActivity(intent);
             }
         });
 
