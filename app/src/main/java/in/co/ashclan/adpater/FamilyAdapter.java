@@ -35,7 +35,8 @@ public class FamilyAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int i) {
-        return Long.parseLong(list.get(i).getId());
+//        return Long.parseLong(list.get(i).getId());
+        return 0;
     }
 
     @Override
@@ -55,7 +56,7 @@ public class FamilyAdapter extends BaseAdapter {
         final FamilyPOJO familyPOJO = list.get(i);
 
         txtFamilyName.setText(familyPOJO.getName());
-        txtFamilyRole.setText(familyPOJO.getId());
+        txtFamilyRole.setText(familyPOJO.getRole());
       /*  try {
            txt_date.setText(datePattern(contriPojo.getDate()));
         } catch (ParseException e) {

@@ -33,7 +33,7 @@ public class AttenderAdapter extends BaseAdapter {
 
     private Context mContext;
     private ArrayList<AttenderPOJO> list;
-    TextView txt_id,txt_name,txt_phone,txt_gender,txt_age,txt_address;
+    TextView txt_id,txt_name,txt_phone,txt_gender,txt_age,txt_address,txtdate,txttime;
     CircleImageView imageView;
     ImageLoaderConfiguration loaderConfiguration;
     ImageLoader imageLoader = ImageLoader.getInstance();
@@ -42,7 +42,7 @@ public class AttenderAdapter extends BaseAdapter {
         this.mContext = mContext;
         this.list = list;
 
-        DisplayImageOptions imageOptions = new DisplayImageOptions.Builder()
+      /*  DisplayImageOptions imageOptions = new DisplayImageOptions.Builder()
                 .cacheInMemory(true)
                 .cacheOnDisk(true)
                 .imageScaleType(ImageScaleType.EXACTLY)
@@ -56,7 +56,7 @@ public class AttenderAdapter extends BaseAdapter {
 
         loaderConfiguration = new ImageLoaderConfiguration.Builder(mContext)
                 .defaultDisplayImageOptions(imageOptions).build();
-        imageLoader.init(loaderConfiguration);
+        imageLoader.init(loaderConfiguration);*/
 
     }
 
@@ -93,6 +93,9 @@ public class AttenderAdapter extends BaseAdapter {
         txt_age =(TextView)vList.findViewById(R.id.attender_age);
         txt_gender=(TextView)vList.findViewById(R.id.attender_gender);
         txt_phone=(TextView)vList.findViewById(R.id.attender_phone);
+        txtdate = (TextView)vList.findViewById(R.id.attenderdate);
+        txttime = (TextView)vList.findViewById(R.id.attendertime);
+
 
         imageView = (CircleImageView)vList.findViewById(R.id.attender_image);
 
@@ -109,6 +112,10 @@ public class AttenderAdapter extends BaseAdapter {
         //txt_age.setText(attenderPOJO.getAge());
         txt_gender.setText(attenderPOJO.getGender());
         txt_phone.setText(attenderPOJO.getPhone());
+
+
+        txttime.setText("Check in Time  : "+attenderPOJO.getAtten_time());
+        txtdate.setText("Date  : "+attenderPOJO.getAtten_date());
 
 
         if(attenderPOJO.getAge()!=null) {
@@ -133,11 +140,25 @@ public class AttenderAdapter extends BaseAdapter {
                         .fit()
                         .centerCrop()
                         .into(imageView);
-
             }catch (Exception e){
                 imageView.setImageResource(R.drawable.ic_profile_image_1);
                 e.printStackTrace();
             }
+        }else if (null!=attenderPOJO.getPhotoURL()){
+            try {
+                String imgURL= PreferenceUtils.getUrlUploadImage(mContext)+attenderPOJO.getPhotoURL();//Directly loaded from server
+                Picasso.with(mContext)
+                        .load(imgURL)
+                        .config(Bitmap.Config.RGB_565)
+                        .fit()
+                        .centerCrop()
+                        .into(imageView);
+            }catch (Exception e){
+                imageView.setImageResource(R.drawable.ic_profile_image_1);
+                e.printStackTrace();
+            }
+        }else{
+            imageView.setImageResource(R.drawable.ic_profile_image_1);
         }
 
      /*   if (null!=attenderPOJO.getPhotoURL()){

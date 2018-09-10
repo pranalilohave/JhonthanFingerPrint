@@ -282,6 +282,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public static final String FAMILY_COL_7 = "picture";
     public static final String FAMILY_COL_8 = "createdAt";
     public static final String FAMILY_COL_9 = "updatedAt";
+    public static final String FAMILY_COL_10 = "family_id";
+    public static final String FAMILY_COL_11 = "role";
     public static final String CREATE_TABLE_FAMILY =
             "CREATE TABLE " + FAMILY_TABLE + "("
                     + FAMILY_COl_1 + " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -292,7 +294,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                     + FAMILY_COL_6 + " TEXT,"
                     + FAMILY_COL_7 + " TEXT,"
                     + FAMILY_COL_8 + " TEXT,"
-                    + FAMILY_COL_9 + " TEXT"
+                    + FAMILY_COL_9 + " TEXT,"
+                    + FAMILY_COL_10 + " TEXT,"
+                    + FAMILY_COL_11 + " TEXT"
                     + ")";
     //Groups
     public static final String GROUPS_TABLE = "GROUPS_table";
@@ -300,13 +304,17 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public static final String GROUPS_COL_2 = "member_id";
     public static final String GROUPS_COL_3 = "user_id";
     public static final String GROUPS_COL_4 = "tag_id";
+    public static final String GROUPS_COL_5 = "name";
+    public static final String GROUPS_COL_6 = "note";
 
     public static final String CREATE_TABLE_GROUPS =
             "CREATE TABLE " + GROUPS_TABLE + "("
                     + GROUPS_COl_1 + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + GROUPS_COL_2 + " TEXT,"
                     + GROUPS_COL_3 + " TEXT,"
-                    + GROUPS_COL_4 + " TEXT"
+                    + GROUPS_COL_4 + " TEXT,"
+                    + GROUPS_COL_5 + " TEXT,"
+                    + GROUPS_COL_6 + " TEXT"
                     + ")";
 
     //EVENT ATTENDANCE DETAILS
@@ -1299,6 +1307,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         values.put(GROUPS_COL_2, groups.getMemberId());
         values.put(GROUPS_COL_3, groups.getUserId());
         values.put(GROUPS_COL_4, groups.getTagId());
+        values.put(GROUPS_COL_5, groups.getName());
+        values.put(GROUPS_COL_6, groups.getNotes());
 
         long result = db.insert(GROUPS_TABLE, null, values);
         Log.d("TAG-->", "Values inserted into groups");
@@ -1344,6 +1354,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 groups.setMemberId(cursor.getString(cursor.getColumnIndex(GROUPS_COL_2)));
                 groups.setUserId(cursor.getString(cursor.getColumnIndex(GROUPS_COL_3)));
                 groups.setTagId(cursor.getString(cursor.getColumnIndex(GROUPS_COL_4)));
+                groups.setName(cursor.getString(cursor.getColumnIndex(GROUPS_COL_5)));
+                groups.setNotes(cursor.getString(cursor.getColumnIndex(GROUPS_COL_6)));
 
                 groupsdetails.add(groups);
             } while (cursor.moveToNext());
@@ -1380,6 +1392,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         values.put(FAMILY_COL_7, family.getPicture());
         values.put(FAMILY_COL_8, family.getCreatedAt());
         values.put(FAMILY_COL_9, family.getUpdatedAt());
+        values.put(FAMILY_COL_10, family.getFamilyid());
+        values.put(FAMILY_COL_11, family.getRole());
 
         long result = db.insert(FAMILY_TABLE, null, values);
 
@@ -1422,7 +1436,13 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public List<FamilyPOJO> getAllFamilyList(String str) {
 
         List<FamilyPOJO> details = new ArrayList<FamilyPOJO>();
-        String selectQuery = "SELECT  * FROM " + FAMILY_TABLE + " WHERE " + FAMILY_COL_4 + " = '" + str + "'";
+      //  String selectQuery = "SELECT  * FROM " + FAMILY_TABLE + " WHERE " + FAMILY_COL_4 + " = '" + str + "'";
+      /*  String selectQuery = "select FAMILY_table.*,member_table.first_name,member_table.last_name,member_table.middle_name" +
+                "from FAMILY_table,member_table" +
+                "where family_id = (Select family_id from FAMILY_table where memberId='"+str+"')" +
+                " and FAMILY_table.memberId = member_table.id" ;*/
+
+        String selectQuery = "select FAMILY_table.*,member_table.first_name,member_table.last_name,member_table.middle_name from FAMILY_table,member_table where family_id=(Select family_id from FAMILY_table where memberId= '"+str+"') and FAMILY_table.memberId = member_table.id";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
@@ -1431,16 +1451,23 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             do {
                 FamilyPOJO family = new FamilyPOJO();
 
-                // String id,branchId,userId,memberId,name,notes,picture,createdAt,updatedAt;
+                 String firstname,middlename,lastname;
+                 firstname = cursor.getString(cursor.getColumnIndex("first_name"));
+                lastname = cursor.getString(cursor.getColumnIndex("last_name"));
+                middlename = cursor.getString(cursor.getColumnIndex("middle_name"));
 
                 family.setBranchId(cursor.getString(cursor.getColumnIndex(FAMILY_COL_2)));
                 family.setUserId(cursor.getString(cursor.getColumnIndex(FAMILY_COL_3)));
                 family.setMemberId(cursor.getString(cursor.getColumnIndex(FAMILY_COL_4)));
-                family.setName(cursor.getString(cursor.getColumnIndex(FAMILY_COL_5)));
+                //family.setName(cursor.getString(cursor.getColumnIndex(FAMILY_COL_5)));
+                family.setName(firstname+middlename+lastname);
                 family.setNotes(cursor.getString(cursor.getColumnIndex(FAMILY_COL_6)));
                 family.setPicture(cursor.getString(cursor.getColumnIndex(FAMILY_COL_7)));
                 family.setCreatedAt(cursor.getString(cursor.getColumnIndex(FAMILY_COL_8)));
                 family.setUpdatedAt(cursor.getString(cursor.getColumnIndex(FAMILY_COL_9)));
+                family.setFamilyid(cursor.getString(cursor.getColumnIndex(FAMILY_COL_10)));
+                family.setRole(cursor.getString(cursor.getColumnIndex(FAMILY_COL_11)));
+
 
                 details.add(family);
             } while (cursor.moveToNext());
@@ -1489,7 +1516,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         List<AttenderPOJO> events = new ArrayList<AttenderPOJO>();
         //selectQuery = "SELECT  * FROM " + EVENT_ATTEN_TABLE;
         //Query to sort data using event id of all attenders
-        String selectQuery = "SELECT member_table.id,member_table.first_name,member_table.last_name,member_table.gender,member_table.dob,member_table.mobile_phone,member_table.address,member_table.photo_url,member_table.rollno FROM member_table INNER JOIN EVENT_ATTEN_table ON member_table.id = EVENT_ATTEN_table.member_id WHERE event_id = '" + eventId + "'";
+        String selectQuery = "SELECT member_table.id,member_table.first_name,member_table.last_name,member_table.gender,member_table.dob,member_table.mobile_phone,member_table.address,member_table.photo_url,member_table.rollno,EVENT_ATTEN_table.atten_date,EVENT_ATTEN_table.atten_time FROM member_table INNER JOIN EVENT_ATTEN_table ON member_table.id = EVENT_ATTEN_table.member_id WHERE event_id = '" + eventId + "'";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
@@ -1509,6 +1536,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 attenderPOJO.setAddress(cursor.getString(cursor.getColumnIndex("address")));
                 attenderPOJO.setPhone(cursor.getString(cursor.getColumnIndex("mobile_phone")));
                 attenderPOJO.setPhotoURL(cursor.getString(cursor.getColumnIndex("photo_url")));
+                attenderPOJO.setMemberId(cursor.getString(cursor.getColumnIndex("id")));
+                attenderPOJO.setAtten_date(cursor.getString(cursor.getColumnIndex("atten_date")));
+                attenderPOJO.setAtten_time(cursor.getString(cursor.getColumnIndex("atten_time")));
                 // attenderPOJO.setPhotoURL(cursor.getString(cursor.getColumnIndex("photo_url")));
                 events.add(attenderPOJO);
             } while (cursor.moveToNext());

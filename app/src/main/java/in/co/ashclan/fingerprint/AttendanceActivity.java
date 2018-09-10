@@ -1512,6 +1512,8 @@ public class AttendanceActivity extends AppCompatActivity implements AttendersUp
                 ImgAttendant.setImageResource(R.drawable.ic_profile_image_1);
                 e.printStackTrace();
             }
+        }else {
+            ImgAttendant.setImageResource(R.drawable.ic_profile_image_1);
         }
 
 

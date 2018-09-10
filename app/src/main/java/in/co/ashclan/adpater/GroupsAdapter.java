@@ -54,8 +54,8 @@ public class GroupsAdapter extends BaseAdapter {
 
         final GroupsPOJO groupsPOJO = list.get(i);
 
-        txtGroupName.setText("GROUP : " + groupsPOJO.getMemberId());
-        txtNotes.setText("NOTE : "+groupsPOJO.getTagId());
+        txtGroupName.setText("GROUP : " + groupsPOJO.getName());
+        txtNotes.setText("NOTE : "+groupsPOJO.getNotes());
 
         return vList;
     }

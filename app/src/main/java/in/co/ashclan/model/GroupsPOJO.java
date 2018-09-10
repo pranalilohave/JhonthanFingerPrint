@@ -4,30 +4,29 @@ import java.io.Serializable;
 
 public class GroupsPOJO implements Serializable {
 
-       String Id,memberId,userId,tagId;
+       String Id,memberId,userId,tagId,name,notes;
 
-    @Override
-    public String toString() {
-        return  "GroupPOJO{" +
-                "id='" + Id + '\'' +
-                ",userId='" + userId + '\'' +
-                ",memberId='" + memberId + '\'' +
-                ",tagId='" + tagId + '\'' +
-                '}';
-    }
-
-    public GroupsPOJO() {
-        Id = "";
-        this.memberId = "";
-        this.userId = "";
-        this.tagId = "";
-    }
-
-    public GroupsPOJO(String id, String memberId, String userId, String tagId) {
-        Id = id;
+    public GroupsPOJO( String memberId, String userId, String tagId, String name, String notes) {
         this.memberId = memberId;
         this.userId = userId;
         this.tagId = tagId;
+        this.name = name;
+        this.notes = notes;
+    }
+
+    public GroupsPOJO() {
+    }
+
+    @Override
+    public String toString() {
+        return "GroupsPOJO{" +
+                "Id='" + Id + '\'' +
+                ", memberId='" + memberId + '\'' +
+                ", userId='" + userId + '\'' +
+                ", tagId='" + tagId + '\'' +
+                ", name='" + name + '\'' +
+                ", notes='" + notes + '\'' +
+                '}';
     }
 
     public String getId() {
@@ -60,5 +59,21 @@ public class GroupsPOJO implements Serializable {
 
     public void setTagId(String tagId) {
         this.tagId = tagId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 }

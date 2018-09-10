@@ -7,42 +7,40 @@ public class FamilyPOJO {
         "notes": null,"picture": null,"created_at": "2018-02-03 13:28:25","updated_at": "2018-02-03 13:28:25"
     }
 */
-String id,branchId,userId,memberId,name,notes,picture,createdAt,updatedAt;
+String id,branchId,userId,memberId,name,notes,picture,createdAt,updatedAt,familyid,role;
 
-    @Override
-    public String toString() {
-        return  "PledgePOJO{" +
-                "id='" + id + '\'' +
-                ", branchId='" + branchId + '\'' +
-                ", userId='" + userId + '\'' +
-                ", memberId='" + memberId + '\'' +
-                ", name='" + name + '\'' +
-                ", notes='" +notes+ '\'' +
-                ", createdAt='" +createdAt+ '\'' +
-                ", updatedAt='" +updatedAt+ '\'' +
-                '}';
-
-    }
-
-    public FamilyPOJO(String id, String branchId, String userId, String memberId, String name, String notes) {
+    public FamilyPOJO(String id, String branchId, String userId, String memberId, String name, String notes, String picture, String createdAt, String updatedAt, String familyid, String role) {
         this.id = id;
         this.branchId = branchId;
         this.userId = userId;
         this.memberId = memberId;
         this.name = name;
         this.notes = notes;
+        this.picture = picture;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.familyid = familyid;
+        this.role = role;
     }
 
     public FamilyPOJO() {
-        this.id = "";
-        this.branchId = "";
-        this.userId = "";
-        this.memberId = "";
-        this.name = "";
-        this.notes = "";
-        this.picture = "";
-        this.createdAt = "";
-        this.updatedAt = "";
+    }
+
+    @Override
+    public String toString() {
+        return "FamilyPOJO{" +
+                "id='" + id + '\'' +
+                ", branchId='" + branchId + '\'' +
+                ", userId='" + userId + '\'' +
+                ", memberId='" + memberId + '\'' +
+                ", name='" + name + '\'' +
+                ", notes='" + notes + '\'' +
+                ", picture='" + picture + '\'' +
+                ", createdAt='" + createdAt + '\'' +
+                ", updatedAt='" + updatedAt + '\'' +
+                ", familyid='" + familyid + '\'' +
+                ", role='" + role + '\'' +
+                '}';
     }
 
     public String getId() {
@@ -115,5 +113,21 @@ String id,branchId,userId,memberId,name,notes,picture,createdAt,updatedAt;
 
     public void setUpdatedAt(String updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getFamilyid() {
+        return familyid;
+    }
+
+    public void setFamilyid(String familyid) {
+        this.familyid = familyid;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

@@ -11,6 +11,7 @@ public class MemberPOJO implements Serializable{
     String serverType;
     String createAt,updateAt;
     String attenTime;
+    String groupId,groupmemberId,groupuserId,grouptagId,groupname,groupnotes;
 
     @Override
     public String toString() {
@@ -79,6 +80,54 @@ public class MemberPOJO implements Serializable{
         this.mobilePhone = mobilePhone;
         this.address = address;
         this.rollNo = rollNo;
+    }
+
+   public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
+
+    public String getGroupmemberId() {
+        return groupmemberId;
+    }
+
+    public void setGroupmemberId(String groupmemberId) {
+        this.groupmemberId = groupmemberId;
+    }
+
+    public String getGroupuserId() {
+        return groupuserId;
+    }
+
+    public void setGroupuserId(String groupuserId) {
+        this.groupuserId = groupuserId;
+    }
+
+    public String getGrouptagId() {
+        return grouptagId;
+    }
+
+    public void setGrouptagId(String grouptagId) {
+        this.grouptagId = grouptagId;
+    }
+
+    public String getGroupname() {
+        return groupname;
+    }
+
+    public void setGroupname(String groupname) {
+        this.groupname = groupname;
+    }
+
+    public String getGroupnotes() {
+        return groupnotes;
+    }
+
+    public void setGroupnotes(String groupnotes) {
+        this.groupnotes = groupnotes;
     }
 
     public String getAttenTime() {

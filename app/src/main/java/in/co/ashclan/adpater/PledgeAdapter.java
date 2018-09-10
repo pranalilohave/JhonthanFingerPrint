@@ -39,7 +39,8 @@ public class PledgeAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int i) {
-        return Long.parseLong(list.get(i).getId());
+       // return Long.parseLong(list.get(i).getId());
+        return 0;
     }
 
     @Override

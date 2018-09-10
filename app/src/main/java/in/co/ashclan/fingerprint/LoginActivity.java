@@ -1505,38 +1505,6 @@ public class LoginActivity extends AppCompatActivity implements OnItemSelectedLi
                     Log.e("D--->",member.toString());
 
                     dataBaseHelper.insertMemberData(member);
-                    //String imgURL= PreferenceUtils.getUrlUploadImage(mContext)+member.getPhotoURL();//Directly loaded from server
-                    //Log.e("img from server-->",imgURL.toString() );
-                    //******************************
-                   /* try{
-                        URL url = new URL (" http://52.172.221.235:8983/uploads/cropped1242626017.jpg");
-                        InputStream input = url.openStream();
-                        try {
-                                //The sdcard directory e.g. '/sdcard' can be used directly, or
-                                //more safely abstracted with getExternalStorageDirectory()
-                            File storagePath = Environment.getExternalStorageDirectory();
-                            OutputStream output1 = new FileOutputStream (storagePath + "/myImage.jpg");
-                            try {
-                                int aReasonableSize = 10000;
-                                byte[] buffer = new byte[aReasonableSize];
-                                int bytesRead = 0;
-                                while ((bytesRead = input.read(buffer, 0, buffer.length)) >= 0) {
-                                    output1.write(buffer, 0, bytesRead);
-                                }
-                            } finally {
-                                output1.close();
-                            }
-                        } finally {
-                            input.close();
-                        }
-                    }catch (Exception e) {
-                        e.printStackTrace();
-                    }*/
-                    //******************************
-
-                    //******************************
-                   // String imgURL ="http://52.172.221.235:8983/uploads/cropped1242626017.jpg";
-
                 }
 
                 Log.i("--->Details-->",dataBaseHelper.getAllMembers().toString());
@@ -1639,9 +1607,11 @@ public class LoginActivity extends AppCompatActivity implements OnItemSelectedLi
                     family.setBranchId(isNull(object,"branch_id"));
                     family.setUserId(isNull(object,"user_id"));
                     family.setMemberId(isNull(object,"member_id"));
-                    family.setName(isNull(object,"name"));
+                    family.setFamilyid(isNull(object,"family_id"));
+                    family.setRole(isNull(object,"family_role"));
+                   // family.setName(isNull(object,"name"));
                     family.setNotes(isNull(object,"notes"));
-                    family.setPicture(isNull(object,"picture"));
+                   // family.setPicture(isNull(object,"picture"));
                     family.setCreatedAt(isNull(object,"created_at"));
                     family.setUpdatedAt(isNull(object,"updated_at"));
                     Log.e("D--->",family.toString());
@@ -1748,8 +1718,33 @@ public class LoginActivity extends AppCompatActivity implements OnItemSelectedLi
 
 
                 //Groups
-                GetAllGroupsTask groupsTask = new GetAllGroupsTask(mContext,PreferenceUtils.getUrlGetGroup(mContext),token);
-                groupsTask.execute();
+                dataBaseHelper.deleteAllGroups();
+
+                JSONArray jsonGroups = (JSONArray)jsonObject.get("groups");
+                for(int i=0;i<jsonGroups.size();i++){
+
+                    GroupsPOJO groupsPOJO = new GroupsPOJO();
+                    JSONObject object = (JSONObject)jsonGroups.get(i);
+
+                    groupsPOJO.setMemberId(String.valueOf(object.get("member_id")));
+                    groupsPOJO.setUserId(isNull(object,"user_id"));
+                    groupsPOJO.setTagId(isNull(object,"tag_id"));
+
+                    JSONObject groups = (JSONObject)object.get("tag");
+
+                    if(null!=groups){
+                        groupsPOJO.setName(isNull(groups,"name"));
+                        groupsPOJO.setNotes(isNull(groups,"notes"));
+                    }
+                    Log.e("E--->",groupsPOJO.toString());
+                    //   eventList.add(event);
+                    dataBaseHelper.insertGroupsData(groupsPOJO);
+                }
+
+
+                //Groups
+               // GetAllGroupsTask groupsTask = new GetAllGroupsTask(mContext,PreferenceUtils.getUrlGetGroup(mContext),token);
+               // groupsTask.execute();
 
                 //Users
                 GetAllUserTask userTask = new GetAllUserTask(mContext,PreferenceUtils.getUrlUserDetails(mContext),token);
@@ -1828,10 +1823,6 @@ public class LoginActivity extends AppCompatActivity implements OnItemSelectedLi
                 JSONParser parser = new JSONParser();
                 JSONObject jsonObject = (JSONObject)parser.parse(output.toString());
                // JSONArray jsonArray =(JSONArray) jsonObject.get("result");
-
-
-
-
 
                     ChangePasswordPOJO password = new ChangePasswordPOJO();
                     JSONObject object = (JSONObject) jsonObject.get("result");

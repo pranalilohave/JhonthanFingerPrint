@@ -271,6 +271,7 @@ public class EventDetailsActivity extends AppCompatActivity implements BottomNav
         Context vContext;
         ArrayList<AttenderPOJO> DetailsList = new ArrayList<>();
         AttenderPOJO attenderPOJO;
+        TextView txtTotalAttendance;
 
         public MyAttenderViewPagerAdapter(Context vContext,AttenderPOJO attenderPOJO){
             this.vContext = vContext;
@@ -287,13 +288,15 @@ public class EventDetailsActivity extends AppCompatActivity implements BottomNav
             view = inflater.inflate(R.layout.fragment_attender,container,false);
             container.addView(view);
             ListView listView = (ListView)view.findViewById(R.id.list_attender);
-
+            txtTotalAttendance = (TextView)view.findViewById(R.id.txtTotal_attendance);
             String event_id = eventDetails.getId().toString();
 
             DetailsList.addAll(dataBaseHelper.getAllAttender(event_id));
 
             AttenderAdapter attenderAdapter = new AttenderAdapter(EventDetailsActivity.this,DetailsList);
             listView.setAdapter(attenderAdapter);
+
+            txtTotalAttendance.setText("Total Attendees = " + DetailsList.size());
 
             return view;
         }
@@ -1527,19 +1530,13 @@ public class EventDetailsActivity extends AppCompatActivity implements BottomNav
         }
     }
 
-   @Override
+  @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.total_attenders, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_total:
-                item.setTitle("Hello");
-                return true;
-        }
         return super.onOptionsItemSelected(item);
     }
 
