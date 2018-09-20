@@ -292,7 +292,7 @@ public class AttendanceActivity extends AppCompatActivity implements AttendersUp
         Configuration config = getResources().getConfiguration();
         if (config.smallestScreenWidthDp >= 600) {
 
-            Toast.makeText(mContext,"Tablet",Toast.LENGTH_LONG).show();
+           // Toast.makeText(mContext,"Tablet",Toast.LENGTH_LONG).show();
             isTablet=true;
 
             try {
@@ -306,7 +306,7 @@ public class AttendanceActivity extends AppCompatActivity implements AttendersUp
             }
         }
         else {
-            Toast.makeText(mContext,"Phone",Toast.LENGTH_LONG).show();
+           // Toast.makeText(mContext,"Phone",Toast.LENGTH_LONG).show();
             isPhone=true;
             try {
                 FPMatch.getInstance().InitMatch();
@@ -1227,7 +1227,7 @@ public class AttendanceActivity extends AppCompatActivity implements AttendersUp
                 JSONObject jsonObject = (JSONObject)parser.parse(output.toString());
 
                 //JSONObject jsonResultObject=(JSONObject)jsonObject.get("result");
-                Toast.makeText(mContext,jsonObject.get("result").toString(),Toast.LENGTH_LONG).show();
+               // Toast.makeText(mContext,jsonObject.get("result").toString(),Toast.LENGTH_LONG).show();
 
                 JSONArray jsonAttendanceArray=(JSONArray)jsonObject.get("attendance");
 

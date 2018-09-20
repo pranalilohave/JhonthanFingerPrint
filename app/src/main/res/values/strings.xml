@@ -38,7 +38,7 @@
         <item>Divorced</item>
         <item>Widowed</item>
         <item>Separated</item>
-        <item>Unknown</item>
+        <item>child</item>
     </string-array>
 
     <string-array name="arry_temp">

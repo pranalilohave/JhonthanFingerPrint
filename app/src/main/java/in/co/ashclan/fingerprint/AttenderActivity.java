@@ -225,7 +225,7 @@ public class AttenderActivity extends AppCompatActivity {
                 JSONObject jsonObject = (JSONObject)parser.parse(output.toString());
 
                 //JSONObject jsonResultObject=(JSONObject)jsonObject.get("result");
-                Toast.makeText(mContext,jsonObject.get("result").toString(),Toast.LENGTH_LONG).show();
+                //Toast.makeText(mContext,jsonObject.get("result").toString(),Toast.LENGTH_LONG).show();
 
                 JSONArray jsonAttendanceArray=(JSONArray)jsonObject.get("attendance");
 

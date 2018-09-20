@@ -191,7 +191,7 @@ public class CropImageActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        Toast.makeText(mContext,destination.getAbsolutePath(),Toast.LENGTH_LONG).show();
+        //Toast.makeText(mContext,destination.getAbsolutePath(),Toast.LENGTH_LONG).show();
         //cropView.setUri(Uri.parse(destination.getAbsolutePath()));
         cropView.setBitmap(bitmapImage);
         //        imageViewFingerPrint2.setImageBitmap(bitmapImage);
@@ -228,7 +228,7 @@ public class CropImageActivity extends AppCompatActivity {
             }
         }
 
-        Toast.makeText(mContext,path,Toast.LENGTH_LONG).show();
+        //.makeText(mContext,path,Toast.LENGTH_LONG).show();
         cropView.setBitmap(bitmapImage);
         //imageViewFingerPrint2.setImageBitmap(bitmapImage);
         //   memberDetails.setPhotoLocalPath(BitMapToString(bitmapImage));

@@ -144,7 +144,7 @@
             android:name=".AttendanceActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <activity android:name=".EventDetailsActivity"/>
+        <activity android:name=".EventDetailsActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"

@@ -73,13 +73,13 @@ public class RecordingActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-             /*  RecordingPOJO recording1 = DetailsList.get(i);
+               RecordingPOJO recording1 = DetailsList.get(i);
 
                 RecordingActivity.GetAccessTokenTask aTask = new RecordingActivity.GetAccessTokenTask(mContext,PreferenceUtils.getUrlLogin(mContext),
                         PreferenceUtils.getAdminName(mContext),PreferenceUtils.getAdminPassword(mContext),recording1);
-                aTask.execute();*/
+                aTask.execute();
 
-              listPosition = i - listView.getFirstVisiblePosition();
+             /* listPosition = i - listView.getFirstVisiblePosition();
                 if (listView.getChildAt(listPosition).findViewById(R.id.img_upload).getVisibility() == View.INVISIBLE)
                 {
                     listView.getChildAt(listPosition).findViewById(R.id.img_upload).setVisibility(View.VISIBLE);
@@ -90,7 +90,7 @@ public class RecordingActivity extends AppCompatActivity {
                     listView.getChildAt(listPosition).findViewById(R.id.img_upload).setVisibility(View.INVISIBLE);
                     tickMarkVisibileListPosition[i]=Boolean.FALSE;
                 }
-                listView.getChildAt(listPosition).setSelected(true);
+                listView.getChildAt(listPosition).setSelected(true);*/
 
             }
         });
@@ -236,8 +236,8 @@ public class RecordingActivity extends AppCompatActivity {
                                 recording.setCreatedat(isNull(memberObject,"created_at"));
                                 recording.setUpdatedat(isNull(memberObject,"updated_at"));
 
-                                dataBaseHelper.insertRecordingData(recording);
-
+                               // dataBaseHelper.insertRecordingData(recording);
+                                dataBaseHelper.deleteAllRecordings(recording);
                                 progressBar.setVisibility(View.INVISIBLE);
 
                                 finish();

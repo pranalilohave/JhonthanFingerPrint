@@ -1770,13 +1770,13 @@ public class LoginActivity extends AppCompatActivity implements OnItemSelectedLi
         Constants.setURL(LoginActivity.this,i);
         iSet=i;
         if(i==0){
-            Toast.makeText(LoginActivity.this,"0",Toast.LENGTH_LONG).show();
+          //  Toast.makeText(LoginActivity.this,"0",Toast.LENGTH_LONG).show();
         }
         if (i==1){
-            Toast.makeText(LoginActivity.this,"1",Toast.LENGTH_LONG).show();
+         //   Toast.makeText(LoginActivity.this,"1",Toast.LENGTH_LONG).show();
         }
         if (i==2){
-            Toast.makeText(LoginActivity.this,"2",Toast.LENGTH_LONG).show();
+          //  Toast.makeText(LoginActivity.this,"2",Toast.LENGTH_LONG).show();
         }
 
     }

@@ -1,5 +1,6 @@
 package in.co.ashclan.fingerprint;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
@@ -12,10 +13,12 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.view.menu.MenuBuilder;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,8 +80,12 @@ public class EventDetailsActivity extends AppCompatActivity implements BottomNav
     private int[] layouts;
     DataBaseHelper dataBaseHelper;
     EventPOJO eventDetails;
-    Menu menu;
-    MenuItem totalAttender;
+
+    String total = null;
+    public Menu menu;
+    MenuItem Item;
+    TextView txtTotal;
+    ArrayList<AttenderPOJO> DetailsList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,8 +95,15 @@ public class EventDetailsActivity extends AppCompatActivity implements BottomNav
         init();
         refresh();
 
+        String event_id = eventDetails.getId().toString();
+        DetailsList.addAll(dataBaseHelper.getAllAttender(event_id));
+        total = "Total Attendees = " + DetailsList.size();
+
+       // txtTotal.setText(total);
+
     }
-    private void init(){
+
+    public void init(){
         eventDetails = (EventPOJO)getIntent().getSerializableExtra("event_details");
         layouts = new int[]{
                 R.layout.event_pager_overview,
@@ -97,12 +111,22 @@ public class EventDetailsActivity extends AppCompatActivity implements BottomNav
         viewPager = (ViewPager)findViewById(R.id.events_view_pager);
         bottomNavigationBar = (BottomNavigationBar)findViewById(R.id.bottom_navigation_bar);
         bottomNavigationBar.setTabSelectedListener(this);
-        //menu = new MenuBuilder(R.menu.total_attenders);
-        totalAttender = (MenuItem)findViewById(R.id.action_total);
-
         dataBaseHelper = new DataBaseHelper(EventDetailsActivity.this);
-
+        Item = (MenuItem)findViewById(R.id.action_total);
+        txtTotal = (TextView)findViewById(R.id.txtTotal_attendance);
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+         getMenuInflater().inflate(R.menu.total_attenders, menu);
+         updateMenuTitles(menu);
+         return true;
+    }
+
+    private void updateMenuTitles(Menu menu) {
+        MenuItem bedMenuItem = menu.findItem(R.id.action_total);
+        bedMenuItem.setTitle(total);
+    }
+
     private void refresh(){
         bottomNavigationBar.clearAll();
 
@@ -114,7 +138,7 @@ public class EventDetailsActivity extends AppCompatActivity implements BottomNav
 
         bottomNavigationBar
                 .addItem(new BottomNavigationItem(R.drawable.ic_overview, "OverView").setActiveColorResource(R.color.blue4))
-                .addItem(new BottomNavigationItem(R.drawable.ic_attender, "Attender").setActiveColorResource(R.color.blue3))
+                .addItem(new BottomNavigationItem(R.drawable.ic_attender, "Attendees").setActiveColorResource(R.color.blue3))
                 .addItem(new BottomNavigationItem(R.drawable.ic_report_1, "Reports").setActiveColorResource(R.color.blue2))
                 .addItem(new BottomNavigationItem(R.drawable.ic_volunteers, "Volunteers").setActiveColorResource(R.color.blue3))
                 .addItem(new BottomNavigationItem(R.drawable.ic_edit, "Edit").setActiveColorResource(R.color.blue4))
@@ -144,15 +168,9 @@ public class EventDetailsActivity extends AppCompatActivity implements BottomNav
                 myEditViewPagerAdapter = new MyEditViewPagerAdapter(mContext);
                 viewPager.setAdapter(myEditViewPagerAdapter);
                 viewPager.getAdapter().notifyDataSetChanged();
-
                 break;
-
             case 3:
-
                 break;
-
-
-
         }
 
     }
@@ -164,7 +182,7 @@ public class EventDetailsActivity extends AppCompatActivity implements BottomNav
     }
     @Override
     public void onTabSelected(int position) {
-        Toast.makeText(mContext,position+"",Toast.LENGTH_LONG).show();
+       // Toast.makeText(mContext,position+"",Toast.LENGTH_LONG).show();
 
         lastSelectedPosition = position;
         setViewPager(position);
@@ -205,9 +223,10 @@ public class EventDetailsActivity extends AppCompatActivity implements BottomNav
             switch (position){
                 case 0:
                     view = inflater.inflate(layouts[position],container,false);
-                    TextView overviewName,overviewDate,overviewCost,overviewCalender,overviewLocation,overviewNotes,overviewCreatedAt,overviewFeaturedImage;
+                    TextView overviewEndDate,overviewName,overviewDate,overviewCost,overviewCalender,overviewLocation,overviewNotes,overviewCreatedAt,overviewFeaturedImage;
                     overviewName=(TextView)view.findViewById(R.id.overview_event_name);
                     overviewDate=(TextView)view.findViewById(R.id.overview_event_date);
+                    overviewEndDate=(TextView)view.findViewById(R.id.overview_event_enddate);
                     overviewCalender=(TextView)view.findViewById(R.id.overview_event_calender);
                     overviewCost=(TextView)view.findViewById(R.id.overview_event_cost);
                     overviewLocation=(TextView)view.findViewById(R.id.overview_event_location);
@@ -217,10 +236,11 @@ public class EventDetailsActivity extends AppCompatActivity implements BottomNav
 
                     overviewName.setText(event.getName());
                     //more word.....
-                    overviewDate.setText(event.getStartDate());
-                    overviewCalender.setText("");
+                    overviewDate.setText("StartDate : "+event.getStartDate()+"("+event.getStart_time()+")");
+                    overviewEndDate.setText("EndDate : "+event.getEnd_date()+"("+event.getEnd_time()+")");
+                    overviewCalender.setText(new DataBaseHelper(mContext).getCalendarName(event.getEventCalenderId()));
                     overviewCost.setText(event.getCost());
-                    overviewLocation.setText(event.getEventLocationId());
+                    overviewLocation.setText(new DataBaseHelper(mContext).getLocationName(event.getEventLocationId()));
                     overviewNotes.setText(event.getNotes());
                     overviewFeaturedImage.setText("");
                     overviewCreatedAt.setText(event.getCreatedAt());
@@ -290,14 +310,12 @@ public class EventDetailsActivity extends AppCompatActivity implements BottomNav
             ListView listView = (ListView)view.findViewById(R.id.list_attender);
             txtTotalAttendance = (TextView)view.findViewById(R.id.txtTotal_attendance);
             String event_id = eventDetails.getId().toString();
-
             DetailsList.addAll(dataBaseHelper.getAllAttender(event_id));
 
             AttenderAdapter attenderAdapter = new AttenderAdapter(EventDetailsActivity.this,DetailsList);
             listView.setAdapter(attenderAdapter);
 
             txtTotalAttendance.setText("Total Attendees = " + DetailsList.size());
-
             return view;
         }
         @Override
@@ -428,9 +446,6 @@ public class EventDetailsActivity extends AppCompatActivity implements BottomNav
             labels_status.add("Inactive");
             labels_status.add("Unknown");
 
-
-
-
             BarData data_age = new BarData(labels_status, bardataset_Status);
             barChart_status.setData(data_age); // set the data and list of lables into chart
             barChart_status.setDescription("PentaCost - BWC");  // set the description
@@ -471,7 +486,7 @@ public class EventDetailsActivity extends AppCompatActivity implements BottomNav
             labels_Mstatus.add("Widowed");
             labels_Mstatus.add("Divorced");
             labels_Mstatus.add("Single");
-            labels_Mstatus.add("Unknown");
+            labels_Mstatus.add("Child");
 
 
 
@@ -1530,14 +1545,5 @@ public class EventDetailsActivity extends AppCompatActivity implements BottomNav
         }
     }
 
-  @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return super.onOptionsItemSelected(item);
-    }
 
 }

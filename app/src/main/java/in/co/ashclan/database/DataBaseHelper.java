@@ -414,6 +414,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     //EVENT LOCATION DETAILS
     public static final String RECORDING_TABLE = "recording_table";
+    public static final String RECORDING_TempTABLE = "recording_Temptable";
     public static final String RECORDING_COl_1 = "id";
     public static final String RECORDING_COL_2 = "event_id";
     public static final String RECORDING_COL_3 = "user_id";
@@ -426,6 +427,18 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     public static final String CREATE_TABLE_RECORDING =
             "CREATE TABLE " + RECORDING_TABLE + "("
+                    + RECORDING_COl_1 + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + RECORDING_COL_2 + " TEXT,"
+                    + RECORDING_COL_3 + " TEXT,"
+                    + RECORDING_COL_4 + " TEXT,"
+                    + RECORDING_COL_5 + " TEXT,"
+                    + RECORDING_COL_6 + " TEXT,"
+                    + RECORDING_COL_7 + " TEXT,"
+                    + RECORDING_COL_8 + " TEXT"
+                    + ")";
+
+    public static final String CREATE_TABLE_TempRECORDING =
+            "CREATE TABLE " + RECORDING_TempTABLE + "("
                     + RECORDING_COl_1 + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + RECORDING_COL_2 + " TEXT,"
                     + RECORDING_COL_3 + " TEXT,"
@@ -515,6 +528,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.execSQL(TEMP_CREATE_TABLE_EVENTATTEN);
         //CREATE TABLE RECORDING
         db.execSQL(CREATE_TABLE_RECORDING);
+        db.execSQL(CREATE_TABLE_TempRECORDING);
         //CREATE TABLE TEMPMEMBERPHOTO
         db.execSQL(CREATE_TABLE_TEMPMEMBERPHOTO);
          //CREATE TABLE CHANGE PASSWORD
@@ -581,11 +595,39 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    //BWC299
     public List<MemberPOJO> getSerachMember(String str) {
-        List<MemberPOJO> members = new ArrayList<MemberPOJO>();
-        String selectQuery = "SELECT  * FROM " + MEMBERS_TABLE + " WHERE " + MEMBER_COL_4 + " LIKE '" + str + "%'"
-                + " OR " + MEMBER_COL_6 + " LIKE '" + str + "%'";
+      //***************************************************************************
+        String selectQuery = null;
+        String strArray[]=str.split(" ");
+        Log.i("-->c",strArray.length+"");
+        if(strArray.length<=1){
 
+            selectQuery = "SELECT  * FROM " + MEMBERS_TABLE +
+                    " WHERE " + MEMBER_COL_4 + " LIKE '" + strArray[0] + "%'" +
+                    " OR " + MEMBER_COL_5 + " LIKE '" + strArray[0] + "%'" +
+                    " OR " + MEMBER_COL_6 + " LIKE '" + strArray[0] + "%'" +
+                    " OR " + MEMBER_COL_21 + " LIKE '%" + strArray[0] + "%'";
+
+
+        }else if(strArray.length<=2){
+            selectQuery = "SELECT  * FROM " + MEMBERS_TABLE +
+                    " WHERE " + MEMBER_COL_4 + " LIKE '" + strArray[0] + "%'" +
+                    " AND (" + MEMBER_COL_5 + " LIKE '" + strArray[1] + "%'" +
+                    " OR " + MEMBER_COL_6 + " LIKE '" + strArray[1] + "%')";
+        }else{
+            selectQuery = "SELECT  * FROM " + MEMBERS_TABLE +
+                    " WHERE " + MEMBER_COL_4 + " LIKE '" + strArray[0] + "%'" +
+                    " AND " + MEMBER_COL_5 + " LIKE '" + strArray[1] + "%'" +
+                    " AND " + MEMBER_COL_6 + " LIKE '" + strArray[2] + "%'";
+        }
+
+
+
+
+
+       //*************************************************************************
+        List<MemberPOJO> members = new ArrayList<MemberPOJO>();
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         if (cursor.moveToFirst()) {
@@ -1947,6 +1989,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
         float countAges[] = new float[9];
         int count = 0;
+        int under6=0,to612=0,to1318=0,to1929=0,to3049=0,to5064=0,to6579=0,to80plus=0,unknown=0;
 
         List<String> details = new ArrayList<String>();
         String selectMember = "SELECT member_table.dob as dob FROM member_table INNER JOIN EVENT_ATTEN_table ON member_table.id = EVENT_ATTEN_table.member_id WHERE event_id = '" + eventId + "'";
@@ -1973,63 +2016,74 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 try {
                     Date birthdate = df.parse(birthdateStr);
                     ages[i] = Integer.valueOf(calculateAge(birthdate));
+                    Log.e("countArray[0]",ages[i]+"");
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
+            }
+        }
 
-                if(ages[i]<=6 )
-                {
-                    countAges[0] = count+1;
-                    Log.e("countArray",countAges[0]+"");
+        for(int i = 0;i<ages.length;i++){
+            if(ages[i]<= 6 )
+            {
+                under6 = under6+1;
+                countAges[0] = under6;
+                Log.e("countArray[0]",countAges[0]+"");
 
-                }else if(ages[i]>6 && ages[i]<=12)
-                {
-                    countAges[1] = count+1;
-                    Log.e("countArray",countAges[1]+"");
+            }else if(ages[i]>6 && ages[i]<=12)
+            {
+                to612 = to612+1;
+                countAges[1] = to612;
+                Log.e("countArray[1]",countAges[1]+"");
 
-                }
-                else if(ages[i]>=13 && ages[i]<=18)
-                {
-                    countAges[2] = count+1;
-                    Log.e("countArray",countAges[2]+"");
+            }
+            else if(ages[i]>=13 && ages[i]<=18)
+            {
+                to1318 = to1318+1;
+                countAges[2] = to1318;
+                Log.e("countArray[2]",countAges[2]+"");
 
-                }
-                else if(ages[i]>=19 && ages[i]<=29)
-                {
-                    countAges[3] = count+1;
-                    Log.e("countArray",countAges[3]+"");
+            }
+            else if(ages[i]>=19 && ages[i]<=29)
+            {
+                to1929=to1929+1;
+                countAges[3] = to1929;
+                Log.e("countArray[3]",countAges[3]+"");
 
-                }
-                else if(ages[i]>=30 && ages[i]<=49)
-                {
-                    countAges[4] = count+1;
-                    Log.e("countArray",countAges[4]+"");
+            }
+            else if(ages[i]>=30 && ages[i]<=49)
+            {
+                to3049 = to3049+1;
+                countAges[4] = to3049;
+                Log.e("countArray[4]",countAges[4]+"");
 
-                }
-                else if(ages[i]>=50 && ages[i]<=64)
-                {
-                    countAges[5] = count+1;
-                    Log.e("countArray",countAges[5]+"");
+            }
+            else if(ages[i]>=50 && ages[i]<=64)
+            {
+                to5064 = to5064+1;
+                countAges[5] = to5064;
+                Log.e("countArray[5]",countAges[5]+"");
 
-                }
-                else if(ages[i]>=65 && ages[i]<=79)
-                {
-                    countAges[6] = count+1;
-                    Log.e("countArray",countAges[6]+"");
+            }
+            else if(ages[i]>=65 && ages[i]<=79)
+            {
+                to6579 = to6579+1;
+                countAges[6] = to6579;
+                Log.e("countArray[6]",countAges[6]+"");
 
-                }
-                else if(ages[i]>=80 && ages[i]<=150)
-                {
-                    countAges[7] = count+1;
-                    Log.e("countArray",countAges[7]+"");
+            }
+            else if(ages[i]>=80 && ages[i]<=150)
+            {
+                to80plus = to80plus+1;
+                countAges[7] = to80plus;
+                Log.e("countArray[7]",countAges[7]+"");
 
-                }
-                else
-                {
-                    countAges[8] = count+1;
-                    Log.e("countArray",countAges[8]+"");
-
-                }
+            }
+            else
+            {
+                unknown = unknown+1;
+                countAges[8] = unknown;
+                Log.e("countArray[9]",countAges[8]+"");
             }
         }
         return countAges;
@@ -2116,6 +2170,21 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         }
         return calendarId;
     }
+    public String getCalendarName(String id){
+        String calendarId = null;
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+
+            String selectQuery = ("SELECT name FROM  EVENT_CALENDAR_table  WHERE calender_id = '"+id+"'");
+            Cursor cursor = db.rawQuery(selectQuery, null);
+            if (cursor.moveToLast()) {
+                calendarId = cursor.getString(cursor.getColumnIndex("name"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return calendarId;
+    }
     public void deleteAllEventCalendar() {
         try {
             String selectQuery = "DELETE FROM " + EVENT_CALENDAR_TABLE;
@@ -2181,6 +2250,21 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             Cursor cursor = db.rawQuery(selectQuery, null);
             if (cursor.moveToLast()) {
                 locationId = cursor.getString(cursor.getColumnIndex("location_id"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return locationId;
+    }
+    public String getLocationName(String id){
+        String locationId = null;
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+
+            String selectQuery = ("SELECT name FROM  EVENT_LOCATION_table  WHERE location_id = '"+id+"'");
+            Cursor cursor = db.rawQuery(selectQuery, null);
+            if (cursor.moveToLast()) {
+                locationId = cursor.getString(cursor.getColumnIndex("name"));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -2280,6 +2364,28 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             return true;
         }
     }
+    public boolean insertTempRecordingData(RecordingPOJO recording) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(RECORDING_COL_2, recording.getEventid());
+        values.put(RECORDING_COL_3, recording.getUserid());
+        values.put(RECORDING_COL_4, recording.getFilename());
+        values.put(RECORDING_COL_5, recording.getCreatedat());
+        values.put(RECORDING_COL_6, recording.getUpdatedat());
+        values.put(RECORDING_COL_7, recording.getEventDate());
+        values.put(RECORDING_COL_8, recording.getFilePath());
+
+        long result = db.insert(RECORDING_TempTABLE, null, values);
+
+        db.close();
+        if (result == -1) {
+            return false;
+        } else {
+            return true;
+        }
+    }
     public List<RecordingPOJO> getAllRecordings() {
 
         List<RecordingPOJO> recordingList = new ArrayList<RecordingPOJO>();
@@ -2292,6 +2398,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             do {
 
                 RecordingPOJO recording = new RecordingPOJO();
+                recording.setId(cursor.getString(cursor.getColumnIndex(RECORDING_COl_1)));
                 recording.setEventid(cursor.getString(cursor.getColumnIndex(RECORDING_COL_2)));
                 recording.setUserid(cursor.getString(cursor.getColumnIndex(RECORDING_COL_3)));
                 recording.setFilename(cursor.getString(cursor.getColumnIndex(RECORDING_COL_4)));
@@ -2307,17 +2414,57 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.close();
         return recordingList;
     }
-    public void deleteAllRecordings() {
+    public List<RecordingPOJO> getAllTempRecordings() {
+
+        List<RecordingPOJO> recordingList = new ArrayList<RecordingPOJO>();
+        String selectQuery = "SELECT  * FROM " + RECORDING_TempTABLE;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        //looping through all row and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+
+                RecordingPOJO recording = new RecordingPOJO();
+                recording.setId(cursor.getString(cursor.getColumnIndex(RECORDING_COl_1)));
+                recording.setEventid(cursor.getString(cursor.getColumnIndex(RECORDING_COL_2)));
+                recording.setUserid(cursor.getString(cursor.getColumnIndex(RECORDING_COL_3)));
+                recording.setFilename(cursor.getString(cursor.getColumnIndex(RECORDING_COL_4)));
+                recording.setCreatedat(cursor.getString(cursor.getColumnIndex(RECORDING_COL_5)));
+                recording.setUpdatedat(cursor.getString(cursor.getColumnIndex(RECORDING_COL_6)));
+                recording.setEventDate(cursor.getString(cursor.getColumnIndex(RECORDING_COL_7)));
+                recording.setFilePath(cursor.getString(cursor.getColumnIndex(RECORDING_COL_8)));
+
+                recordingList.add(recording);
+
+            } while (cursor.moveToNext());
+        }
+        db.close();
+        return recordingList;
+    }
+    public void deleteAllRecordings(RecordingPOJO recording) {
         try {
-            String selectQuery = "DELETE FROM " + RECORDING_TABLE;
             SQLiteDatabase db = this.getWritableDatabase();
-            db.delete(RECORDING_TABLE, null, null);
+            db.delete(RECORDING_TABLE, RECORDING_COL_4 + " = ?",
+                    new String[]{String.valueOf(recording.getFilename())});
             db.close();
         } catch (Exception ex) {
             ex.printStackTrace();
             Log.e("Locations Error-->", ex.toString());
         }
     }
+    public void deleteAllTempRecordings(RecordingPOJO recording) {
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+            db.delete(RECORDING_TempTABLE, RECORDING_COl_1 + " = ?",
+                    new String[]{String.valueOf(recording.getId())});
+            db.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Log.e("Locations Error-->", ex.toString());
+        }
+    }
+
 
 
 

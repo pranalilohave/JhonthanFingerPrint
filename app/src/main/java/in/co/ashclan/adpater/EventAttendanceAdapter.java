@@ -19,7 +19,7 @@ public class EventAttendanceAdapter  extends BaseAdapter {
 
     private Context mContext;
     private ArrayList<EventAttendancePOJO> list;
-    TextView txt_EventName,txt_EventDate;
+    TextView txt_EventName,txt_EventDate,txt_EventTime;
 
     public EventAttendanceAdapter(Context mContext, ArrayList<EventAttendancePOJO> list) {
         this.mContext = mContext;
@@ -38,7 +38,7 @@ public class EventAttendanceAdapter  extends BaseAdapter {
 
     @Override
     public long getItemId(int i) {
-        return Long.parseLong(list.get(i).getId());
+        return 0;
     }
 
     @Override
@@ -53,10 +53,12 @@ public class EventAttendanceAdapter  extends BaseAdapter {
         }
         txt_EventName =(TextView)vList.findViewById(R.id.event_atten_name);
         txt_EventDate=(TextView)vList.findViewById(R.id.event_atten_date);
+        txt_EventTime=(TextView)vList.findViewById(R.id.event_atten_time);
 
         final EventAttendancePOJO eventAttendancePOJO= list.get(i);
 
         txt_EventName.setText(eventAttendancePOJO.getEventName());
+        txt_EventTime.setText(eventAttendancePOJO.getAttenTime());
 
         try {
             txt_EventDate.setText(datePattern(eventAttendancePOJO.getDate()));

@@ -37,8 +37,8 @@ public class AddNewUserActivity extends AppCompatActivity {
         editTextUserPassword = (TextInputEditText) findViewById(R.id.user_password);
         editRepeatPassword = (TextInputEditText) findViewById(R.id.repeat_password);
         msRole = (MaterialSpinner) findViewById(R.id.spinner_Role);
-        editTextAddress = (TextInputEditText)findViewById(R.id.user_address);
-        editTextNote = (TextInputEditText) findViewById(R.id.user_notes);
+        //editTextAddress = (TextInputEditText)findViewById(R.id.user_address);
+        //editTextNote = (TextInputEditText) findViewById(R.id.user_notes);
 
         buttonSubmit = (Button) findViewById(R.id.user_btnSubmit);
 

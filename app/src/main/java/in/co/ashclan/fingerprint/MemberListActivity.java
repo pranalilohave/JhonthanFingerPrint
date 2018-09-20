@@ -58,6 +58,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -115,6 +116,7 @@ public class MemberListActivity extends AppCompatActivity
         inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
         memberList.addAll(dataBaseHelper.getAllMembers());
+        Collections.reverse(memberList);
         eventList.addAll(dataBaseHelper.getAllEvent());
 
         listView = (ListView)findViewById(R.id.list);
